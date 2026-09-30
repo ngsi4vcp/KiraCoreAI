@@ -230,40 +230,7 @@ A0 → A0.D1 → A1 Core Parity → A2 Persistence → A3 Identity/Authority →
 
 Нельзя пропускать quality gates ради ускорения следующего этапа.
 
-## 5. Источник старого `.docx`
-
-Ранний файл `проект_1.docx` был исследовательским шаблоном про переносимый Kira Runtime/Harness и сравнение Pi/Codex/Hermes.
-
-Он **не является текущей документацией проекта** и в GitHub repository не tracked. В качестве оперативного источника его больше не использовать.
-
-Актуальная карта проекта и маршрут чтения находятся в:
-- `MAIN-STATUS.md`;
-- `docs/project-audit-index.md`;
-- `G22.txt`;
-- platform-specific AGENTS/status documents.
-
-### Главные документы и GitHub-пути
-
-Общие:
-- [README.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/README.md)
-- [docs/architecture.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/architecture.md)
-- [docs/runtime.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/runtime.md)
-- [docs/context-model.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/context-model.md)
-- [docs/persistence.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/persistence.md)
-- [docs/evaluation.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/evaluation.md)
-- [docs/roadmap.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/roadmap.md)
-- [docs/language-policy.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/language-policy.md)
-- [docs/utf8-policy.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/utf8-policy.md)
-
-Android:
-- [AGENTS.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/AGENTS.md)
-- [android-port-status.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-port-status.md)
-- [android-readiness-audit.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-readiness-audit.md)
-- [android-a1-plan.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-a1-plan.md)
-- [android-a1-bridge-contract.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-a1-bridge-contract.md)
-- [android-development-checklist.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-development-checklist.md)
-
-## 6. Работа с Alek
+## 5. Работа с Alek
 
 Алек является владельцем архитектурных требований и принимает значимые изменения, затрагивающие:
 
