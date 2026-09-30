@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from hashlib import sha256
 from pathlib import Path
+import sys
 
 from .compiler import GenomeCompiler, GenomeRuntimeIndex
 from .parser import GenomeDocument, GenomeParser
@@ -67,8 +68,42 @@ class GenomeLoader:
         return self.load(default_genome_path(project_root))
 
 
+def _candidate_roots() -> tuple[Path, ...]:
+    candidates: list[Path] = []
+
+    frozen_root = Path(sys.executable).resolve().parent
+    candidates.append(frozen_root)
+
+    cwd = Path.cwd().resolve()
+    candidates.append(cwd)
+
+    source_root = Path(__file__).resolve().parents[3]
+    candidates.append(source_root)
+
+    unique: list[Path] = []
+    seen: set[Path] = set()
+    for candidate in candidates:
+        if candidate not in seen:
+            seen.add(candidate)
+            unique.append(candidate)
+    return tuple(unique)
+
+
 def default_genome_path(project_root: str | Path | None = None) -> Path:
-    """Единственный нормативный путь runtime-генома."""
-    if project_root is None:
-        project_root = Path(__file__).resolve().parents[3]
-    return Path(project_root) / "GENOME" / "genome.txt"
+    """Ищет активный геном в корне приложения без привязки к способу установки."""
+    if project_root is not None:
+        root = Path(project_root).resolve()
+        path = root / "GENOME" / "genome.txt"
+        if not path.is_file():
+            raise FileNotFoundError(f"Активный геном не найден: {path}")
+        return path
+
+    for root in _candidate_roots():
+        path = root / "GENOME" / "genome.txt"
+        if path.is_file():
+            return path
+
+    searched = ", ".join(str(root) for root in _candidate_roots())
+    raise FileNotFoundError(
+        "Не найден GENOME/genome.txt. Проверены корни: " + searched
+    )
