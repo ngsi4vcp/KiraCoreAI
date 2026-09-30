@@ -11,10 +11,11 @@ from .genome import GenomeArtifact, GenomeLoader, GenomeStore
 from .model_contract import ModelAdapter, ModelResponse
 from .operation import OperationPhase, OperationState, RecoveryState
 from .persistence import CoreStatePersistence, JsonPersistence
+from .persistence_backend import PersistenceBackend
 from .pulse import pulse_stamp
 from .rendering import PlainTextPromptRenderer
 from .session import SessionManager
-from .stores import HistoryStore, MemoryStore, StateStore
+from .stores import HistoryStore, MemoryStore, OperationStore, StateStore
 
 
 _KEEP_PULSE = object()
@@ -34,6 +35,7 @@ class KiraRuntime:
         conversation_store: ConversationStore,
         core_persistence: CoreStatePersistence,
         session_manager: SessionManager,
+        operation_store: OperationStore,
     ) -> None:
         self.root = root
         self.genome = genome
@@ -44,10 +46,12 @@ class KiraRuntime:
         self.conversation_store = conversation_store
         self.core_persistence = core_persistence
         self.session_manager = session_manager
+        self.operation_store = operation_store
         self.core_state = core_persistence.load() or self._default_core_state()
         self.last_model_response: ModelResponse | None = None
-        self.last_operation: OperationState | None = self._operation_from_payload(
-            self.core_state.get("operation")
+        self.last_operation: OperationState | None = (
+            operation_store.latest()
+            or self._operation_from_payload(self.core_state.get("operation"))
         )
 
     @classmethod
@@ -56,20 +60,22 @@ class KiraRuntime:
         project_root: str | Path | None = None,
         expected_revision: int | None = None,
         expected_sha256: str | None = None,
+        backend: PersistenceBackend | None = None,
     ) -> "KiraRuntime":
         root = (
             Path(project_root).resolve()
             if project_root is not None
             else Path.cwd().resolve()
         )
-        for directory in (
-            root / "DATA",
-            root / "DATA" / "sessions",
-            root / "DATA" / "conversations",
-            root / "DATA" / "memory",
-            root / "DATA" / "history",
-        ):
-            directory.mkdir(parents=True, exist_ok=True)
+        (root / "DATA").mkdir(parents=True, exist_ok=True)
+        if backend is None:
+            for directory in (
+                root / "DATA" / "sessions",
+                root / "DATA" / "conversations",
+                root / "DATA" / "memory",
+                root / "DATA" / "history",
+            ):
+                directory.mkdir(parents=True, exist_ok=True)
 
         genome = GenomeLoader(
             expected_sha256=expected_sha256,
@@ -77,16 +83,22 @@ class KiraRuntime:
         ).load_active(root)
 
         state_store = StateStore(
-            JsonPersistence(root / "DATA" / "sessions"),
+            None if backend is not None else JsonPersistence(root / "DATA" / "sessions"),
+            backend=backend,
         )
-        memory_store = MemoryStore(root / "DATA" / "memory" / "memory.json")
+        memory_store = MemoryStore(
+            None if backend is not None else root / "DATA" / "memory" / "memory.json",
+            backend=backend,
+        )
         history_store = HistoryStore(
-            root / "DATA" / "history" / "history.jsonl"
+            None if backend is not None else root / "DATA" / "history" / "history.jsonl",
+            backend=backend,
         )
         conversation_store = ConversationStore(
-            root / "DATA" / "conversations"
+            root / "DATA" / "conversations",
+            backend=backend,
         )
-        core_persistence = CoreStatePersistence(root / "DATA")
+        core_persistence = CoreStatePersistence(root / "DATA", backend=backend)
         prompt_renderer = PlainTextPromptRenderer()
         context_compiler = ContextCompiler()
         session_manager = SessionManager(
@@ -109,6 +121,7 @@ class KiraRuntime:
             conversation_store=conversation_store,
             core_persistence=core_persistence,
             session_manager=session_manager,
+            operation_store=OperationStore(backend),
         )
 
     @staticmethod
@@ -328,6 +341,7 @@ class KiraRuntime:
 
     def _set_operation(self, operation: OperationState) -> None:
         self.last_operation = operation
+        self.operation_store.save(operation)
         self.core_state = {
             **self.core_state,
             "operation": asdict(operation),
