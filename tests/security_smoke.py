@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
-SCAN_ROOTS = [ROOT / "android", ROOT / "src", ROOT / "tests", ROOT / "schemas"]
+SCAN_ROOTS = [ROOT / "android", ROOT / "src", ROOT / "tests", ROOT / "schemas", ROOT / "android" / "app" / "build"]
 FORBIDDEN_PATTERNS = (
     re.compile(r"sk-or-v1-[A-Za-z0-9_-]{20,}"),
     re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
