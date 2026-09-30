@@ -4,17 +4,13 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).parents[1]
-SCAN_ROOTS = [ROOT / "android", ROOT / "src", ROOT / "tests", ROOT / "schemas", ROOT / "android" / "app" / "build"]
-FORBIDDEN_PATTERNS = (
-    re.compile(r"sk-or-v1-[A-Za-z0-9_-]{20,}"),
-    re.compile(r"sk-[A-Za-z0-9_-]{20,}"),
-    re.compile(r"AIza[0-9A-Za-z_-]{20,}"),
-    re.compile(r"ghp_[A-Za-z0-9]{20,}"),
-    re.compile(r"github_pat_[A-Za-z0-9_]{20,}"),
-    re.compile(r"-----BEGIN (?:RSA |EC |OPENSSH |)PRIVATE KEY-----"),
-    re.compile(r"(?i)alek[_ -]?password\s*[:=]\s*[^\s#]{8,}"),
-)
-
+SCAN_ROOTS = [
+    ROOT / "android",
+    ROOT / "src",
+    ROOT / "tests",
+    ROOT / "schemas",
+    ROOT / "android" / "app" / "build",
+]
 TEXT_EXTENSIONS = {
     ".gradle",
     ".gradle.kts",
@@ -28,6 +24,47 @@ TEXT_EXTENSIONS = {
     ".yml",
     ".yaml",
 }
+BINARY_EXTENSIONS = {".apk", ".dex", ".so", ".aar", ".jar"}
+
+PATTERN_TEXTS = (
+    r"sk-or-v1-[A-Za-z0-9_-]{20,}",
+    r"sk-[A-Za-z0-9_-]{20,}",
+    r"AIza[0-9A-Za-z_-]{20,}",
+    r"ghp_[A-Za-z0-9]{20,}",
+    r"github_pat_[A-Za-z0-9_]{20,}",
+    r"-----BEGIN (?:RSA |EC |OPENSSH |)PRIVATE KEY-----",
+    r"(?i)alek[_ -]?password\s*[:=]\s*[^\s#]{8,}",
+)
+FORBIDDEN_TEXT_PATTERNS = tuple(re.compile(pattern) for pattern in PATTERN_TEXTS)
+FORBIDDEN_BINARY_PATTERNS = tuple(pattern.encode("ascii") for pattern in (
+    "sk-or-v1-",
+    "ghp_",
+    "github_pat_",
+    "AIza",
+    "-----BEGIN",
+))
+
+
+def scan_source(path: Path, violations: list[str]) -> None:
+    if path == Path(__file__).resolve():
+        return
+    try:
+        content = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError:
+        return
+    for pattern in FORBIDDEN_TEXT_PATTERNS:
+        if pattern.search(content):
+            violations.append(f"{path.relative_to(ROOT)}: {pattern.pattern}")
+
+
+def scan_binary(path: Path, violations: list[str]) -> None:
+    try:
+        content = path.read_bytes()
+    except OSError:
+        return
+    for marker in FORBIDDEN_BINARY_PATTERNS:
+        if marker in content:
+            violations.append(f"{path.relative_to(ROOT)}: binary marker {marker!r}")
 
 
 def main() -> int:
@@ -36,15 +73,12 @@ def main() -> int:
         if not root.exists():
             continue
         for path in root.rglob("*"):
-            if not path.is_file() or path.suffix not in TEXT_EXTENSIONS:
+            if not path.is_file():
                 continue
-            try:
-                content = path.read_text(encoding="utf-8")
-            except UnicodeDecodeError:
-                continue
-            for pattern in FORBIDDEN_PATTERNS:
-                if pattern.search(content):
-                    violations.append(f"{path.relative_to(ROOT)}: {pattern.pattern}")
+            if path.suffix in TEXT_EXTENSIONS:
+                scan_source(path, violations)
+            elif path.suffix in BINARY_EXTENSIONS:
+                scan_binary(path, violations)
 
     if violations:
         print("Обнаружены признаки секретов:")
