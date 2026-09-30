@@ -18,5 +18,10 @@ class KiraRuntimeService : Service() {
         return START_STICKY
     }
 
+    override fun onDestroy() {
+        KiraRuntimeBridge.shutdownAsync(this)
+        super.onDestroy()
+    }
+
     override fun onBind(intent: Intent?): IBinder? = null
 }
