@@ -1,12 +1,12 @@
 > Примечание статуса: этот документ сохраняет нормативный A0-план и исторические критерии. Фактический результат A0.D1 зафиксирован в `docs/android-port-status.md` и `test-exchange/manifest.json`: run `20260930-131718`, `RECOVERY_OK`, vivo V2366HA / API 36.
 
-# A0 — Android Skeleton + Runtime Bridge
+# A0 — Каркас Android + мост рантайма
 
 ## Цель этапа
 
-Получить минимальный запускаемый Android-контур, в котором Kotlin/Compose host корректно поднимает embedded Python 3.13/KiraCore и способен выполнить диагностический сквозной smoke без построения полноценного пользовательского UI.
+Получить минимальный запускаемый Android-контур, в котором Kotlin/Compose host корректно поднимает embedded Python 3.13/KiraCore и способен выполнить диагностический сквозную проверку без построения полноценного пользовательского UI.
 
-A0 не реализует весь Android Alpha и не должен преждевременно включать Kira:Сбор, полноценную identity, сложную память, background hardening или красивый room UI.
+A0 не реализует весь Android Alpha и не должен преждевременно включать Kira:Сбор, полноценную identity, сложную память, background hardening или красивый UI хранилища.
 
 ## Фактический toolchain на 30.09.2026
 
@@ -41,10 +41,10 @@ A0 не реализует весь Android Alpha и не должен преж�
 ## A0.1 — Создание Android-модуля
 
 Результат:
-- Gradle project/module;
+- проект/модуль Gradle;
 - applicationId;
 - manifest;
-- Kotlin/Compose Activity;
+- Activity на Kotlin/Compose;
 - debug build;
 - базовые ресурсы;
 - минимальная русская строка состояния.
@@ -137,7 +137,7 @@ install
 → GENOME load
 → diagnostics
 → create session
-→ simulated/test turn
+→ симулированный тестовый ход
 → result
 → shutdown
 → restart.
@@ -172,20 +172,20 @@ install
 ## Не входит в A0
 
 - полноценная password authorization;
-- sealed authority packaging;
+- запечатанная упаковка полномочий;
 - QR identity;
 - identity merge;
 - GitHub Sync;
 - Kira:Сбор;
-- foreground-service hardening для production;
+- усиление фонового сервисного контура для production;
 - Android 13–17 matrix;
 - полноценный Chat UI;
 - avatar;
 - Pulse chip UI;
-- background notification production contract;
-- offline model.
+- контракт фоновых уведомлений для production;
+- локальная модель без сети.
 
-## Definition of Done
+## Критерий завершения
 
 A0 завершён, когда:
 
@@ -201,21 +201,21 @@ A0 завершён, когда:
 10. самоаудит и финальный quality pass завершены;
 11. пользователь получает итог на утверждение до перехода в A1.
 
-## A0 post-code acceptance — A0.D1
+## A0: внешняя приёмка после реализации — A0.D1
 
-После завершения кодового A0 и CI verification остаётся внешний acceptance-контур.
+После завершения кодового A0 и проверка CI остаётся внешний acceptance-контур.
 
 ### Цель
 
 Проверить на реальном vivo X100 Ultra / OriginOS 6:
 - установку и запуск debug APK;
 - embedded Python 3.13 / Chaquopy;
-- загрузку и SHA-256 verification GENOME revision 22;
+- загрузку и SHA-256 проверка GENOME revision 22;
 - runtime health и diagnostics;
 - создание тестовой session;
-- deterministic test turn;
+- детерминированный тестовый ход;
 - PulseStamp и синхронизацию с core_state;
-- Android Keystore round-trip;
+- полный цикл проверки Android Keystore;
 - внутреннее storage write/read;
 - поведение RuntimeService при background/return;
 - controlled process restart и восстановление checkpoint/state;
@@ -225,7 +225,7 @@ A0 завершён, когда:
 
 Диагностический bundle не требует полного доступа к общей файловой системе. Приоритетный механизм — системный Storage Access Framework (ACTION_CREATE_DOCUMENT); допустим также экспорт собственного файла приложения в MediaStore.Downloads на поддерживаемых версиях Android. Wide-storage permission / MANAGE_EXTERNAL_STORAGE для A0.D1 не используется.
 
-### Definition of Done A0.D1
+### Критерий завершения A0.D1
 
 1. Device Evidence Harness работает на vivo.
 2. Все критические A0 checks получили SUCCESS либо имеют оформленный blocker.
@@ -241,7 +241,7 @@ A0 завершён, когда:
 
 На текущем цикле A0 реализован полный skeleton-контур A0.1–A0.6 и bridge smoke-контур A0.7/A0.8:
 
-- Android Gradle project/module создан;
+- Android проект/модуль Gradle создан;
 - Compose Activity отделена от владельца runtime;
 - RuntimeService поднимает Python в отдельном исполнительном потоке;
 - RuntimeSnapshot задаёт явные фазы INITIALIZING/READY/FAILED/STOPPING/STOPPED;
@@ -257,18 +257,18 @@ A0 завершён, когда:
 
 Не входит в этот A0 и намеренно оставлено для следующих этапов:
 - полноценная password authorization Алека;
-- sealed authority packaging;
+- запечатанная упаковка полномочий;
 - Room/SQLite domain persistence вместо текущей platform foundation;
 - foreground-service production hardening;
 - Android 13–17 matrix;
 - реальный vivo X100 Ultra;
 - полноценный Chat UI/avatar/Pulse chip;
-- OpenRouter/Gemini credentials и реальные model calls.
+- учётные данные OpenRouter/Gemini и реальные вызовы моделей.
 
 Не закрыто в A0.D1 / внешнем acceptance:
 
 - реальный запуск на vivo X100 Ultra / OriginOS 6;
-- device instrumentation/evidence harness;
+- модуль диагностики и сбора данных устройства;
 - Android 13–17 реальная matrix;
 - lifecycle/recovery evidence на физическом устройстве.
 
