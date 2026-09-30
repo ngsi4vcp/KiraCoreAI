@@ -117,9 +117,7 @@ jobs:
       - name: Установить Android SDK 37
         shell: bash
         run: |
-          CMDLINE_TOOLS_BIN="$(find "$ANDROID_SDK_ROOT/cmdline-tools" -mindepth 2 -maxdepth 2 -type f -name sdkmanager -printf '%T@ %h\\n' | sort -nr | head -1 | cut -d' ' -f2-)"
-          test -x "$CMDLINE_TOOLS_BIN/sdkmanager"
-          "$CMDLINE_TOOLS_BIN/sdkmanager" --channel=3 "platforms;android-37" "build-tools;36.0.0" "platform-tools"
+          sdkmanager --channel=3 "platforms;android-37.0" "build-tools;36.0.0" "platform-tools"
 
       - name: Подготовить Gradle
         uses: gradle/actions/setup-gradle@v5
