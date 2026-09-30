@@ -26,7 +26,8 @@
 1. G22.txt;
 2. этот `AGENTS.md`;
 3. `docs/android-port-status.md`;
-4. `README.md`;
+4. `docs/android-development-plan.md`;
+5. `README.md`;
 5. `docs/architecture.md`;
 6. `docs/runtime.md`;
 7. `docs/persistence.md`;
