@@ -5,11 +5,11 @@
 A0.D1 physical evidence принят: run `20260930-131718`, vivo V2366HA, API 36, `RECOVERY_OK`.
 
 Текущий Android engineering boundary — A1.6 Operation / Recovery:
-- typed bridge и session parity;
-- deterministic turn/Pulse parity;
-- explicit UNKNOWN model-call semantics;
+- typed bridge и соответствие сессий;
+- соответствие детерминированного хода и ПУЛЬС;
+- явная семантика UNKNOWN для вызова модели;
 - persisted operation state;
-- no automatic retry for UNKNOWN.
+- отсутствие автоматического повтора UNKNOWN.
 
 Это не закрывает production recovery/reconcile A5 и отдельный A1 device parity smoke на текущем APK.
 
@@ -114,3 +114,8 @@ A1 начинается только после:
 - Foreground service types: https://developer.android.com/develop/background-work/services/fgs/service-types
 - Foreground service timeouts: https://developer.android.com/develop/background-work/services/fgs/timeout
 - Foreground service changes: https://developer.android.com/develop/background-work/services/fgs/changes
+
+
+## Текущая контрольная точка Android
+
+A1 Core Parity принят по физическому device evidence. A2.0 Persistence Foundation реализован, но его acceptance ожидает green CI и самоаудит; результаты старых разделов с пометкой A0/A1 сохраняются как исторические контрольные точки.
