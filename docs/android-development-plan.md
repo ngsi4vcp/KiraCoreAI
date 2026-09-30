@@ -992,7 +992,7 @@ Foreground runtime строится как service + persistence + recovery. Д�
 
 ### Политика платформенного toolchain
 
-Для Android 17/compileSdk 37 Alpha использует AGP 9.2.1, Gradle 9.4.1, JDK 17 и Kotlin 2.2.10, поскольку текущий Chaquopy 17.0 поддерживает AGP только до 9.2.
+Для Android 17/compileSdk 37 Alpha использует AGP 9.2.1, Gradle 9.4.1, JDK 17 и Kotlin 2.3.10, поскольку текущий Chaquopy 17.0 поддерживает AGP только до 9.2.
 
 ### Нормативная граница
 
@@ -1003,6 +1003,9 @@ Foreground runtime строится как service + persistence + recovery. Д�
 - docs/identity-and-user-memory-contract.md
 - docs/persistence-contract.md
 - docs/android-alpha-implementation-plan.md
+- docs/android-device-evidence-plan.md
+- docs/android-a1-plan.md
+- docs/android-development-checklist.md
 
 
 ## 12. Защищённый контур авторизации и генерации
