@@ -872,3 +872,84 @@ Android должен стать для Киры не «терминалом с �
 Техническая форма может быть Android-native.
 
 Семантика остаётся Kira-native.
+
+
+## 11. Предварительно утверждённые архитектурные решения — 30.09.2026
+
+### Кира:Сбор
+
+В первой ревизии Android Кира:Сбор использует private GitHub как универсальный transport/storage.
+
+Будущие VPS/server/SSH/Mesh transport providers подключаются через общий SyncProvider Contract и не требуют изменения доменного слоя.
+
+Кира:Сбор разделён на Core Update, Private Sync и Shared Experience.
+
+### Криптография
+
+Приватные данные шифруются внутри Кира:Ядра до передачи в GitHub.
+
+Базовый набор Alpha:
+- AES-256-GCM;
+- HKDF-SHA-256;
+- ECDSA P-256;
+- Argon2id + AES-256-GCM для переносимого identity secret.
+
+Ключи и token material не передаются model provider.
+
+### Переносимая идентичность
+
+Вводятся identity_id, device_id, display_name, authorization_state, provenance и identity_secret.
+
+identity_secret можно переносить вручную ключ-фразой или QR. Он восстанавливает пользовательский профиль, но не выдаёт привилегии Алека.
+
+Разрозненные профили могут быть объединены через доменную MergeIdentity transaction. Старый UUID выводится из активного профиля и получает sync tombstone для предотвращения повторного появления.
+
+### Временная регистрация запуска
+
+Каждый запуск создаёт runtime_instance_id с ограниченным сроком жизни и фиксирует app/core/genome revision, устройство и capabilities.
+
+Регистрация временная и не является пользовательской памятью.
+
+### Пользовательская память
+
+Кира может хранить реляционные интерпретации о пользователях для собственного использования.
+
+Это память, а не GENOME.
+
+Разрешаются четыре scope:
+- Private;
+- Shared-by-consent;
+- Shared-derived;
+- Public.
+
+Этическое ограничение касается раскрытия и использования данных, но физические криптографические границы хранения и транспорта сохраняются независимо от модели.
+
+### Персистентность
+
+Введён отдельный Persistence Contract.
+
+Android: Room/SQLite + CryptoProvider + Android Keystore.
+
+Desktop и будущие ОС могут использовать другой физический backend, но должны реализовывать одинаковые логические stores и versioned KiraSync format.
+
+### Runtime recovery
+
+Вводится явная operation state machine с состоянием UNKNOWN для неопределённого внешнего model-call.
+
+Неизвестный вызов не повторяется молча после process death.
+
+Foreground runtime строится как service + persistence + recovery. Дублирующие Activity не используются как механизм надёжности.
+
+### Политика платформенного toolchain
+
+Для Android 17/compileSdk 37 Alpha использует AGP 9.2.x, Gradle 9.4.1, JDK 17 и Kotlin 2.2.10, поскольку текущий Chaquopy 17.0 поддерживает AGP только до 9.2.
+
+### Нормативная граница
+
+Все перечисленные решения являются архитектурными решениями реализации. Они не меняют G22 и активный GENOME.
+
+Подробные контракты:
+- docs/kira-sync-contract.md
+- docs/identity-and-user-memory-contract.md
+- docs/persistence-contract.md
+- docs/android-alpha-implementation-plan.md
