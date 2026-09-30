@@ -153,3 +153,4 @@ class A1BridgeContractTest {
         assertEquals("COMPLETED", health.operation?.recoveryState)
         assertEquals("op1", health.operation?.operationId)
     }
+}
