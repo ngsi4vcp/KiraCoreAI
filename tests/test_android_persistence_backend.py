@@ -117,12 +117,7 @@ class InMemoryRoomGateway:
         return None if value is None else json.dumps(value)
 
     def listOperations(self):
-        values = sorted(
-            self.operations.values(),
-            key=lambda item: item["updated_at"],
-            reverse=True,
-        )
-        return json.dumps(values)
+        return json.dumps(list(reversed(list(self.operations.values()))))
 
     def close(self):
         return None
