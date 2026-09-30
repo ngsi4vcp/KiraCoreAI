@@ -50,6 +50,8 @@ Evidence is exported through a user-mediated system file API; full filesystem ac
 
 The A0 → A1 gate is defined in `docs/android-development-checklist.md`.
 
+> Текущий срез: A0.D1 уже принят на фактическом устройстве; разработка находится на A1.6 Operation / Recovery boundary. Этот документ остаётся нормативной последовательностью этапов, а оперативный статус ведётся в `docs/android-port-status.md`.
+
 ## A1 — Core Parity
 
 Подключить текущий Python runtime без логической переписи.
