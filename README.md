@@ -185,3 +185,22 @@ SyncProvider → CryptoProvider → encrypted envelopes → private GitHub.
 ### Cross-platform rule
 
 Android, Windows и Linux могут иметь разные UI и physical storage, но обязаны сохранять одну семантику GENOME, Memory, History, State, Conversation, Runtime, Identity, Pulse и KiraSync.
+
+## Безопасность и переносимость
+
+Привилегированный authority plane отделён от модельного контекста.
+
+Модель получает безопасную семантическую проекцию конституции и runtime capabilities, но не пароль, verifier, ключи или полный текст защищённых секций GENOME.
+
+Кира:Сбор использует versioned encrypted envelopes.
+
+Android и desktop реализуют единый семантический Persistence Contract при различии физических storage backend.
+
+Основные документы Android:
+
+- docs/android-development-plan.md
+- docs/android-alpha-implementation-plan.md
+- docs/security-architecture.md
+- docs/kira-sync-contract.md
+- docs/identity-and-user-memory-contract.md
+- docs/persistence-contract.md
