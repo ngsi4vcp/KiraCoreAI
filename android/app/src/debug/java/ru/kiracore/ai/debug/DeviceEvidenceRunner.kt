@@ -178,7 +178,7 @@ class DeviceEvidenceRunner(
                     require(turn.runtimeState.authorizedAlek) {
                         "Семантика ~1 не установила authorized_alek."
                     }
-                    require(turn.pulse.value == 1024)
+                    require(turn.pulse?.value == 1024)
                     "turn=${turn.runtimeState.turn}, pulse=${turn.pulse?.value}"
                 }
                 runCheck(runDir, "A1: conversation") {
@@ -210,14 +210,14 @@ class DeviceEvidenceRunner(
                     require(health.status == "READY")
                     require(health.activeSessionId == sessionId)
                     require(health.turn == 1)
-                    require(health.pulse.value == 1024)
-                    require(health.operation.phase == "COMPLETED") {
+                    require(health.pulse?.value == 1024)
+                    require(health.operation?.phase == "COMPLETED") {
                         "Operation phase не COMPLETED: ${health.operation.phase}"
                     }
-                    require(health.operation.recoveryState == "COMPLETED") {
+                    require(health.operation?.recoveryState == "COMPLETED") {
                         "Recovery state не COMPLETED: ${health.operation?.recoveryState}"
                     }
-                    "session=${health.activeSessionId}, turn=${health.turn}, pulse=${health.pulse.value}, operation=${health.operation?.phase}"
+                    "session=${health.activeSessionId}, turn=${health.turn}, pulse=${health.pulse?.value}, operation=${health.operation?.phase}"
                 }
                 writeManifest(runDir, "COMPLETED", "android-a1-device")
                 setOverall("A1.0/A1.2 parity smoke завершён")
