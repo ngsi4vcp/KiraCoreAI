@@ -30,14 +30,16 @@
 Не следует до первого Alpha усложнять хранение в распределённую БД или добавлять полноценный vector search без фактической потребности.
 
 
-## Android Alpha — текущая дорожка
+## Android Alpha — текущая дорожка разработки
 
 Android развивается отдельной веткой `android/alpha-parity`, сохраняя desktop semantic contract.
 
 - [x] A0 foundation + CI
 - [x] A0.D1 device acceptance — evidence `20260930-131718`, vivo V2366HA / API 36
 - [x] A1 Core Parity — CI + свежий device evidence `20260930-144146`, `RECOVERY_OK`
-- [ ] A2 Persistence — Room/SQLite + CryptoProvider/Keystore + единый physical backend
+- [ ] A2 Persistence — Room/SQLite + CryptoProvider/Keystore + единый физический backend
+
+A2.0 foundation уже реализован в Android-ветке; его acceptance ожидает green CI и самоаудит.
 - [ ] A3 Identity / Authority
 - [ ] A4 Кира:Сбор
 - [ ] A5 Runtime Recovery / Reconcile
@@ -49,6 +51,6 @@ Android развивается отдельной веткой `android/alpha-pa
 - [ ] A11 Android 13–17 / OEM matrix
 - [ ] A12 distributable APK Alpha
 
-Пошаговый operational route: `android/alpha-parity` → `docs/android-next-steps.md`.
+Пошаговый маршрут разработки: `android/alpha-parity` → `docs/android-next-steps.md`.
 
-Desktop external smoke остаётся независимой незакрытой задачей и не заменяется Android acceptance.
+Внешняя проверка desktop остаётся независимой незакрытой задачей и не заменяется Android-приёмкой.
