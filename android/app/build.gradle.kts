@@ -56,10 +56,10 @@ android {
 chaquopy {
     defaultConfig {
         version = "3.13"
-        sourceSets {
-            getByName("main") {
-                setSrcDirs(listOf(rootProject.layout.projectDirectory.dir("src").asFile))
-            }
+    }
+    sourceSets {
+        getByName("main") {
+            setSrcDirs(listOf(rootProject.layout.projectDirectory.dir("src").asFile))
         }
     }
 }
