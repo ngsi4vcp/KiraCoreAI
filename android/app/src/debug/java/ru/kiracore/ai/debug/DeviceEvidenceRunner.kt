@@ -114,6 +114,117 @@ class DeviceEvidenceRunner(
         }
     }
 
+    fun startA1ParitySmoke() {
+        if (_state.value.running) return
+        val runId = timestamp()
+        val runDir = File(root, runId).apply { mkdirs() }
+        _state.value = DeviceEvidenceUiState(
+            runId = runId,
+            phase = "A1.0/A1.2 parity smoke",
+            running = true,
+            overall = "ВЫПОЛНЯЕТСЯ",
+        )
+        scope.launch {
+            try {
+                runCheck(runDir, "A1: runtime health") {
+                    waitForRuntime(runDir)
+                    val health = KiraRuntimeBridge.checkHealth(context)
+                    require(health.status == "READY") {
+                        "Structured health не READY: \${health.status}"
+                    }
+                    "status=\${health.status}, turn=\${health.turn}"
+                }
+                runCheck(runDir, "A1: GENOME info") {
+                    val genome = KiraRuntimeBridge.getGenomeInfo(context)
+                    require(genome.revision == expectedGenomeRevision)
+                    require(genome.series == 1000)
+                    require(genome.sha256 == expectedGenomeSha256)
+                    "revision=\${genome.revision}, series=\${genome.series}"
+                }
+                val sessionId = runCheck(runDir, "A1: session create") {
+                    KiraRuntimeBridge.createSessionTyped(
+                        context,
+                        provider = "a0-test",
+                        model = "embedded/a0-test",
+                    ).also {
+                        require(it.sessionId.isNotBlank()) { "Session ID не получен." }
+                    }.sessionId
+                }
+                runCheck(runDir, "A1: session list") {
+                    val sessions = KiraRuntimeBridge.listSessions(context)
+                    require(sessions.any { it.sessionId == sessionId }) {
+                        "Созданная сессия отсутствует в list_sessions."
+                    }
+                    "count=\${sessions.size}"
+                }
+                runCheck(runDir, "A1: session resume") {
+                    val resumed = KiraRuntimeBridge.resumeSession(context, sessionId)
+                    require(resumed.session?.sessionId == sessionId) {
+                        "resume_session вернул другую сессию."
+                    }
+                    require(resumed.runtimeState.activeSessionId == sessionId)
+                    require(resumed.runtimeState.turn == 0)
+                    require(resumed.runtimeState.pulse == null)
+                    "session=\${resumed.runtimeState.activeSessionId}, turn=0, pulse=null"
+                }
+                runCheck(runDir, "A1: deterministic turn") {
+                    val turn = KiraRuntimeBridge.sendTestTurnTyped(
+                        context,
+                        sessionId,
+                        "Диагностический A1 parity turn.",
+                    )
+                    require(turn.runtimeState.activeSessionId == sessionId)
+                    require(turn.runtimeState.turn == 1)
+                    require(turn.pulse?.value == 1024)
+                    "turn=\${turn.runtimeState.turn}, pulse=\${turn.pulse?.value}"
+                }
+                runCheck(runDir, "A1: conversation") {
+                    val messages = KiraRuntimeBridge.getConversation(context, sessionId, 20)
+                    require(messages.size >= 2) {
+                        "Ожидались user+assistant сообщения."
+                    }
+                    val tail = messages.takeLast(2)
+                    require(tail[0].role == "user")
+                    require(tail[1].role == "assistant")
+                    require(tail[1].pulse?.value == 1024)
+                    "messages=\${messages.size}, last_turn=\${tail[1].turn}"
+                }
+                runCheck(runDir, "A1: memory separation") {
+                    val approved = KiraRuntimeBridge.getMemory(context)
+                    val candidates = KiraRuntimeBridge.getMemoryCandidates(context)
+                    require(approved.isEmpty()) {
+                        "В чистом parity smoke появилась approved memory."
+                    }
+                    require(candidates.isEmpty()) {
+                        "В чистом parity smoke появились memory candidates."
+                    }
+                    "approved=0, candidates=0"
+                }
+                runCheck(runDir, "A1: structured health after turn") {
+                    val health = KiraRuntimeBridge.checkHealth(context)
+                    require(health.status == "READY")
+                    require(health.activeSessionId == sessionId)
+                    require(health.turn == 1)
+                    require(health.pulse?.value == 1024)
+                    "session=\${health.activeSessionId}, turn=\${health.turn}, pulse=\${health.pulse?.value}"
+                }
+                writeManifest(runDir, "COMPLETED", "android-a1-device")
+                setOverall("A1.0/A1.2 parity smoke завершён")
+            } catch (error: Throwable) {
+                appendEvent(
+                    runDir,
+                    "a1.smoke.failed",
+                    "FAIL",
+                    JSONObject()
+                        .put("exception", error::class.java.name)
+                        .put("message", error.message ?: error::class.java.simpleName),
+                )
+                writeManifest(runDir, "FAILED", "android-a1-device")
+                setOverall("A1 BLOCKER: \${error::class.java.simpleName}")
+            }
+        }
+    }
+
     fun prepareAndRestart() {
         if (_state.value.running) return
         scope.launch {
@@ -438,10 +549,14 @@ class DeviceEvidenceRunner(
         )
     }
 
-    private fun writeManifest(runDir: File, status: String) {
+    private fun writeManifest(
+        runDir: File,
+        status: String,
+        evidenceType: String = "android-a0-device",
+    ) {
         val manifest = JSONObject()
             .put("schema_version", 1)
-            .put("evidence_type", "android-a0-device")
+            .put("evidence_type", evidenceType)
             .put("status", status)
             .put("run_id", runDir.name)
             .put("application_id", BuildConfig.APPLICATION_ID)
