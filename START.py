@@ -16,7 +16,11 @@ def main() -> int:
     if source_root.exists():
         sys.path.insert(0, str(source_root))
 
-    from kiracore.application import run_application
+    from kiracore.application import VERSION, run_application
+
+    if len(sys.argv) > 1 and sys.argv[1] in {"--version", "-V"}:
+        print(f"Кира:Ядро | версия {VERSION}")
+        return 0
 
     return run_application(root)
 
