@@ -448,7 +448,7 @@ Kotlin не должен напрямую реализовывать GENOME, Mem
 - getGenomeInfo();
 - listProviders();
 - listModels();
-- createSession();
+- createSession(identity_id?);
 - listSessions();
 - resumeSession();
 - sendTurn();
@@ -456,6 +456,10 @@ Kotlin не должен напрямую реализовывать GENOME, Mem
 - getMemoryCandidates();
 - approveMemory();
 - checkHealth();
+- getIdentity();
+- exportIdentity();
+- importIdentity();
+- mergeIdentity();
 - sleep();
 
 Отдельно:
