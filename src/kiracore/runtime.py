@@ -3,11 +3,13 @@ from __future__ import annotations
 from dataclasses import asdict
 from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 from .context import ContextCompiler
 from .conversation import ConversationManifest, ConversationStore
 from .genome import GenomeArtifact, GenomeLoader, GenomeStore
 from .model_contract import ModelAdapter, ModelResponse
+from .operation import OperationPhase, OperationState, RecoveryState
 from .persistence import CoreStatePersistence, JsonPersistence
 from .pulse import pulse_stamp
 from .rendering import PlainTextPromptRenderer
@@ -44,6 +46,9 @@ class KiraRuntime:
         self.session_manager = session_manager
         self.core_state = core_persistence.load() or self._default_core_state()
         self.last_model_response: ModelResponse | None = None
+        self.last_operation: OperationState | None = self._operation_from_payload(
+            self.core_state.get("operation")
+        )
 
     @classmethod
     def start(
@@ -120,6 +125,7 @@ class KiraRuntime:
             "authorized_alek": False,
             "state": {},
             "last_error": None,
+            "operation": None,
         }
 
     def create_session(
@@ -156,6 +162,38 @@ class KiraRuntime:
         provider: str,
         model_id: str,
     ) -> ModelResponse:
+        session = self.state_store.get(session_id)
+        operation_id = uuid4().hex
+        self._set_operation(
+            OperationState(
+                operation_id=operation_id,
+                session_id=session_id,
+                phase=OperationPhase.CREATED,
+                checkpoint="created",
+                provider=provider,
+                model=model_id,
+                recovery_state=RecoveryState.CHECKPOINTED,
+            )
+        )
+        self._set_operation_phase(
+            operation_id,
+            OperationPhase.PREPARING,
+            "preparing",
+        )
+
+        def operation_update(phase: str, checkpoint: str) -> None:
+            recovery_state = (
+                RecoveryState.COMPLETED
+                if phase == OperationPhase.COMPLETED
+                else RecoveryState.CHECKPOINTED
+            )
+            self._set_operation_phase(
+                operation_id,
+                phase,
+                checkpoint,
+                recovery_state=recovery_state,
+            )
+
         try:
             response, pulse = self.session_manager.run_turn(
                 session_id=session_id,
@@ -163,9 +201,21 @@ class KiraRuntime:
                 model=model,
                 provider=provider,
                 model_id=model_id,
+                operation_update=operation_update,
             )
         except Exception as exc:
-            session = self.state_store.get(session_id)
+            from .errors import UnknownModelCall
+
+            is_unknown = isinstance(exc, UnknownModelCall)
+            self._set_operation_phase(
+                operation_id,
+                OperationPhase.UNKNOWN if is_unknown else OperationPhase.FAILED,
+                "model_call_unknown" if is_unknown else "failed",
+                recovery_state=(
+                    RecoveryState.UNKNOWN if is_unknown else RecoveryState.FAILED
+                ),
+                error=str(exc),
+            )
             self._save_core(
                 session,
                 provider,
@@ -245,6 +295,66 @@ class KiraRuntime:
         return self.memory_store.approve(
             record_id,
             authorized_alek=session.authorized_alek,
+        )
+
+
+
+    @staticmethod
+    def _operation_from_payload(payload: Any) -> OperationState | None:
+        if not isinstance(payload, dict):
+            return None
+        required = (
+            "operation_id",
+            "session_id",
+            "phase",
+            "checkpoint",
+            "provider",
+            "model",
+            "recovery_state",
+        )
+        if any(key not in payload for key in required):
+            return None
+        return OperationState(
+            operation_id=str(payload["operation_id"]),
+            session_id=str(payload["session_id"]),
+            phase=str(payload["phase"]),
+            checkpoint=str(payload["checkpoint"]),
+            provider=str(payload["provider"]),
+            model=str(payload["model"]),
+            recovery_state=str(payload["recovery_state"]),
+            error=payload.get("error"),
+        )
+
+    def _set_operation(self, operation: OperationState) -> None:
+        self.last_operation = operation
+        self.core_state = {
+            **self.core_state,
+            "operation": asdict(operation),
+        }
+        self.core_persistence.save(self.core_state)
+
+    def _set_operation_phase(
+        self,
+        operation_id: str,
+        phase: str,
+        checkpoint: str,
+        recovery_state: str = RecoveryState.CHECKPOINTED,
+        error: str | None = None,
+    ) -> None:
+        previous = self.last_operation
+        if previous is None or previous.operation_id != operation_id:
+            return
+        self._set_operation(
+            OperationState(
+                operation_id=previous.operation_id,
+                session_id=previous.session_id,
+                phase=phase,
+                checkpoint=checkpoint,
+                provider=previous.provider,
+                model=previous.model,
+                recovery_state=recovery_state,
+                error=error,
+            )
         )
 
     def _save_core(
