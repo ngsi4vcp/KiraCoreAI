@@ -148,3 +148,40 @@ python -m unittest discover -s tests -v
 - docs/language-policy.md
 - schemas/
 - capsule/KIRA_CORE_CAPSULE.md
+
+
+## Android Alpha
+
+Android-ветка строится как самостоятельный UI поверх того же KiraCore Contract.
+
+Основной стек:
+Kotlin + Jetpack Compose + embedded Python 3.13 + Chaquopy 17.0 + ARM64.
+
+Целевая платформа: Android 9+, обязательная проверка Android 13–17.
+
+Application ID: ru.kiracore.ai.
+
+Android Alpha использует OpenRouter и Google AI Studio/Gemini. LM Studio в Android Alpha не включён.
+
+Android UI русскоязычный и не является переносом терминала.
+
+### Android architecture
+
+Android:
+Kotlin → Android Host → KiraRuntime Bridge → Python KiraCore → ModelAdapter.
+
+Кира:Сбор:
+SyncProvider → CryptoProvider → encrypted envelopes → private GitHub.
+
+### Android documentation
+
+- docs/android-port-status.md
+- docs/android-development-plan.md
+- docs/android-alpha-implementation-plan.md
+- docs/kira-sync-contract.md
+- docs/identity-and-user-memory-contract.md
+- docs/persistence-contract.md
+
+### Cross-platform rule
+
+Android, Windows и Linux могут иметь разные UI и physical storage, но обязаны сохранять одну семантику GENOME, Memory, History, State, Conversation, Runtime, Identity, Pulse и KiraSync.
