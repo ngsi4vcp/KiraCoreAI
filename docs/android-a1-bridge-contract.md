@@ -99,3 +99,9 @@ Bridge не маскирует ошибки домена:
 ## Stop conditions
 
 Остановиться и исправить контракт, если Kotlin начинает дублировать Core semantics; UI получает прямые Python/store internals; появляется второй источник истины state/memory/history/conversation; Pulse вычисляется на Android; resume создаёт новую сессию вместо восстановления существующей; candidate memory читается как approved.
+
+## Test boundary
+
+Kotlin typed-mapping tests are plain JVM unit tests. Android framework `org.json` stubs are not used there; `org.json:json:20260814` is test-only. The dependency is not packaged into the Android application.
+
+A1.0/A1.2 verification is blocked by neither JSON transport nor lifecycle ownership after CI run #305.
