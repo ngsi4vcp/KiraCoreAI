@@ -953,3 +953,24 @@ Foreground runtime строится как service + persistence + recovery. Д�
 - docs/identity-and-user-memory-contract.md
 - docs/persistence-contract.md
 - docs/android-alpha-implementation-plan.md
+
+
+## 12. Защищённый контур авторизации и генерации
+
+Авторизация Алека имеет два слоя:
+
+1. криптографический unlock authority plane;
+2. runtime Pre-Generation Reflection Gate.
+
+Модель получает только безопасную семантическую проекцию конституции и capabilities текущей сессии.
+
+Полный plaintext защищённых секций GENOME, пароль и ключевой материал не передаются модели.
+
+После ModelAdapter выполняется Response Disclosure Guard.
+
+UI/host не являются источником privileged authority.
+
+Целевой packaging-контур для будущего Android Alpha:
+canonical GENOME source → public semantic projection + sealed protected payload.
+
+Текущий G22 не изменяется этим решением.
