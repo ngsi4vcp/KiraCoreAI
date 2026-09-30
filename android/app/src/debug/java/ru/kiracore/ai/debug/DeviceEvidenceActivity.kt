@@ -61,7 +61,7 @@ class DeviceEvidenceActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         Text(
-                            text = "Кира:Ядро — A0.D1",
+                            text = "Кира:Ядро — Android verification",
                             style = MaterialTheme.typography.headlineSmall,
                         )
                         Text(text = state.overall)
@@ -74,6 +74,14 @@ class DeviceEvidenceActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxWidth(),
                         ) {
                             Text("Запустить полный A0 smoke")
+                        }
+
+                        Button(
+                            onClick = runner::startA1ParitySmoke,
+                            enabled = !state.running,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Запустить A1 parity smoke")
                         }
 
                         Button(
