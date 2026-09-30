@@ -80,11 +80,10 @@
 
 ## Следующий этап
 
-**A1 — Core Parity**, но только после закрытия внешнего доказательного контура A0:
-1. фактический GitHub CI run для текущего head;
-2. подтверждение debug APK;
-3. базовый device smoke;
-4. затем согласование перехода в A1.
+**A1 — Core Parity**, но только после закрытия внешнего device-контура A0:
+1. базовый device smoke на vivo X100 Ultra / OriginOS 6;
+2. подтверждение реальной Android 13–17 matrix;
+3. затем согласование перехода в A1.
 
 ## Граница согласования
 
@@ -115,21 +114,21 @@
 - A0-06 остаётся интерфейсным foundation по границе A0; Room/SQLite доменного persistence переносится на следующий этап согласно плану.
 
 Нерешённые внешние доказательства:
-- реальный CI результат текущего head;
 - устройство vivo X100 Ultra / OriginOS 6;
-- Android 13–17 matrix.
+- Android 13–17 реальная matrix;
+- instrumentation/device smoke.
 
 
 ## Верификационный цикл A0 — 30.09.2026
 
-Контрольная точка CI: код и документация quality pass завершены; далее проверяются фактический CI build/test/security и доступные device evidence.
+Контрольная точка: код и документация quality pass завершены; фактический CI build/test/security для текущего кодового HEAD подтверждён run #190. Device evidence остаётся внешним критерием.
 
 
-## CI-доказательство A0 — run #161
+## CI-доказательство A0 — run #190
 
-Контрольный commit: `eaf178c9bd231f85d6ef98ef7b2b95e398ffbde9`.
+Контрольный commit реализации: `398586db03f096318faf2fd275a2db86905b5aa5`.
 
-Фактический GitHub Actions run #161 завершён успешно:
+Фактический GitHub Actions run #190 завершён успешно:
 - Python 3.11/3.12 — Ubuntu/Windows: все матричные тестовые jobs успешны;
 - package-smoke Linux/Windows: успешны;
 - Android A0 smoke: успешен;
@@ -139,7 +138,7 @@
 - debug APK существовал по проверяемому пути `android/app/build/outputs/apk/debug/app-debug.apk`;
 - security smoke после сборки прошёл успешно.
 
-Таким образом, A0 имеет фактическое CI evidence для сборки, unit-тестов, Python bridge/security smoke и debug APK.
+Таким образом, A0 имеет фактическое CI evidence для UTF-8 smoke, Python/desktop test matrix, package-smoke, Android unit tests, debug APK, APK existence check и security smoke.
 
 Не закрыты только внешние device-критерии:
 - vivo X100 Ultra / OriginOS 6;
@@ -149,9 +148,9 @@
 
 ## Финальная ревизия A0 — 30.09.2026
 
-Коррекции после последнего успешного run #161:
+Коррекции после успешного run #161 и итоговая проверка run #190:
 - UTF-8 enforcement: PYTHONUTF8/PYTHONIOENCODING в CI + tests/utf8_smoke.py без BOM;
 - RuntimeSnapshot теперь отражает active_session_id, turn и Pulse из core_state после startup/session/state/test-turn;
 - readiness-аудит разделяет архитектурно утверждённые контракты и реально реализованный A0.
 
-G22.txt и GENOME/genome.txt не изменялись.
+G22.txt и GENOME/genome.txt не изменялись. После контрольного A0-кода `eaf178c9bd231f85d6ef98ef7b2b95e398ffbde9` в Android quality pass изменялись только CI/config/documentation и `KiraRuntimeBridge.kt`; desktop runtime `src/` и GENOME не затрагивались.
