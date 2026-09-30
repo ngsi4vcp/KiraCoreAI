@@ -44,6 +44,11 @@ jobs:
         run: |
           python -m unittest discover -s tests -v
 
+      - name: Проверить Android security smoke
+        shell: bash
+        run: |
+          python tests/security_smoke.py
+
   package-smoke:
     needs: tests
     strategy:
@@ -119,10 +124,10 @@ jobs:
         with:
           gradle-version: "9.4.1"
 
-      - name: Собрать debug APK
+      - name: Запустить Android unit tests и собрать debug APK
         shell: bash
         run: |
-          gradle --no-daemon :android:app:assembleDebug
+          gradle --no-daemon :android:app:testDebugUnitTest :android:app:assembleDebug
 
       - name: Проверить APK
         shell: bash
