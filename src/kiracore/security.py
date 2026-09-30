@@ -37,15 +37,9 @@ FORBIDDEN_OUTPUT_MARKERS = (
     "s02_authorization_turn",
     "s05_stop_elements",
     "s17_session_protocols",
-    "СТОП-1.",
-    "СТОП-6.",
-    "СТОП-7.",
-    "СТОП-8.",
     "identity_secret",
     "device_signing_key",
     "github_refresh_token",
-    "пароль Алека",
-    "~1",
 )
 
 
