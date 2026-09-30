@@ -74,7 +74,11 @@ jobs:
           python -m PyInstaller --clean --noconfirm --onefile --name START START.py
           if [ "${{ matrix.platform }}" = "windows" ]; then
             test -f dist/START.exe
+            output=$(dist/START.exe --version)
           else
             test -f dist/START
             test -x dist/START
+            output=$(./dist/START --version)
           fi
+          echo "$output"
+          test "$output" = "Кира:Ядро | версия 0.1.0-alpha.1"
