@@ -116,4 +116,4 @@ Authority material:
 - при включённом Room backend canonical JSON store directories не создаются и не используются;
 - restart read-back, memory approval, operation state и разделение conversation/memory покрыты A2.1 integration tests.
 
-CI run `#450` для текущего HEAD прошёл полностью. Atomic turn, migration/compatibility и recovery/duplicate prevention остаются A2.2–A2.4; physical device gate остаётся A2.5.
+CI run `#450` полностью подтвердил кодовый срез A2.1 на commit `219c641a6b74526e0774346b35b3dbe912e96246`. После него менялась только документация; отдельного green run для docs-only HEAD не было. Atomic turn, migration/compatibility и recovery/duplicate prevention остаются A2.2–A2.4; физическая device-проверка нового persistence runtime остаётся незакрытой.
