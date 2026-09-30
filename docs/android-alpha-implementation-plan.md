@@ -119,3 +119,19 @@ Offline local Qwen, локальный inference backend, полноценная
 9. Foreground runtime соответствует актуальным ограничениям Android.
 10. КираЧек обнаруживает основные неисправности.
 11. Smoke-тест пройден на vivo X100 Ultra.
+
+## A3b — Authority Security
+
+До включения полноценного privileged Android UI реализовать:
+
+- PlatformSecureStore;
+- password verifier;
+- sealed authority payload;
+- transient capability grant;
+- Pre-Generation Reflection Gate;
+- Response Disclosure Guard;
+- отсутствие protected genome text в ModelRequest;
+- отсутствие secrets в APK/resources/Python bytecode;
+- тесты reverse-engineering threat model на packaged APK.
+
+Важно: публичная семантическая проекция может быть извлечена из приложения. Секретными остаются только защищённые материалы и полномочия.
