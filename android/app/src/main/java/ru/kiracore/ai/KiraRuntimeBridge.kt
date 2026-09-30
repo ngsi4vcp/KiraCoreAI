@@ -68,10 +68,11 @@ object KiraRuntimeBridge {
         )
 
         val appContext = context.applicationContext
+        var roomPersistence: ru.kiracore.ai.storage.room.AndroidRoomPersistenceGateway? = null
         executor.execute {
             try {
                 stageGenome(appContext)
-                val roomPersistence =
+                roomPersistence =
                     ru.kiracore.ai.storage.room.AndroidRoomPersistenceGateway(appContext)
                 val result = JSONObject(
                     module(appContext)
@@ -99,6 +100,7 @@ object KiraRuntimeBridge {
                     ),
                 )
             } catch (error: Throwable) {
+                roomPersistence?.close()
                 publish(
                     RuntimeSnapshot(
                         phase = RuntimePhase.FAILED,
@@ -428,7 +430,7 @@ object KiraRuntimeBridge {
             runCatching { listener(next) }
         }
     }
-    /** A2 persistence foundation gateway; runtime integration is a later A2 substep. */
+    /** A2 physical persistence gateway exposed for diagnostics and integration boundaries. */
     fun openRoomPersistence(context: Context): ru.kiracore.ai.storage.room.AndroidRoomPersistenceGateway =
         ru.kiracore.ai.storage.room.AndroidRoomPersistenceGateway(context.applicationContext)
 
