@@ -1,5 +1,9 @@
 name: Проверка KiraCoreAI
 
+env:
+  PYTHONUTF8: "1"
+  PYTHONIOENCODING: "utf-8"
+
 on:
   push:
     branches: ["main", "android/alpha-parity"]
@@ -27,6 +31,11 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
+
+      - name: Проверить UTF-8
+        shell: bash
+        run: |
+          python tests/utf8_smoke.py
 
       - name: Проверить импорт пакета
         shell: bash
@@ -123,6 +132,11 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: "9.4.1"
+
+      - name: Проверить UTF-8
+        shell: bash
+        run: |
+          python tests/utf8_smoke.py
 
       - name: Запустить Android unit tests и собрать debug APK
         shell: bash
