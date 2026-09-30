@@ -35,3 +35,33 @@ ModelAdapter выполняет внешний API-вызов.
 Ошибка вызова модели сохраняется в core_state.json и не должна уничтожать уже сохранённые разговор или состояние.
 
 Сессия останется в рабочем состоянии `running/error` для последующего анализа.
+
+
+
+## Runtime recovery contract
+
+Runtime state должен переживать process death через каноническую персистентность.
+
+Минимальная state machine:
+CREATED → PREPARING → CONTEXT_READY → MODEL_CALL_STARTED → MODEL_CALL_FINISHED/UNKNOWN → VALIDATING → PERSISTING → COMPLETED/FAILED.
+
+UNKNOWN означает, что runtime не может доказать исход внешнего model-call.
+
+После восстановления UNKNOWN нельзя автоматически повторять модельный запрос без reconcile.
+
+## Android runtime boundary
+
+Android использует:
+Activity → RuntimeService → PythonRuntime → Persistence.
+
+Activity не является владельцем причинного runtime-состояния.
+
+Foreground service повышает устойчивость runtime, но не является гарантией бессмертия процесса.
+
+## Безопасный runtime
+
+ModelAdapter не получает доступ к identity secrets, sync tokens и физическому storage.
+
+Crypto/Synchronization операции вызываются только через внутренние типизированные runtime API.
+
+UI не может напрямую изменять GENOME или выполнять MergeIdentity.
