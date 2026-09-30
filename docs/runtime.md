@@ -1,6 +1,16 @@
 # Исполняемый слой
 
-Runtime загружает активный геном через GenomeLoader.load_active().
+Единая точка старта: KiraRuntime.start().
+
+При старте runtime:
+
+1. загружает GENOME/genome.txt;
+2. разбирает документ GenomeParser;
+3. проверяет его GenomeValidator;
+4. строит GenomeRuntimeIndex через GenomeCompiler;
+5. помещает неизменяемый снимок в GenomeStore;
+6. создаёт StateStore, MemoryStore и HistoryStore;
+7. создаёт SessionManager, работающий с тем же снимком генома.
 
 Нормативный путь: GENOME/genome.txt.
 
@@ -8,7 +18,7 @@ G22.txt в корне проекта не участвует в запуске �
 
 После загрузки выполняется цепочка:
 
-текст → parser → validator → compiler → immutable store → context/session.
+текст → parser → validator → compiler → immutable store → state/memory/history → context/session.
 
 GenomeParser отвечает только за синтаксическое извлечение секций.
 
