@@ -199,3 +199,26 @@ Device Evidence Harness реализован в debug source set и подтве
 - artifact expires: 14 октября 2026
 
 Реализация harness закрыта. Внешний device acceptance на vivo X100 Ultra / OriginOS 6 ещё не выполнен.
+
+## Device acceptance — фактический результат 30.09.2026
+
+A0.D1 device gate принят по evidence run 20260930-131718 на vivo V2366HA (Android API 36).
+
+PASS: environment, GENOME revision/SHA, diagnostics, test session, deterministic turn, Pulse/state, Android Keystore, storage, Recovery: GENOME, Recovery: session/state, Recovery: ПУЛЬС.
+
+Lifecycle stop/start зафиксирован как OBSERVED. Итоговый manifest status: RECOVERY_OK.
+
+Критического A0 device blocker по этому прогону не обнаружено. Android 13–17 остаётся отдельной матрицей и не является блокером старта A1. A1 теперь разрешён в соответствии с gate из android-development-checklist.
+
+## A1.0/A1.1 — старт 30.09.2026
+
+Зафиксирован bridge contract в docs/android-a1-bridge-contract.md. Реализуется узкий parity surface без изменения G22/GENOME и без Room/real provider calls:
+- genome info;
+- session create/list/resume;
+- conversation read;
+- approved/candidate memory read;
+- structured health;
+- deterministic test turn;
+- typed Kotlin mapping.
+
+Следующие device проверки должны повторно подтвердить A0.D1 harness после изменений bridge.
