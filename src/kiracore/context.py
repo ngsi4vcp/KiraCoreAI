@@ -18,11 +18,15 @@ class ContextCompiler:
         memory_limit: int = 8,
         history_limit: int = 8,
     ) -> OperationalContext:
+        if memory_limit < 0 or history_limit < 0:
+            raise ValueError("Лимиты памяти и истории не могут быть отрицательными.")
+
         ranked = sorted(
             [m for m in memories if m.status == "approved"],
             key=lambda m: (m.importance, m.timestamp),
             reverse=True,
-        )[:memory_limit]
+        )
+        selected_history = history[-history_limit:] if history_limit else []
         return OperationalContext(
             genome_revision=genome.revision,
             genome_sha256=genome.sha256,
@@ -33,8 +37,8 @@ class ContextCompiler:
                 "turn": session.turn,
             },
             state=session.state,
-            memory=tuple(ranked),
-            history=tuple(history[-history_limit:]),
+            memory=tuple(ranked[:memory_limit]),
+            history=tuple(selected_history),
             task=task,
             host_constraints=dict(host_constraints or {}),
         )
