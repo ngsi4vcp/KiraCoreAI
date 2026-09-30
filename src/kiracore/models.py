@@ -38,6 +38,8 @@ class MemoryRecord:
     valid_from: str | None = None
     valid_to: str | None = None
     status: str = "candidate"
+    owner_identity_id: str | None = None
+    privacy_scope: str = "Private"
 
 
 @dataclass(slots=True)
@@ -55,6 +57,7 @@ class HistoryEntry:
 @dataclass(slots=True)
 class SessionState:
     session_id: str
+    identity_id: str | None = None
     turn: int = 0
     authorized_alek: bool = False
     authorization_marker: str | None = None
