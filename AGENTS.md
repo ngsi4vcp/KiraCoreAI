@@ -34,34 +34,21 @@
 
 ## Текущий инженерный срез Android — 30.09.2026
 
-Контрольная реализационная точка A0: `398586db03f096318faf2fd275a2db86905b5aa5`.
+Фактический текущий срез: A0.D1 device acceptance закрыт; Android находится на A1.6 Operation / Recovery boundary.
 
-Последняя A0 audit/documentation point перед текущим документальным циклом: `4d834996f1510df355ccd8b779b20cd751ed75c4`.
+Контрольные факты:
+- branch: `android/alpha-parity`;
+- base: `5ce56923b6b5d1907a6686391305ea55a83d80fd`;
+- applicationId: `ru.kiracore.ai`;
+- versionName: `0.1.0-alpha.1`;
+- AGP 9.2.1 / Gradle 9.4.1 / JDK 17 / Python 3.13 / Chaquopy 17.0.0;
+- compileSdk/targetSdk 37 / minSdk 28 / arm64-v8a;
+- активный GENOME rev 22, SHA-256 `dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e`;
+- принятый A0.D1 evidence: run `20260930-131718`, vivo V2366HA, API 36, `RECOVERY_OK`.
 
-Фактический Android toolchain по build-конфигурации:
-- AGP 9.2.1;
-- Gradle 9.4.1;
-- Kotlin / Compose plugin 2.3.10;
-- Compose BOM 2026.09.00;
-- JDK 17;
-- Python 3.13;
-- Chaquopy 17.0.0;
-- compileSdk / targetSdk 37;
-- minSdk 28;
-- ABI arm64-v8a;
-- applicationId `ru.kiracore.ai`;
-- versionName `0.1.0-alpha.1`.
+A1.6 уже включает persisted operation lifecycle и явный UNKNOWN boundary. Production reconcile/recovery остаётся A5.
 
-Фактический A0 статус:
-- кодовый skeleton и bridge quality pass завершены;
-- GitHub Actions run #190 для контрольного A0-кода завершён успешно;
-- debug APK собирается в CI;
-- Android unit tests и security smoke проходят;
-- реального device evidence ещё нет.
-
-Текущая граница: `A0.D1 — Device Evidence / Device Acceptance`. Только после прохождения этой границы начинается `A1 — Core Parity`.
-
-G22.txt и `GENOME/genome.txt` в этой работе не изменяются.
+G22.txt и `GENOME/genome.txt` в Android quality/audit cycles не изменяются.
 
 ## Что читать в новом чате
 
