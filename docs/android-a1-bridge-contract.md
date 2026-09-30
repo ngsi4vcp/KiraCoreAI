@@ -54,13 +54,13 @@ get_memory() — только approved memory.
 get_memory_candidates() — только candidate memory.
 Никакая операция чтения memory не переводит candidate → approved.
 
-### Deterministic turn
+### Детерминированный ход
 
 send_test_turn(session_id, task) использует встроенный deterministic adapter. Реальные provider calls не выполняются.
 
 Возвращает response и runtime_state. Pulse рождается Python runtime.
 
-## Error taxonomy
+## Классификация ошибок
 
 Bridge не маскирует ошибки домена:
 
@@ -81,7 +81,7 @@ Bridge не маскирует ошибки домена:
 - Activity/Compose не получает прямые store references.
 - UI не изменяет GENOME/SecureStore/Sync internals.
 
-## A1.0 verification matrix
+## Матрица проверки A1.0
 
 | Операция | Python source | Android typed facade | Device smoke |
 |---|---|---|---|
@@ -100,13 +100,13 @@ Bridge не маскирует ошибки домена:
 
 Остановиться и исправить контракт, если Kotlin начинает дублировать Core semantics; UI получает прямые Python/store internals; появляется второй источник истины state/memory/history/conversation; Pulse вычисляется на Android; resume создаёт новую сессию вместо восстановления существующей; candidate memory читается как approved.
 
-## Test boundary
+## Граница тестов
 
-Kotlin typed-mapping tests are plain JVM unit tests. Android framework `org.json` stubs are not used there; `org.json:json:20260814` is test-only. The dependency is not packaged into the Android application.
+Тесты типизированного отображения Kotlin — обычные модульные тесты JVM. Заглушки `org.json` из Android framework там не используются; `org.json:json:20260814` применяется только в тестах и не попадает в Android-приложение.
 
-A1.0/A1.2 verification is blocked by neither JSON transport nor lifecycle ownership after CI run #305.
+После CI run #305 проверке A1.0/A1.2 не мешают ни JSON-транспорт, ни владение жизненным циклом.
 
-## A1.6 — Operation / Recovery Boundary
+## A1.6 — Граница операции и восстановления
 
 Каждый deterministic turn получает persisted operation state:
 
