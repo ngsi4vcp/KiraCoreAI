@@ -36,7 +36,7 @@ Application ID Android: ru.kiracore.ai
 - Python 3.13;
 - только ARM64.
 
-Chaquopy 17 поддерживает Python 3.10–3.14, Android Gradle Plugin 7.3–9.2 и минимум API 24; Python 3.13+ рекомендован для лучшей совместимости с устройствами с 16 KiB page size. Для проекта выбран Python 3.13. Источник: официальная документация Chaquopy.
+Chaquopy 17 используется с Python 3.13. Текущий Android toolchain в ветке: AGP 9.2.1, Gradle 9.4.1, JDK 17, Compose plugin/Kotlin 2.3.10. Источник: официальная документация Chaquopy.
 
 ## 3. Подтверждённые требования Алека
 
