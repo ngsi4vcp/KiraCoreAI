@@ -189,6 +189,11 @@ def diagnostics() -> str:
             "python_version": sys.version.split()[0],
             "expected_genome_revision": EXPECTED_GENOME_REVISION,
             "expected_genome_sha256": EXPECTED_GENOME_SHA256,
+            "persistence_backend": (
+                "android-room"
+                if _PERSISTENCE_BACKEND is not None
+                else "json"
+            ),
             "providers": ["OpenRouter", "Gemini"],
         },
         ensure_ascii=False,
