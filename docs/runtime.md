@@ -18,7 +18,7 @@ G22.txt в корне проекта не участвует в запуске �
 
 После загрузки выполняется цепочка:
 
-текст → parser → validator → compiler → immutable store → state/memory/history → context/session.
+GENOME/genome.txt → parser → validator → compiler → immutable store → state/memory/history → context/session.
 
 GenomeParser отвечает только за синтаксическое извлечение секций.
 
