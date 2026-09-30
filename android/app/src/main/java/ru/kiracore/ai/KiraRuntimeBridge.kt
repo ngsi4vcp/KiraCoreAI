@@ -422,4 +422,8 @@ object KiraRuntimeBridge {
             runCatching { listener(next) }
         }
     }
+    /** A2 persistence foundation gateway; runtime integration is a later A2 substep. */
+    fun openRoomPersistence(context: Context): ru.kiracore.ai.storage.room.AndroidRoomPersistenceGateway =
+        ru.kiracore.ai.storage.room.AndroidRoomPersistenceGateway(context.applicationContext)
+
 }

@@ -4,6 +4,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.chaquo.python")
+    id("com.google.devtools.ksp")
 }
 
 val syncGenome = tasks.register<Copy>("syncGenomeToAssets") {
@@ -61,6 +62,10 @@ chaquopy {
 }
 
 dependencies {
+    val roomVersion = "2.8.5"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
     val composeBom = platform("androidx.compose:compose-bom:2026.09.00")
     implementation(composeBom)
     androidTestImplementation(composeBom)
