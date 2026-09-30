@@ -37,13 +37,13 @@
 
 - [!] Sealed authority packaging: текущий G22/GENOME остаётся plaintext-источником в репозитории; защищённая упаковка переносится на критический этап. Пароль будет запрошен только тогда.
 - [!] Криптографическая авторизация Алека на PC: текущая desktop-сессия ещё использует существующую семантику `~1`; password/KDF/verifier + transient privileged grant нужно довести до исполняемого authority plane.
-- [!] Android A0: Android-модуль ещё не создан; текущая ветка содержит архитектурный и security groundwork.
-- [!] Android CI: workflow запускается для ветки, но полноценный Android job появится вместе с Android module.
+- [x] Android A0: module, Compose host, Python bridge, RuntimeService и diagnostics реализованы; quality pass выполнен.
+- [x] Android CI: Android job собирает debug APK, запускает Android unit tests и security smoke.
 - [!] GitHub App Кира:Сбор: кодовый контракт готов, но private repository/App/минимальные permissions должны быть настроены при реализации sync.
 - [!] Release signing: финальная схема хранения release key ещё не зафиксирована; debug остаётся текущим режимом.
 - [!] Реальный тест на устройстве: vivo X100 Ultra / OriginOS 6 ещё не пройден.
 - [!] Реальный Android 13–17 matrix ещё не пройден.
-- [!] Локальный запуск тестов этого среза из текущей среды не выполнен из-за отсутствия сетевого доступа к GitHub; прошедшими считаются только существующие/будущие CI runs после их фактического результата.
+- [!] Локальная сборка и устройство из текущей среды не подтверждены; источником факта сборки должен быть реальный CI run, а device evidence — отдельный smoke на vivo X100 Ultra.
 - [!] Сложная фильтрация, обезличивание и обобщение глобального опыта сознательно оставлены на поздний PC-контур.
 
 ## Следующий этап
@@ -74,3 +74,22 @@
 ## Алгоритм секрета Алека
 
 Пароль не попадает в GitHub и не компилируется в приложение. На критическом этапе он вводится однократно в provisioning-контур; результатом становится зашифрованный authority payload и публичные параметры KDF/verifier. После provisioning plaintext и промежуточные секреты удаляются, выполняется secret scan.
+
+
+## Quality pass A0 — контрольная точка 30.09.2026
+
+Исправлены замечания самоаудита:
+- A0-01: bridge contract доведён до initialize/health/load_genome/create_session/get_runtime_state/run_test_turn/shutdown;
+- A0-02: устранена гонка Activity/Service; UI подписывается на RuntimeSnapshot, Service инициализирует runtime асинхронно;
+- A0-03: diagnostics расширен до app/core/GENOME/Python/providers/storage/secure-store/runtime;
+- A0-04: добавлен Python сквозной bridge smoke; фактический GitHub CI run должен подтвердить сборку и тесты;
+- A0-05: добавлен автоматический security smoke без передачи секретов в bridge/UI;
+- A0-07: добавлена Android Keystore + AES/GCM реализация PlatformSecureStore;
+- A0-08: удалён неполный Gradle Wrapper artifact, CI фиксирует Gradle 9.4.1;
+- A0-09: тяжёлая инициализация Python больше не выполняется в Service.onCreate на main thread;
+- A0-06 остаётся интерфейсным foundation по границе A0; Room/SQLite доменного persistence переносится на следующий этап согласно плану.
+
+Нерешённые внешние доказательства:
+- реальный CI результат текущего head;
+- устройство vivo X100 Ultra / OriginOS 6;
+- Android 13–17 matrix.
