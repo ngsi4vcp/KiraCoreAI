@@ -44,21 +44,22 @@
 
 ## Текущий инженерный срез Android — 30.09.2026
 
-Фактический текущий срез: A0.D1 device acceptance закрыт; Android находится на A1.6 Operation / Recovery boundary.
+Фактический текущий срез: A0.D1 принят; A1 Core Parity принят по device evidence `20260930-144146`; Android находится на A2.0 Persistence Foundation.
 
 Контрольные факты:
-- branch: `android/alpha-parity`;
+- ветка: `android/alpha-parity`;
 - base: `5ce56923b6b5d1907a6686391305ea55a83d80fd`;
 - applicationId: `ru.kiracore.ai`;
 - versionName: `0.1.0-alpha.1`;
 - AGP 9.2.1 / Gradle 9.4.1 / JDK 17 / Python 3.13 / Chaquopy 17.0.0;
 - compileSdk/targetSdk 37 / minSdk 28 / arm64-v8a;
 - активный GENOME rev 22, SHA-256 `dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e`;
-- принятый A0.D1 evidence: run `20260930-131718`, vivo V2366HA, API 36, `RECOVERY_OK`.
+- принятые диагностические материалы A0.D1: run `20260930-131718`, vivo V2366HA, API 36, `RECOVERY_OK`;
+- принятые диагностические материалы A1: run `20260930-144146`, vivo V2366HA, API 36, `RECOVERY_OK`.
 
-A1.6 уже включает persisted operation lifecycle и явный UNKNOWN boundary. Production reconcile/recovery остаётся A5.
+A1.6 уже включает persisted operation lifecycle и явную границу UNKNOWN. Production reconcile/recovery остаётся A5. В A2.0 реализован foundation Room/SQLite, его приёмка ждёт green CI и самоаудит.
 
-G22.txt и `GENOME/genome.txt` в Android quality/audit cycles не изменяются.
+G22.txt и `GENOME/genome.txt` не изменяются в циклах контроля качества/аудита Android.
 
 ## Что читать в новом чате
 
