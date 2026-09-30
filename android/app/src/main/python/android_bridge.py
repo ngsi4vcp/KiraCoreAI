@@ -67,6 +67,19 @@ def load_genome() -> str:
     )
 
 
+def get_genome_info() -> str:
+    runtime = _runtime_required()
+    return json.dumps(
+        {
+            "revision": runtime.genome.revision,
+            "series": runtime.genome.series,
+            "sha256": runtime.genome.sha256,
+            "section_count": len(runtime.genome.document.sections),
+        },
+        ensure_ascii=False,
+    )
+
+
 def create_session(
     provider: str,
     model: str,
@@ -81,9 +94,65 @@ def create_session(
     return json.dumps(asdict(manifest), ensure_ascii=False)
 
 
+def list_sessions() -> str:
+    runtime = _runtime_required()
+    return json.dumps(
+        [asdict(item) for item in runtime.list_sessions()],
+        ensure_ascii=False,
+    )
+
+
+def resume_session(session_id: str | None = None) -> str:
+    runtime = _runtime_required()
+    manifest = runtime.resume_session(session_id)
+    runtime_state = runtime.core_state
+    if manifest is None:
+        return json.dumps(
+            {
+                "status": "empty",
+                "session": None,
+                "runtime_state": runtime_state,
+            },
+            ensure_ascii=False,
+        )
+    return json.dumps(
+        {
+            "status": "resumed",
+            "session": asdict(manifest),
+            "runtime_state": runtime_state,
+        },
+        ensure_ascii=False,
+    )
+
+
 def get_runtime_state() -> str:
     runtime = _runtime_required()
     return json.dumps(runtime.core_state, ensure_ascii=False)
+
+
+def get_conversation(session_id: str, limit: int = 20) -> str:
+    runtime = _runtime_required()
+    messages = runtime.conversation_store.recent(session_id, limit)
+    return json.dumps(
+        [asdict(item) for item in messages],
+        ensure_ascii=False,
+    )
+
+
+def get_memory() -> str:
+    runtime = _runtime_required()
+    return json.dumps(
+        [asdict(item) for item in runtime.memory_store.approved()],
+        ensure_ascii=False,
+    )
+
+
+def get_memory_candidates() -> str:
+    runtime = _runtime_required()
+    return json.dumps(
+        [asdict(item) for item in runtime.memory_store.candidates()],
+        ensure_ascii=False,
+    )
 
 
 def run_test_turn(session_id: str, task: str) -> str:
@@ -104,6 +173,10 @@ def run_test_turn(session_id: str, task: str) -> str:
     )
 
 
+def send_test_turn(session_id: str, task: str) -> str:
+    return run_test_turn(session_id, task)
+
+
 def diagnostics() -> str:
     return json.dumps(
         {
@@ -117,13 +190,32 @@ def diagnostics() -> str:
     )
 
 
+def check_health() -> str:
+    runtime = _runtime_required()
+    state = runtime.core_state
+    status = (
+        "READY"
+        if state.get("runtime_status") not in {None, "error"}
+        else "UNKNOWN"
+    )
+    return json.dumps(
+        {
+            "status": status,
+            "runtime_status": state.get("runtime_status"),
+            "active_session_id": state.get("active_session_id"),
+            "turn": state.get("turn", 0),
+            "pulse": state.get("pulse"),
+        },
+        ensure_ascii=False,
+    )
+
+
 def health() -> str:
-    if _RUNTIME is None:
-        return "Кира:Ядро не инициализировано"
+    runtime = _runtime_required()
     return (
         "Кира:Ядро готово · "
-        f"G{_RUNTIME.genome.revision} · "
-        f"{_RUNTIME.genome.sha256[:12]}"
+        f"G{runtime.genome.revision} · "
+        f"{runtime.genome.sha256[:12]}"
     )
 
 
