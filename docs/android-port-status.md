@@ -374,7 +374,7 @@ Android-ветка перешла от предварительных альте
 - docs/persistence-contract.md
 - docs/android-alpha-implementation-plan.md
 
-Следующий практический шаг — A0: создание Android-модуля и первого сквозного bridge smoke-test без усложнения UI.
+Минимальный A0 реализован и имеет успешное CI evidence. Следующая практическая граница — внешний device smoke и затем A1 Core Parity.
 
 
 ## Security status
