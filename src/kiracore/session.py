@@ -1,21 +1,20 @@
 from __future__ import annotations
 
 from dataclasses import replace
-from uuid import uuid4
 
 from .context import ContextCompiler
+from .conversation import ConversationStore, utc_now
 from .errors import ProtocolViolation
 from .genome import GenomeArtifact
-from .models import SessionState, utc_now
+from .model_contract import ModelAdapter, ModelResponse
 from .persistence import JsonPersistence
-from .protocols import HostAdapter, ModelAdapter
-from .pulse import pulse_for_turn
+from .pulse import pulse_stamp
+from .rendering import PlainTextPromptRenderer
 from .stores import HistoryStore, MemoryStore, StateStore
-from .validation import OutputValidator
 
 
 class SessionManager:
-    """Оркестрирует жизненный цикл одной сессии и не владеет геномом."""
+    """Единый исполнитель хода сессии."""
 
     def __init__(
         self,
@@ -23,57 +22,56 @@ class SessionManager:
         state_store: StateStore,
         memory_store: MemoryStore,
         history_store: HistoryStore,
-        context_compiler: ContextCompiler | None = None,
-        output_validator: OutputValidator | None = None,
+        conversation_store: ConversationStore,
+        prompt_renderer: PlainTextPromptRenderer | None = None,
         persistence: JsonPersistence | None = None,
+        context_compiler: ContextCompiler | None = None,
     ) -> None:
         self.genome = genome
         self.state_store = state_store
         self.memory_store = memory_store
         self.history_store = history_store
-        self.context_compiler = context_compiler or ContextCompiler()
-        self.output_validator = output_validator or OutputValidator()
+        self.conversation_store = conversation_store
+        self.prompt_renderer = prompt_renderer or PlainTextPromptRenderer()
         self.persistence = persistence
+        self.context_compiler = context_compiler or ContextCompiler()
 
     @staticmethod
     def authorize(first_message: str) -> bool:
-        """Принимает только маркер ~1 как отдельный префикс первого сообщения."""
         return first_message == "~1" or first_message.startswith("~1 ")
 
-    def start(
-        self,
-        first_message: str,
-        environment: dict[str, object] | None = None,
-    ) -> SessionState:
-        authorized = self.authorize(first_message)
-        now = utc_now()
-        session = SessionState(
-            session_id=uuid4().hex,
-            turn=0,
-            authorized_alek=authorized,
-            authorization_marker="~1" if authorized else None,
-            environment=dict(environment or {}),
-            runtime_status="active",
-            created_at=now,
-            updated_at=now,
-        )
-        self.state_store.put(session)
-        if self.persistence:
-            self.persistence.save(session)
-        return session
+    @staticmethod
+    def strip_authorization_marker(message: str) -> str:
+        if message == "~1":
+            return ""
+        if message.startswith("~1 "):
+            return message[3:]
+        return message
 
     def run_turn(
         self,
         session_id: str,
         task: str,
-        host: HostAdapter,
         model: ModelAdapter,
+        provider: str,
+        model_id: str,
         host_constraints: dict[str, object] | None = None,
-    ) -> str:
+    ) -> tuple[ModelResponse, object]:
         session = self.state_store.get(session_id)
+        first_turn = session.turn == 0
+        authorized = self.authorize(task) if first_turn else session.authorized_alek
+        clean_task = (
+            self.strip_authorization_marker(task)
+            if first_turn
+            else task
+        )
         session = replace(
             session,
             turn=session.turn + 1,
+            authorized_alek=authorized,
+            authorization_marker="~1" if authorized else None,
+            provider=provider,
+            model=model_id,
             runtime_status="running",
             updated_at=utc_now(),
         )
@@ -81,33 +79,48 @@ class SessionManager:
         if self.persistence:
             self.persistence.save(session)
 
+        self.conversation_store.append(
+            session_id,
+            session.turn,
+            "user",
+            clean_task,
+        )
+
         context = self.context_compiler.compile(
             genome=self.genome,
             session=session,
-            task=task,
+            task=clean_task,
             memories=self.memory_store.all(),
             history=self.history_store.recent(),
+            conversation=self.conversation_store.recent(session_id, 20),
+            model_provider=provider,
+            model_id=model_id,
             host_constraints=host_constraints,
         )
-        rendered = host.render_context(context)
-        output = model.generate(rendered, task)
-        result = self.output_validator.validate(
-            output,
-            session.turn,
-            revision=self.genome.revision,
-            series=self.genome.series,
-        )
-        if not result.valid:
+        request = self.prompt_renderer.render(context)
+        response = model.generate(request)
+
+        if not response.text.strip():
             session = replace(
                 session,
                 runtime_status="validation_failed",
                 updated_at=utc_now(),
             )
             self.state_store.put(session)
-            if self.persistence:
-                self.persistence.save(session)
-            raise ProtocolViolation("; ".join(result.errors))
+            raise ProtocolViolation("Модель вернула пустой ответ.")
 
+        pulse = pulse_stamp(
+            session.turn,
+            self.genome.revision,
+            self.genome.series,
+        )
+        self.conversation_store.append(
+            session_id,
+            session.turn,
+            "assistant",
+            response.text,
+            pulse=pulse,
+        )
         session = replace(
             session,
             runtime_status="waiting",
@@ -116,12 +129,5 @@ class SessionManager:
         self.state_store.put(session)
         if self.persistence:
             self.persistence.save(session)
-        return output
 
-    def expected_pulse(self, session_id: str) -> str:
-        session = self.state_store.get(session_id)
-        return pulse_for_turn(
-            session.turn,
-            revision=self.genome.revision,
-            series=self.genome.series,
-        )
+        return response, pulse

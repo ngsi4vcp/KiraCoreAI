@@ -1,4 +1,14 @@
+from .connectors import (
+    GeminiConnector,
+    LMStudioConnector,
+    ModelConnectionError,
+    OpenRouterConnector,
+    available_connectors,
+    connector_for,
+    human_provider_name,
+)
 from .context import ContextCompiler
+from .conversation import ConversationManifest, ConversationStore, StoredMessage
 from .genome import (
     GenomeArtifact,
     GenomeCompiler,
@@ -11,17 +21,31 @@ from .genome import (
     GenomeValidator,
     default_genome_path,
 )
+from .model_contract import (
+    ChatMessage,
+    ModelAdapter,
+    ModelCatalogItem,
+    ModelRequest,
+    ModelResponse,
+    ModelUsage,
+)
 from .models import HistoryEntry, MemoryRecord, SessionState, StateSnapshot
-from .persistence import JsonPersistence
-from .reference_host import HostDescriptor, PlainTextHost
-from .pulse import pulse_for_turn, pulse_value
+from .persistence import CoreStatePersistence, JsonPersistence
+from .pulse import PulseStamp, pulse_for_turn, pulse_stamp, pulse_value
+from .rendering import PlainTextPromptRenderer
 from .runtime import KiraRuntime
+from .secrets import ProviderSecret, SecretStore
 from .session import SessionManager
 from .stores import HistoryStore, MemoryStore, StateStore
 from .validation import OutputValidator
 
 __all__ = [
+    "ChatMessage",
     "ContextCompiler",
+    "ConversationManifest",
+    "ConversationStore",
+    "CoreStatePersistence",
+    "GeminiConnector",
     "GenomeArtifact",
     "GenomeCompiler",
     "GenomeDocument",
@@ -31,20 +55,34 @@ __all__ = [
     "GenomeSection",
     "GenomeStore",
     "GenomeValidator",
-    "default_genome_path",
     "HistoryEntry",
+    "HistoryStore",
+    "KiraRuntime",
+    "LMStudioConnector",
     "MemoryRecord",
+    "MemoryStore",
+    "ModelAdapter",
+    "ModelCatalogItem",
+    "ModelConnectionError",
+    "ModelRequest",
+    "ModelResponse",
+    "ModelUsage",
+    "OpenRouterConnector",
+    "OutputValidator",
+    "PlainTextPromptRenderer",
+    "ProviderSecret",
+    "PulseStamp",
+    "SecretStore",
+    "SessionManager",
     "SessionState",
     "StateSnapshot",
-    "JsonPersistence",
-    "HostDescriptor",
-    "PlainTextHost",
-    "pulse_for_turn",
-    "pulse_value",
-    "KiraRuntime",
-    "SessionManager",
-    "HistoryStore",
-    "MemoryStore",
     "StateStore",
-    "OutputValidator",
+    "StoredMessage",
+    "available_connectors",
+    "connector_for",
+    "default_genome_path",
+    "human_provider_name",
+    "pulse_for_turn",
+    "pulse_stamp",
+    "pulse_value",
 ]

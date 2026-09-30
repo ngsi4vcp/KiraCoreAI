@@ -1,29 +1,21 @@
 from __future__ import annotations
 
+from .model_contract import ModelResponse
 from .models import ValidationResult
-from .pulse import pulse_for_turn
 
 
 class OutputValidator:
-    """Проверяет обязательную форму протокола ответа."""
+    """Проверяет ответ модели; ПУЛЬС добавляется runtime, а не моделью."""
 
-    def validate(
-        self,
-        text: str,
-        turn: int,
-        revision: int,
-        series: int,
-    ) -> ValidationResult:
-        expected = pulse_for_turn(
-            turn,
-            revision=revision,
-            series=series,
-        )
-        if not text.strip():
-            return ValidationResult(False, errors=("Пустой ответ модели.",))
-        if not text.rstrip().endswith(expected):
+    def validate(self, response: ModelResponse) -> ValidationResult:
+        if not response.text.strip():
             return ValidationResult(
                 False,
-                errors=(f"Ответ должен завершаться точным ПУЛЬС: {expected}",),
+                errors=("Пустой ответ модели.",),
+            )
+        if not response.provider or not response.model:
+            return ValidationResult(
+                False,
+                errors=("Ответ модели не содержит провайдера или модели.",),
             )
         return ValidationResult(True)

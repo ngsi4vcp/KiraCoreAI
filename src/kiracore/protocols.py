@@ -2,18 +2,27 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from .models import OperationalContext
+from .model_contract import ModelAdapter
 
 
 class HostAdapter(Protocol):
-    """Контракт хоста: он отвечает только за представление контекста и среду исполнения."""
+    """Контракт среды: ввод/вывод и фактические ограничения хоста."""
 
-    def render_context(self, context: OperationalContext) -> str:
+    def prompt(self) -> str:
+        ...
+
+    def status(self, message: str, ok: bool | None = None) -> None:
+        ...
+
+    def error(self, message: str) -> None:
         ...
 
 
-class ModelAdapter(Protocol):
-    """Контракт когнитивного вычислительного компонента."""
+class PromptRenderer(Protocol):
+    """Преобразует канонический контекст в запрос конкретной модели."""
 
-    def generate(self, rendered_context: str, task: str) -> str:
+    def render(self, context) -> object:
         ...
+
+
+__all__ = ["HostAdapter", "ModelAdapter", "PromptRenderer"]

@@ -5,7 +5,7 @@ from .model_contract import ChatMessage, ModelRequest
 
 
 class PlainTextPromptRenderer:
-    """Преобразует оперативный контекст в запрос модели, не являясь хостом."""
+    """Преобразует контекст в ModelRequest; это не хост."""
 
     def __init__(self, max_context_messages: int = 20) -> None:
         self.max_context_messages = max_context_messages
@@ -20,12 +20,12 @@ class PlainTextPromptRenderer:
             f"- {item.date}: {item.event} → {item.change}"
             for item in context.history
         ) or "- нет записей"
-        state = context.state
 
+        state = context.state
         system = (
             "КОНТЕКСТ КИРА:ЯДРА\n\n"
             f"РЕВИЗИЯ ГЕНОМА: {context.genome_revision}\n"
-            f"ЦЕЛЬ: {context.task}\n\n"
+            f"ТЕКУЩАЯ ЗАДАЧА: {context.task}\n\n"
             "ЗАЩИЩЁННЫЕ ПРАВИЛА:\n"
             f"{protected}\n\n"
             "АКТИВНОЕ СОСТОЯНИЕ:\n"
@@ -40,21 +40,15 @@ class PlainTextPromptRenderer:
             "ПУЛЬС управляется runtime. Не генерируй его самостоятельно."
         )
 
-        conversation = [
-            ChatMessage(
-                role="system",
-                content=system,
-            )
-        ]
-        conversation.extend(
-            message.as_chat_message()
-            for message in context.conversation[-self.max_context_messages:]
+        messages = [ChatMessage(role="system", content=system)]
+        messages.extend(
+            item.as_chat_message()
+            for item in context.conversation[-self.max_context_messages:]
         )
-
         return ModelRequest(
             provider=context.model_provider,
             model=context.model_id,
-            messages=tuple(conversation),
+            messages=tuple(messages),
             metadata={
                 "session_id": context.session_id,
                 "turn": context.pulse.turn,

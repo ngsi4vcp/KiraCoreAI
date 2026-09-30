@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from .conversation import StoredMessage
 from .genome import GenomeArtifact, build_protected_rules
 from .models import HistoryEntry, MemoryRecord, OperationalContext, SessionState
+from .pulse import pulse_stamp
 
 
 class ContextCompiler:
-    """Собирает минимальный оперативный контекст, не превращая память в контекст целиком."""
+    """Собирает оперативный контекст из отдельных канонических слоёв."""
 
     def compile(
         self,
@@ -14,12 +16,16 @@ class ContextCompiler:
         task: str,
         memories: list[MemoryRecord],
         history: list[HistoryEntry],
+        conversation: list[StoredMessage],
+        model_provider: str,
+        model_id: str,
         host_constraints: dict[str, object] | None = None,
         memory_limit: int = 8,
         history_limit: int = 8,
+        conversation_limit: int = 20,
     ) -> OperationalContext:
-        if memory_limit < 0 or history_limit < 0:
-            raise ValueError("Лимиты памяти и истории не могут быть отрицательными.")
+        if min(memory_limit, history_limit, conversation_limit) < 0:
+            raise ValueError("Лимиты контекста не могут быть отрицательными.")
 
         ranked = sorted(
             [m for m in memories if m.status == "approved"],
@@ -27,7 +33,19 @@ class ContextCompiler:
             reverse=True,
         )
         selected_history = history[-history_limit:] if history_limit else []
+        selected_conversation = (
+            conversation[-conversation_limit:]
+            if conversation_limit
+            else []
+        )
+        pulse = pulse_stamp(
+            session.turn,
+            genome.revision,
+            genome.series,
+        )
+
         return OperationalContext(
+            session_id=session.session_id,
             genome_revision=genome.revision,
             genome_sha256=genome.sha256,
             protected_rules=build_protected_rules(genome.runtime),
@@ -39,6 +57,10 @@ class ContextCompiler:
             state=session.state,
             memory=tuple(ranked[:memory_limit]),
             history=tuple(selected_history),
+            conversation=tuple(selected_conversation),
             task=task,
             host_constraints=dict(host_constraints or {}),
+            model_provider=model_provider,
+            model_id=model_id,
+            pulse=pulse,
         )

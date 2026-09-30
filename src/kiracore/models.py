@@ -4,6 +4,9 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any
 
+from .model_contract import ChatMessage
+from .pulse import PulseStamp
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -55,6 +58,8 @@ class SessionState:
     turn: int = 0
     authorized_alek: bool = False
     authorization_marker: str | None = None
+    provider: str | None = None
+    model: str | None = None
     environment: dict[str, Any] = field(default_factory=dict)
     state: StateSnapshot = field(default_factory=StateSnapshot)
     runtime_status: str = "created"
@@ -64,6 +69,7 @@ class SessionState:
 
 @dataclass(frozen=True, slots=True)
 class OperationalContext:
+    session_id: str
     genome_revision: int
     genome_sha256: str
     protected_rules: dict[str, str]
@@ -71,8 +77,12 @@ class OperationalContext:
     state: StateSnapshot
     memory: tuple[MemoryRecord, ...]
     history: tuple[HistoryEntry, ...]
+    conversation: tuple[Any, ...]
     task: str
     host_constraints: dict[str, Any]
+    model_provider: str
+    model_id: str
+    pulse: PulseStamp
 
 
 @dataclass(frozen=True, slots=True)
