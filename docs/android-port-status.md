@@ -44,7 +44,7 @@ Release tag `v0.1.0-alpha.1` указывает на коммит `4ef43ca493eca
 
 Статус:
 - A0 code + CI: READY;
-- A0 external device acceptance: PENDING;
+- A0 external device acceptance: ACCEPTED; run `20260930-131718`, vivo V2366HA / API 36, `RECOVERY_OK`.
 - A0.D1 Device Evidence Harness: следующий инженерный контур;
 - A1 Core Parity: запланирован, но не начат.
 
@@ -404,7 +404,7 @@ Android-ветка перешла от предварительных альте
 
 ## Следующая контрольная точка
 
-### A0.D1 — Device Evidence / Device Acceptance
+### A0.D1 — Диагностика устройства / приёмка устройства
 
 Цель — получить и разобрать реальное evidence на vivo X100 Ultra / OriginOS 6. Временно допускается debug-only harness, который экспортирует secret-free bundle через системный файловый API.
 
@@ -444,7 +444,7 @@ Android-ветка перешла от предварительных альте
 
 Этот результат закрывает внешний A0.D1 gate для текущего Android-цикла. Android 13–17 матрица остаётся отдельным A11 acceptance-контуром.
 
-## A1 текущая точка
+## Актуальная точка A1 / A2
 
 A0.D1 gate закрыт фактическим evidence run `20260930-131718` на vivo V2366HA / API 36 со статусом `RECOVERY_OK`.
 
@@ -462,7 +462,7 @@ A0.D1 gate закрыт фактическим evidence run `20260930-131718` н
 - отсутствие автоматического retry для UNKNOWN;
 - сохранение operation state в `core_state` для последующего reconcile.
 
-Production Room/SQLite backend, real provider calls, authority plane, foreground hardening и production recovery/reconcile остаются последующими этапами A2/A3/A5/A6.
+Production Room/SQLite backend, реальные вызовы провайдеров, контур полномочий, усиление фонового режима и production recovery/reconcile остаются последующими этапами A2/A3/A5/A6.
 
 
 ## A1.0/A1.2 checkpoint — 30.09.2026
@@ -537,3 +537,7 @@ A1 Core Parity принята по CI и device evidence. Следующий а�
 - runtime JSON persistence пока остаётся единственным каноническим backend до A2.1.
 
 Acceptance A2.0 ещё не объявляется закрытым: требуется green CI для текущего HEAD и self-audit. После этого открывается A2.1 Store Integration.
+
+## Финальная актуальная точка — 30.09.2026
+
+A1 Core Parity принят по device evidence run `20260930-144146` (`RECOVERY_OK`) на vivo V2366HA / Android API 36. Текущий инженерный этап — A2.0 Persistence Foundation. Исторические A0/A1 checkpoint выше сохраняются как история и не являются текущим статусом.
