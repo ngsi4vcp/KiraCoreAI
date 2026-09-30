@@ -4,7 +4,7 @@
 
 ## Назначение документа
 
-Это предварительный статус и технический handoff для отдельной Android-ветки.
+Это фактический технический статус и handoff отдельной Android-ветки на 30.09.2026.
 
 Он не изменяет G22 и не является частью конституции Кира. Его задача — передать следующему чату фактическое состояние проекта так, чтобы разработка Android начиналась не с повторного анализа всей истории.
 
@@ -21,7 +21,32 @@
 
 Release tag `v0.1.0-alpha.1` указывает на коммит `4ef43ca493eca564e648420d37d65a57f2e48994`. Текущий `main` находится на 3 коммита выше; при сравнении тега с `main` изменён только `.github/workflows/release.yml`.
 
-Следствие: Android следует начинать от текущего `main`, но считать функциональную реализацию Альфы 0.1.0-alpha.1 за отправную спецификацию поведения.
+Следствие: разработка Android продолжается в `android/alpha-parity`; `main` остаётся основной веткой репозитория и функциональной базой desktop Alpha. Поведение desktop Alpha является исходной семантической спецификацией Android-паритета.
+
+## Фактический Android snapshot
+
+- рабочая ветка: `android/alpha-parity`;
+- контрольный A0 code commit: `398586db03f096318faf2fd275a2db86905b5aa5`;
+- предыдущая A0 audit/documentation point: `4d834996f1510df355ccd8b779b20cd751ed75c4`;
+- CI A0: run #190, успешно;
+- AGP 9.2.1;
+- Gradle 9.4.1;
+- Kotlin/Compose plugin 2.3.10;
+- Compose BOM 2026.09.00;
+- JDK 17;
+- Python 3.13;
+- Chaquopy 17.0.0;
+- compileSdk/targetSdk 37;
+- minSdk 28;
+- ABI arm64-v8a;
+- applicationId `ru.kiracore.ai`;
+- versionName `0.1.0-alpha.1`.
+
+Статус:
+- A0 code + CI: READY;
+- A0 external device acceptance: PENDING;
+- A0.D1 Device Evidence Harness: следующий инженерный контур;
+- A1 Core Parity: запланирован, но не начат.
 
 ## Что реально работает в desktop Alpha
 
@@ -318,7 +343,7 @@ Android не должен быть терминалом, перенесённы�
 - OpenRouter + Gemini — Android Alpha providers;
 - LM Studio — только desktop, не входит в Android Alpha.
 
-A0 закрывает минимальный startup/runtime bridge contour. Полноценный Chat UI, provider credentials, password authority, production foreground service, Room domain layer и sync остаются следующими этапами.
+A0 code/CI закрывает минимальный startup/runtime bridge contour, но внешний device acceptance ещё не завершён. Полноценный Chat UI, provider credentials, password authority, production foreground service, Room domain layer и sync остаются следующими реализационными этапами. До A1 сначала выполняется A0.D1 Device Evidence.
 
 ## Нормативная граница
 
@@ -376,6 +401,17 @@ Android-ветка перешла от предварительных альте
 
 Минимальный A0 реализован и имеет успешное CI evidence. Следующая практическая граница — внешний device smoke и затем A1 Core Parity.
 
+
+## Следующая контрольная точка
+
+### A0.D1 — Device Evidence / Device Acceptance
+
+Цель — получить и разобрать реальное evidence на vivo X100 Ultra / OriginOS 6. Временно допускается debug-only harness, который экспортирует secret-free bundle через системный файловый API.
+
+После успешного A0.D1 проект переходит к A1 Core Parity. Подробные документы:
+- `docs/android-device-evidence-plan.md`;
+- `docs/android-a1-plan.md`;
+- `docs/android-development-checklist.md`.
 
 ## Security status
 
