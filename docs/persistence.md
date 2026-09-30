@@ -38,3 +38,26 @@ history/ — причинная история, преимущественно �
 Стабильная составляющая: series : revision : turn : value.
 
 Она может использоваться для поиска и корреляции без перегрузки модели дополнительным протоколом.
+
+
+
+## Общий Persistence Contract
+
+Текущая desktop файловая модель остаётся реализацией, а не универсальной семантикой.
+
+Канонический контракт stores и versioned records находится в docs/persistence-contract.md.
+
+Android будет использовать Room/SQLite как физический backend и CryptoProvider для чувствительных payload.
+
+Cross-platform migration должна сохранять:
+- record identity;
+- provenance;
+- privacy scope;
+- version;
+- parent/merge relations.
+
+## Recovery checkpoints
+
+Persistence должна уметь сохранять состояние незавершённой операции.
+
+Критические состояния runtime не должны зависеть от того, была ли Activity жива в момент записи.
