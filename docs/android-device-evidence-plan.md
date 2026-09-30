@@ -1,20 +1,20 @@
-# A0.D1 — Device Evidence / Device Acceptance
+# A0.D1 — Диагностика устройства / приёмка устройства
 
 Дата: 30 сентября 2026 года.
 
 ## Текущий статус реализации
 
-Device Evidence Harness реализован в debug source set и опубликован CI run #243.
+Модуль диагностики устройства реализован в debug source set и опубликован CI run #243.
 
 - code commit: f09df4539c31287dfc458ee4e573eba9c1c8ee59
 - GitHub artifact ID: 11086816355
 - APK SHA-256: 943342bff105557089f48ebd51c5e7a542a2bced9619795dafd65ef3edc7605a
 
-Следующая операция для пользователя — установить APK на vivo и выполнить device smoke.
+Следующая операция для пользователя — установить APK на vivo и выполнить проверка на устройстве.
 
 ## 1. Назначение
 
-A0 code и CI verification уже завершены. A0.D1 закрывает внешний доказательный контур: фактическую работу текущего Android foundation на vivo X100 Ultra / OriginOS 6.
+A0 code и проверка CI уже завершены. A0.D1 закрывает внешний доказательный контур: фактическую работу текущего Android foundation на vivo X100 Ultra / OriginOS 6.
 
 A0.D1 не добавляет доменной функциональности. Временная задача — сделать наблюдаемым и воспроизводимым то, что уже существует.
 
@@ -39,12 +39,12 @@ A0.D1 не добавляет доменной функциональности.
 
 ## 3. Почему harness нужен
 
-Текущий A0 APK уже умеет поднимать runtime, но без instrumentation/device evidence мы не знаем фактическое поведение на OEM-железе.
+Текущий A0 APK уже умеет поднимать runtime, но без instrumentation/диагностические данные устройства мы не знаем фактическое поведение на OEM-железе.
 
 CI #190 доказывает:
 - unit tests;
 - Gradle build;
-- debug APK existence;
+- отладочный APK existence;
 - repository/security smoke.
 
 CI не доказывает:
@@ -77,9 +77,9 @@ Harness размещается только в debug source set.
 - PASS/FAIL;
 - export evidence;
 - повтор запуска;
-- controlled restart/recovery.
+- контролируемый перезапуск/восстановление.
 
-### Event stream
+### Поток событий
 
 Каждая проверка пишет структурированное событие:
 - timestamp;
@@ -159,11 +159,11 @@ Harness размещается только в debug source set.
 5. delete;
 6. verify absence.
 
-Evidence stores only:
-- operation success/failure;
-- payload size;
-- timing;
-- safe exception class/message.
+Пакет сохраняет только:
+- успех/ошибка операции;
+- размер тестовой полезной нагрузки;
+- время выполнения;
+- безопасный класс/сообщение исключения.
 
 Сами bytes и keys не сохраняются.
 
@@ -204,7 +204,7 @@ Evidence stores only:
 
 ### D1.10 Export
 
-Evidence bundle создаётся во внутреннем app storage и затем экспортируется пользователем.
+Пакет диагностических материалов создаётся во внутреннем app storage и затем экспортируется пользователем.
 
 Предпочтительные механизмы:
 - Storage Access Framework / `ACTION_CREATE_DOCUMENT`;
@@ -212,7 +212,7 @@ Evidence bundle создаётся во внутреннем app storage и за
 
 Широкий доступ `MANAGE_EXTERNAL_STORAGE` для harness запрещён.
 
-## 6. Evidence bundle
+## 6. Пакет диагностических материалов
 
 ```
 kira-device-evidence/
@@ -230,7 +230,7 @@ kira-device-evidence/
 └── README.txt
 ```
 
-### Security rule
+### Правило безопасности
 
 Bundle не содержит:
 - passwords;
@@ -242,7 +242,7 @@ Bundle не содержит:
 - SecureStore values;
 - raw user messages.
 
-## 7. User procedure
+## 7. Порядок выполнения
 
 1. Установить APK.
 2. Открыть debug evidence screen.
@@ -254,7 +254,7 @@ Bundle не содержит:
 
 Для пользователя никаких adb-команд не требуется.
 
-## 8. Acceptance
+## 8. Приёмка
 
 A0.D1 = ACCEPTED только если:
 - startup PASS;
@@ -265,7 +265,7 @@ A0.D1 = ACCEPTED только если:
 - Pulse PASS;
 - Keystore PASS;
 - storage PASS;
-- lifecycle observations recorded;
+- наблюдения жизненного цикла записаны;
 - recovery PASS или явный blocker;
 - bundle без секретов;
 - результаты проанализированы и отражены в документации.
