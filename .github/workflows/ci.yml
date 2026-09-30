@@ -86,3 +86,45 @@ jobs:
           fi
           echo "$output"
           test "$output" = "Кира:Ядро | версия 0.1.0-alpha.1"
+
+
+  android-a0:
+    name: Android A0 smoke
+    runs-on: ubuntu-latest
+    steps:
+      - name: Получить репозиторий
+        uses: actions/checkout@v7
+
+      - name: Подготовить Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Подготовить Python 3.13
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Подготовить Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Установить Android SDK 37
+        shell: bash
+        run: |
+          sdkmanager "platforms;android-37" "build-tools;36.0.0" "platform-tools"
+
+      - name: Подготовить Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: "9.4.1"
+
+      - name: Собрать debug APK
+        shell: bash
+        run: |
+          gradle --no-daemon :android:app:assembleDebug
+
+      - name: Проверить APK
+        shell: bash
+        run: |
+          test -f android/app/build/outputs/apk/debug/app-debug.apk
