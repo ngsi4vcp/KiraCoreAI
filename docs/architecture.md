@@ -73,3 +73,38 @@ TerminalHost отвечает за пользовательский термин
 Память не активируется автоматически из текста модели.
 
 Изменение генома остаётся отдельным управляемым процессом.
+
+ 
+
+## Кроссплатформенный контракт
+
+KiraCoreAI должен быть семантически одинаковым на разных ОС. Различие UI не считается различием ядра.
+
+Едиными остаются:
+- GENOME;
+- Memory/History/State/Conversation semantics;
+- ContextCompiler;
+- ModelAdapter;
+- PulseStamp;
+- identity model;
+- runtime recovery model;
+- KiraSync format;
+- persistence contract.
+
+Различаться могут физический storage backend, host UI, transport provider и системный lifecycle.
+
+## Android
+
+Android-реализация:
+Kotlin → Android Host → KiraRuntime Bridge → Python 3.13/Chaquopy → существующий KiraCore.
+
+Kotlin не должен дублировать доменную семантику Python runtime.
+
+## Кира:Сбор
+
+Кира:Сбор отделён от conversational runtime и имеет собственные SyncProvider, CryptoProvider, SyncStore и identity operations.
+
+Подробные контракты находятся в:
+- docs/kira-sync-contract.md
+- docs/identity-and-user-memory-contract.md
+- docs/persistence-contract.md
