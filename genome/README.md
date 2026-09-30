@@ -1,33 +1,55 @@
-# Genome
+# Геном
 
-## Current revision
+## Текущая ревизия
 
-**G22 / Revision 22 / Series 1000 / 2026**
+**G22 / Ревизия 22 / Серия 1000 / 2026**
 
-The authoritative G22 source supplied for this project has SHA-256:
+Канонический файл генома хранится в [genome/G22.txt](G22.txt).
+
+SHA-256 канонического файла:
 
 ~~~text
 d76d59ee1e4e82f57cc7dd961512e3f35898343d8196c746a10a9be59700ff65
 ~~~
 
-This hash identifies the supplied G22 artifact exactly.
+Git blob SHA:
 
-## Import status
+~~~text
+048b27e2abb35784a52b2a6806e0e8921876d151
+~~~
 
-The repository architecture and governance now reference G22 Rev. 22, but the verbatim 472-line G22 artifact has **not yet been copied into this repository** by the current GitHub connector workflow.
+Размер файла: **58 537 байт**.
 
-Therefore this directory deliberately does not pretend that the repository already contains the canonical genome text.
+## Проверка импорта
 
-The next genome operation is a controlled verbatim import:
+Канонический `G22.txt` уже импортирован в репозиторий в исходном виде.
 
-1. copy the exact G22 artifact;
-2. verify SHA-256;
-3. store it as a versioned genome artifact;
-4. record the commit;
-5. use that commit as genome provenance.
+Проверка подтверждена по двум независимым признакам:
 
-No implementation code should silently modify the imported text.
+1. SHA-256 файла совпадает с контрольной суммой предоставленного исходного артефакта;
+2. Git blob SHA совпадает с вычислением непосредственно от содержимого исходного файла.
 
-## Governance
+Следовательно, в репозитории находится тот же самый 472-строчный артефакт, без смыслового редактирования.
 
-Genome changes are separate from normal runtime development and require explicit authorized fixation according to G22.
+## Правила хранения
+
+Канонический геном не должен изменяться обычными задачами разработки.
+
+Любое изменение генома должно:
+
+1. иметь явную авторизованную фиксацию;
+2. создавать новую ревизию;
+3. сохранять происхождение изменения;
+4. фиксировать контрольную сумму;
+5. проходить отдельную оценку;
+6. оставлять предыдущую ревизию доступной в истории.
+
+## Язык
+
+Русский является каноническим языком генома и нетехнической документации Кира:Ядра.
+
+Сам файл `G22.txt` является нормативным артефактом и не переводится/не локализуется при публикации: его каноническое содержание должно сохраняться дословно.
+
+## Ограничение
+
+Этот файл описывает хранение и происхождение генома. Он не заменяет сам G22 и не должен использоваться как его реконструкция.
