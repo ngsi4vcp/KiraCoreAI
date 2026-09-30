@@ -184,19 +184,31 @@ A0 завершён, когда:
 
 ## Фактическое состояние реализации
 
-На текущем цикле A0 реализованы A0.1–A0.3 и базовая часть A0.4–A0.6:
+На текущем цикле A0 реализован полный skeleton-контур A0.1–A0.6 и bridge smoke-контур A0.7/A0.8:
 
 - Android Gradle project/module создан;
-- Compose Activity создана;
-- applicationId зафиксирован как ru.kiracore.ai;
-- ARM64-only зафиксирован через arm64-v8a;
-- Chaquopy 17.0.0 + Python 3.13 подключены;
-- Python source path направлен на существующий KiraCore `src`;
-- GENOME/genome.txt копируется в Android assets на этапе сборки;
-- при запуске GENOME переносится в private app storage;
-- RuntimeService создан и отделён от Activity;
-- минимальный diagnostic bridge создан;
-- базовый Android CI smoke добавлен.
+- Compose Activity отделена от владельца runtime;
+- RuntimeService поднимает Python в отдельном исполнительном потоке;
+- RuntimeSnapshot задаёт явные фазы INITIALIZING/READY/FAILED/STOPPING/STOPPED;
+- Python bridge реализует initialize(), health(), load_genome(), create_session(), get_runtime_state(), run_test_turn(), shutdown();
+- GENOME загружается с обязательной проверкой ревизии 22 и ожидаемого SHA-256;
+- Android internal storage root диагностически совпадает с Python DATA root;
+- PlatformSecureStore имеет Android Keystore + AES/GCM реализацию;
+- CryptoProvider имеет SecureRandom/SHA-256 реализацию;
+- diagnostics возвращает app/core/GENOME/Python/provider/storage/secure-store/runtime сведения без секретов;
+- Python A0 bridge smoke и Android unit tests добавлены в CI;
+- Android security smoke проверяет отсутствие hardcoded credentials/private keys;
+- неполный Gradle Wrapper не оставлен: CI явно фиксирует Gradle 9.4.1.
+
+Не входит в этот A0 и намеренно оставлено для следующих этапов:
+- полноценная password authorization Алека;
+- sealed authority packaging;
+- Room/SQLite domain persistence вместо текущей platform foundation;
+- foreground-service production hardening;
+- Android 13–17 matrix;
+- реальный vivo X100 Ultra;
+- полноценный Chat UI/avatar/Pulse chip;
+- OpenRouter/Gemini credentials и реальные model calls.
 
 Неподтверждённое в текущей среде:
 
