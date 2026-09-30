@@ -205,6 +205,7 @@ def check_health() -> str:
             "active_session_id": state.get("active_session_id"),
             "turn": state.get("turn", 0),
             "pulse": state.get("pulse"),
+            "operation": state.get("operation"),
         },
         ensure_ascii=False,
     )
