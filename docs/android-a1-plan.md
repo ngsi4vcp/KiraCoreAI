@@ -298,3 +298,19 @@ A1 останавливается и исправляет foundation, если:
 - unknown model-call silently retries;
 - новый security invariant нужен, но не оформлен;
 - изменяется G22/GENOME без отдельного утверждения.
+
+## A1.6 final acceptance checkpoint — 30.09.2026
+
+Fresh device run `20260930-144146` на vivo V2366HA / API 36 подтвердил A1 parity и recovery:
+
+- deterministic end-to-end turn — PASS;
+- session create/list/resume — PASS;
+- runtime/core state parity — PASS;
+- Pulse parity — PASS;
+- conversation/memory semantic boundaries — PASS;
+- persisted operation `COMPLETED` / recovery `COMPLETED` — PASS;
+- process restart/recovery — PASS;
+- lifecycle observation — PASS as observation;
+- evidence status — `RECOVERY_OK`.
+
+A1 Core Parity для текущего Android-среза принят. Production Room/SQLite остаётся A2.
