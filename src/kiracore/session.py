@@ -6,7 +6,7 @@ from uuid import uuid4
 from .context import ContextCompiler
 from .errors import ProtocolViolation
 from .genome import GenomeArtifact
-from .models import SessionState
+from .models import SessionState, utc_now
 from .persistence import JsonPersistence
 from .protocols import HostAdapter, ModelAdapter
 from .pulse import pulse_for_turn
@@ -37,11 +37,16 @@ class SessionManager:
 
     @staticmethod
     def authorize(first_message: str) -> bool:
-        """Авторизация возможна только при точном начале первого сообщения сессии: ~1."""
-        return first_message.startswith("~1")
+        """Принимает только маркер ~1 как отдельный префикс первого сообщения."""
+        return first_message == "~1" or first_message.startswith("~1 ")
 
-    def start(self, first_message: str, environment: dict[str, object] | None = None) -> SessionState:
+    def start(
+        self,
+        first_message: str,
+        environment: dict[str, object] | None = None,
+    ) -> SessionState:
         authorized = self.authorize(first_message)
+        now = utc_now()
         session = SessionState(
             session_id=uuid4().hex,
             turn=0,
@@ -49,6 +54,8 @@ class SessionManager:
             authorization_marker="~1" if authorized else None,
             environment=dict(environment or {}),
             runtime_status="active",
+            created_at=now,
+            updated_at=now,
         )
         self.state_store.put(session)
         if self.persistence:
@@ -64,7 +71,16 @@ class SessionManager:
         host_constraints: dict[str, object] | None = None,
     ) -> str:
         session = self.state_store.get(session_id)
-        session = replace(session, turn=session.turn + 1, runtime_status="running")
+        session = replace(
+            session,
+            turn=session.turn + 1,
+            runtime_status="running",
+            updated_at=utc_now(),
+        )
+        self.state_store.put(session)
+        if self.persistence:
+            self.persistence.save(session)
+
         context = self.context_compiler.compile(
             genome=self.genome,
             session=session,
@@ -75,14 +91,28 @@ class SessionManager:
         )
         rendered = host.render_context(context)
         output = model.generate(rendered, task)
-        result = self.output_validator.validate(output, session.turn, self.genome.revision)
+        result = self.output_validator.validate(
+            output,
+            session.turn,
+            revision=self.genome.revision,
+            series=self.genome.series,
+        )
         if not result.valid:
-            session = replace(session, runtime_status="validation_failed")
+            session = replace(
+                session,
+                runtime_status="validation_failed",
+                updated_at=utc_now(),
+            )
             self.state_store.put(session)
             if self.persistence:
                 self.persistence.save(session)
             raise ProtocolViolation("; ".join(result.errors))
-        session = replace(session, runtime_status="waiting")
+
+        session = replace(
+            session,
+            runtime_status="waiting",
+            updated_at=utc_now(),
+        )
         self.state_store.put(session)
         if self.persistence:
             self.persistence.save(session)
@@ -90,4 +120,8 @@ class SessionManager:
 
     def expected_pulse(self, session_id: str) -> str:
         session = self.state_store.get(session_id)
-        return pulse_for_turn(session.turn, self.genome.revision, self.genome.series)
+        return pulse_for_turn(
+            session.turn,
+            revision=self.genome.revision,
+            series=self.genome.series,
+        )
