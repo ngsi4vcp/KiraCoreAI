@@ -52,7 +52,7 @@ PromptRenderer переводит OperationalContext в ModelRequest. Он не 
 
 ### ModelAdapter
 
-ModelAdapter скрывает конкретный API. Alpha содержит OpenRouter, Gemini и LM Studio.
+ModelAdapter скрывает конкретный API. Альфа содержит OpenRouter, Gemini и LM Studio.
 
 ### TerminalHost
 
@@ -60,7 +60,7 @@ TerminalHost отвечает за пользовательский термин
 
 ### ПУЛЬС
 
-ПУЛЬС формируется runtime из series + revision + turn + turn².
+ПУЛЬС формируется рантаймом из series + revision + turn + turn².
 
 Модель не обязана его генерировать.
 
