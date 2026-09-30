@@ -42,6 +42,23 @@ KiraCoreAI — переносимое исполняемое ядро Кира:�
 - Все текстовые артефакты — UTF-8 без BOM.
 - Секреты не хранятся в Git, APK или пользовательских отчётах.
 
+## 1.1. Общая идея архитектуры
+
+Проект не пытается «перенести Киру из одной модели в другую» как скрытый объект. Переносимая часть — это программная организация:
+
+- GENOME;
+- persistent state;
+- memory/history/conversation;
+- ContextCompiler;
+- policy/authorization boundaries;
+- runtime validation;
+- persistence/recovery;
+- host adapter.
+
+Модель является вычислительным субстратом, а host — внешней исполнительной средой. Поэтому Pi, Codex, Hermes и собственный host рассматриваются прежде всего как возможные среды исполнения/референсы, а не как источники идентичности Киры. Эта граница важна для будущей multi-host архитектуры.
+
+Главная инженерная сложность — не вызов API модели, а контроль над тем, **что хранится** и **что именно попадает в текущий model context**. Context Compiler должен сохранять семантические границы и не превращать контекст в новый нормативный слой.
+
 ## 2. Windows / Linux — desktop Alpha
 
 ### Назначение
@@ -224,6 +241,27 @@ A0 → A0.D1 → A1 Core Parity → A2 Persistence → A3 Identity/Authority →
 - `docs/project-audit-index.md`;
 - `G22.txt`;
 - platform-specific AGENTS/status documents.
+
+### Главные документы и GitHub-пути
+
+Общие:
+- [README.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/README.md)
+- [docs/architecture.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/architecture.md)
+- [docs/runtime.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/runtime.md)
+- [docs/context-model.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/context-model.md)
+- [docs/persistence.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/persistence.md)
+- [docs/evaluation.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/evaluation.md)
+- [docs/roadmap.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/roadmap.md)
+- [docs/language-policy.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/language-policy.md)
+- [docs/utf8-policy.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/utf8-policy.md)
+
+Android:
+- [AGENTS.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/AGENTS.md)
+- [android-port-status.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-port-status.md)
+- [android-readiness-audit.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-readiness-audit.md)
+- [android-a1-plan.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-a1-plan.md)
+- [android-a1-bridge-contract.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-a1-bridge-contract.md)
+- [android-development-checklist.md](https://github.com/ngsi4vcp/KiraCoreAI/blob/android/alpha-parity/docs/android-development-checklist.md)
 
 ## 6. Работа с Alek
 
