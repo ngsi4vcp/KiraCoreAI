@@ -8,7 +8,7 @@ import ru.kiracore.ai.KiraRuntimeBridge
 class KiraRuntimeService : Service() {
     override fun onCreate() {
         super.onCreate()
-        KiraRuntimeBridge.initialize(this)
+        KiraRuntimeBridge.initializeAsync(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int =
