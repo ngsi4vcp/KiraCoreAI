@@ -30,7 +30,7 @@ class ContextCompiler:
         return OperationalContext(
             genome_revision=genome.revision,
             genome_sha256=genome.sha256,
-            protected_rules=build_protected_rules(genome),
+            protected_rules=build_protected_rules(genome.runtime),
             authorization={
                 "authorized_alek": session.authorized_alek,
                 "marker": session.authorization_marker,
