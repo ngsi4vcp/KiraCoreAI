@@ -68,12 +68,24 @@ data class BridgeRuntimeState(
     val rawState: JSONObject,
 )
 
+data class BridgeOperation(
+    val operationId: String,
+    val sessionId: String,
+    val phase: String,
+    val checkpoint: String,
+    val provider: String,
+    val model: String,
+    val recoveryState: String,
+    val error: String?,
+)
+
 data class BridgeHealth(
     val status: String,
     val runtimeStatus: String?,
     val activeSessionId: String?,
     val turn: Int,
     val pulse: BridgePulse?,
+    val operation: BridgeOperation?,
 )
 
 data class BridgeResumeResult(
@@ -137,6 +149,20 @@ internal object BridgeJsonParser {
             rawState = value.optJSONObject("state") ?: JSONObject(),
         )
 
+    fun operation(value: JSONObject?): BridgeOperation? {
+        if (value == null) return null
+        return BridgeOperation(
+            operationId = value.optString("operation_id"),
+            sessionId = value.optString("session_id"),
+            phase = value.optString("phase"),
+            checkpoint = value.optString("checkpoint"),
+            provider = value.optString("provider"),
+            model = value.optString("model"),
+            recoveryState = value.optString("recovery_state"),
+            error = value.optString("error").takeIf { it.isNotBlank() },
+        )
+    }
+
     fun health(value: JSONObject): BridgeHealth =
         BridgeHealth(
             status = value.optString("status"),
@@ -146,6 +172,7 @@ internal object BridgeJsonParser {
                 .takeIf { it.isNotBlank() },
             turn = value.optInt("turn"),
             pulse = pulse(value.optJSONObject("pulse")),
+            operation = operation(value.optJSONObject("operation")),
         )
 
     fun memory(value: JSONObject): BridgeMemoryRecord =
