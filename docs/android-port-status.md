@@ -564,6 +564,30 @@ A2.0 Persistence Foundation реализован и проверен. A2.1 Store
 
 ## WIP A2.1 hardening — 30.09.2026
 
+Параллельно основному acceptance-срезу создана изолированная черновая ветка `android/a2.1-hardening-wip` с draft PR #3.
+
+Текущий WIP head: `12041e49855e544ee10ac057330ce914ca15c558`.
+
+В hardening внесено:
+- integration test проверяет reopen после закрытия первого backend gateway;
+- Android bridge diagnostics показывает фактический persistence backend;
+- debug A2.1 probe проверяет Room backend identity, write → shutdown → новый runtime/backend → read-back, Pulse, отсутствие canonical JSON/JSONL и отсутствие известных conversation payloads в plaintext в DB/WAL/SHM;
+- WIP workflow явно запускается на этой ветке.
+
+Последний GitHub Actions run `#481` для WIP head:
+- check suite создан;
+- 5 jobs запущены/queued;
+- повтор failed jobs выполнен один раз;
+- итог: все 5 jobs `failure`, длительность порядка 3–4 секунд;
+- у всех jobs `steps=[]`, рабочих логов нет;
+- `package-smoke` не получил выполнения из-за зависимостей.
+
+Следовательно, run #481 не является кодовым test result. Он является подтверждением текущего infrastructure/runner blocker.
+
+Физическая A2.1 persistence device acceptance ещё не выполнена. A2.2 остаётся закрытым до green CI актуального code head + device read/write/restart/read-back gate.
+
+
+
 Параллельно основной acceptance-срезу создана изолированная черновая ветка `android/a2.1-hardening-wip`.
 
 Цель ветки — не открывать A2.2, а усилить доказательства текущего A2.1 и lifecycle-исправлений:
