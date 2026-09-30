@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from .conversation import StoredMessage
-from .genome import GenomeArtifact, build_protected_rules
+from .genome import GenomeArtifact
 from .models import HistoryEntry, MemoryRecord, OperationalContext, SessionState
 from .pulse import pulse_stamp
+from .security import build_authorization_context, constitutional_guidance
 
 
 class ContextCompiler:
@@ -48,10 +49,13 @@ class ContextCompiler:
             session_id=session.session_id,
             genome_revision=genome.revision,
             genome_sha256=genome.sha256,
-            protected_rules=build_protected_rules(genome.runtime),
-            authorization={
+            constitutional_guidance=constitutional_guidance(),
+            authorization_context={
+                "role": build_authorization_context(session.authorized_alek).role,
                 "authorized_alek": session.authorized_alek,
-                "marker": session.authorization_marker,
+                "capabilities": sorted(
+                    build_authorization_context(session.authorized_alek).capabilities
+                ),
                 "turn": session.turn,
             },
             state=session.state,
