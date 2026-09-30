@@ -54,3 +54,50 @@
 - non-Alek session не получает privileged capabilities;
 - identity import не восстанавливает authorization state;
 - host/UI не выполняет MergeIdentity без runtime authorization.
+
+
+## Android A0 Device Acceptance
+
+Кодовый A0 evidence уже подтверждён CI #190, но это не заменяет физический device evidence.
+
+### A0.D1 обязательный smoke
+
+1. Установить debug APK на vivo X100 Ultra / OriginOS 6.
+2. Запустить Device Evidence Harness.
+3. Подтвердить Android/device identity.
+4. Подтвердить Python 3.13 / Chaquopy startup.
+5. Подтвердить GENOME revision 22 и SHA-256.
+6. Проверить diagnostics/health.
+7. Создать тестовую session.
+8. Выполнить deterministic test turn.
+9. Проверить response, core_state и Pulse.
+10. Проверить Keystore write/read/delete.
+11. Проверить storage read/write.
+12. Выполнить lifecycle/background observation.
+13. Выполнить controlled process restart и recovery test.
+14. Экспортировать evidence bundle без секретов.
+15. Передать bundle на анализ и зафиксировать acceptance или blocker.
+
+Экспорт не требует полного доступа к файловой системе. Приоритетный механизм — Storage Access Framework; для собственных download-файлов допустим `MediaStore.Downloads` на поддерживаемых версиях Android.
+
+### A1 acceptance gate
+
+A1 начинается только после:
+- закрытого критического device blocker либо его явного решения;
+- положительной проверки evidence bundle;
+- подтверждения GENOME/Python/runtime/Keystore/session/Pulse;
+- обновлённых status/readiness документов;
+- выполненного `docs/android-development-checklist.md`.
+
+## Android device-matrix acceptance
+
+После A1–A10 проходит отдельный matrix-контур Android 13–17 и OEM/background behavior. Device acceptance и полная matrix не должны смешиваться в один неопределённый статус.
+
+## Платформенные основания
+
+Актуальные Android ограничения для хранения файлов и foreground service:
+- Storage Access Framework: https://developer.android.com/guide/topics/providers/document-provider
+- Shared storage / MediaStore.Downloads: https://developer.android.com/training/data-storage/shared/media
+- Foreground service types: https://developer.android.com/develop/background-work/services/fgs/service-types
+- Foreground service timeouts: https://developer.android.com/develop/background-work/services/fgs/timeout
+- Foreground service changes: https://developer.android.com/develop/background-work/services/fgs/changes
