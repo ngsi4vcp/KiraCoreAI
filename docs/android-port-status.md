@@ -413,6 +413,10 @@ Android-ветка перешла от предварительных альте
 - `docs/android-a1-plan.md`;
 - `docs/android-development-checklist.md`.
 
+## Документальный статус
+
+Секции выше с датами 30.09.2026 сохраняют исторические контрольные точки; текущим источником оперативного статуса является этот A1 section и последние CI/device facts.
+
 ## Security status
 
 Текущий Python Core уже содержит предгенерационный policy gate и Response Disclosure Guard, которые запрещают передавать полный текст защищённых секций GENOME в ModelRequest.
@@ -442,9 +446,23 @@ Android-ветка перешла от предварительных альте
 
 ## A1 текущая точка
 
-A0.D1 gate закрыт. В работе A1.0/A1.1: контракт Android bridge и typed facade. Первый parity slice включает genome info, session create/list/resume, conversation read, approved/candidate memory read, structured health и deterministic test turn. Room, реальные providers, authority plane и production foreground hardening пока не включаются.
+A0.D1 gate закрыт фактическим evidence run `20260930-131718` на vivo V2366HA / API 36 со статусом `RECOVERY_OK`.
 
-Последняя разработческая точка перед этим этапом: c7708073f271f3cfd4e97ccc22ac75a31b05459c. После неё в branch добавлены только device evidence и A1 bridge work.
+Текущий инженерный boundary: **A1.6 Operation / Recovery**.
+Реализованы A1.0–A1.6 parity-контуры:
+- typed Android bridge;
+- genome info;
+- session create/list/resume;
+- conversation и memory/candidates как раздельные поверхности;
+- structured health;
+- deterministic test turn;
+- авторизация `~1` в parity-сценарии;
+- runtime Pulse/state parity;
+- persisted operation state: CREATED → PREPARING → CONTEXT_READY → MODEL_CALL_STARTED → MODEL_CALL_FINISHED → VALIDATING → PERSISTING → COMPLETED/FAILED, либо UNKNOWN;
+- отсутствие автоматического retry для UNKNOWN;
+- сохранение operation state в `core_state` для последующего reconcile.
+
+Production Room/SQLite backend, real provider calls, authority plane, foreground hardening и production recovery/reconcile остаются последующими этапами A2/A3/A5/A6.
 
 
 ## A1.0/A1.2 checkpoint — 30.09.2026
