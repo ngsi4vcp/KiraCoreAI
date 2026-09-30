@@ -28,3 +28,27 @@
 7. только после этого углублять агентное планирование.
 
 Не следует до первого Alpha усложнять хранение в распределённую БД или добавлять полноценный vector search без фактической потребности.
+
+
+## Android Alpha — текущая дорожка
+
+Android развивается отдельной веткой `android/alpha-parity`, сохраняя desktop semantic contract.
+
+- [x] A0 foundation + CI
+- [x] A0.D1 device acceptance — evidence `20260930-131718`, vivo V2366HA / API 36
+- [x] A1 Core Parity — CI + свежий device evidence `20260930-144146`, `RECOVERY_OK`
+- [ ] A2 Persistence — Room/SQLite + CryptoProvider/Keystore + единый physical backend
+- [ ] A3 Identity / Authority
+- [ ] A4 Кира:Сбор
+- [ ] A5 Runtime Recovery / Reconcile
+- [ ] A6 Background / FGS hardening
+- [ ] A7 Main UX
+- [ ] A8 OpenRouter + Gemini providers
+- [ ] A9 Genome Guard
+- [ ] A10 КираЧек
+- [ ] A11 Android 13–17 / OEM matrix
+- [ ] A12 distributable APK Alpha
+
+Пошаговый operational route: `android/alpha-parity` → `docs/android-next-steps.md`.
+
+Desktop external smoke остаётся независимой незакрытой задачей и не заменяется Android acceptance.
