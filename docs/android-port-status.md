@@ -445,3 +445,37 @@ Android-ветка перешла от предварительных альте
 A0.D1 gate закрыт. В работе A1.0/A1.1: контракт Android bridge и typed facade. Первый parity slice включает genome info, session create/list/resume, conversation read, approved/candidate memory read, structured health и deterministic test turn. Room, реальные providers, authority plane и production foreground hardening пока не включаются.
 
 Последняя разработческая точка перед этим этапом: c7708073f271f3cfd4e97ccc22ac75a31b05459c. После неё в branch добавлены только device evidence и A1 bridge work.
+
+
+## A1.0/A1.2 checkpoint — 30.09.2026
+
+Android branch HEAD: `4f0b60de552dff1ad3b26c1e3da4b7906ad50f35`.
+
+Реализовано и проверено:
+- bridge contract: `docs/android-a1-bridge-contract.md`;
+- typed Kotlin bridge models + JSON mapping;
+- genome info;
+- session create/list/resume;
+- conversation read;
+- approved/candidate memory read;
+- structured health;
+- deterministic test turn;
+- Pulse/state mapping остаётся источником Python runtime;
+- runtime resume очищает Pulse при переходе на сессию без ходов;
+- RuntimeService явно закрывает Python runtime через executor в `onDestroy()`;
+- legacy `health()` contract сохранён для A0 совместимости;
+- JVM bridge tests используют `org.json` только в `testImplementation`, production APK от этой зависимости не зависит.
+
+CI run `#305` завершён успешно:
+- Python matrix: Ubuntu/Windows × 3.11/3.12 — PASS;
+- package-smoke Linux/Windows — PASS;
+- Android unit tests + assembleDebug — PASS;
+- Chaquopy APK packaging smoke — PASS;
+- security smoke — PASS.
+
+Независимая проверка опубликованного артефакта:
+- APK SHA-256: `6359c98cfd11ba28107b2e42121cec85a48c4baaa00e16e51b411d3581cc4043`;
+- `assets/chaquopy/app.imy` содержит `android_bridge.pyc`, `kiracore/runtime.pyc`, `kiracore/genome/__init__.pyc`;
+- встроенный GENOME SHA-256 совпадает с ревизией 22 baseline.
+
+Следующая граница: A1.3 session parity → A1.4 deterministic turn/Pulse → A1.5 persistence semantics → A1.6 recovery/UNKNOWN. Реальные OpenRouter/Gemini, Room и production UI пока не открываются.
