@@ -1,6 +1,6 @@
 # План разработки Android — Кира:Ядро
 
-> Актуальная контрольная точка на 30.09.2026: A0.D1 принят; A1 Core Parity принят по run `20260930-144146`; текущий этап — A2.0 Persistence Foundation. Исторические разделы ниже сохраняются как план и журнал решений.
+> Актуальная контрольная точка на 30.09.2026: A0.D1 принят; A1 Core Parity принят по run `20260930-144146`; A2.0 foundation реализован; текущий этап — A2.1 Store Integration, CI `#450` green. Исторические разделы ниже сохраняются как план и журнал решений.
 
 Дата среза: 30 сентября 2026 года.
 
@@ -1033,4 +1033,4 @@ UI/host не являются источником privileged authority.
 
 ## Текущий Android status
 
-A1 device acceptance закрыт. A2.0 foundation реализован на ветке `android/alpha-parity`; green CI и самоаудит требуются до его закрытия. Следующий подпредел после A2.0 — A2.1 Store Integration.
+A1 device acceptance закрыт. A2.0 foundation реализован и проверен. A2.1 Store Integration реализован на ветке `android/alpha-parity`; CI `#450` green. Физическая device-проверка нового persistence runtime остаётся частью A2.5. Следующий подпредел — A2.2 Atomic Turn.
