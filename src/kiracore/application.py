@@ -198,10 +198,8 @@ class TerminalApplication:
                     continue
                 if command == "/genome":
                     print(
-                        f"Ревизия: {self.runtime.genome.revision}
-"
-                        f"SHA-256: {self.runtime.genome.sha256}
-"
+                        f"Ревизия: {self.runtime.genome.revision}\n"
+                        f"SHA-256: {self.runtime.genome.sha256}\n"
                         f"Секций: {len(self.runtime.genome.document.sections)}"
                     )
                     continue
@@ -271,16 +269,11 @@ class TerminalApplication:
     def _print_status(self) -> None:
         state = self.runtime.core_state
         print(
-            f"Ревизия: {self.runtime.genome.revision}
-"
-            f"Сессия: {state.get('active_session_id', '—')}
-"
-            f"Ход: {state.get('turn', 0)}
-"
-            f"Пульс: {state.get('pulse', '—')}
-"
-            f"Авторизация Алека: {state.get('authorized_alek', False)}
-"
+            f"Ревизия: {self.runtime.genome.revision}\n"
+            f"Сессия: {state.get('active_session_id', '—')}\n"
+            f"Ход: {state.get('turn', 0)}\n"
+            f"Пульс: {state.get('pulse', '—')}\n"
+            f"Авторизация Алека: {state.get('authorized_alek', False)}\n"
             f"Модель: {self.provider}/{self.model_id}"
         )
 
