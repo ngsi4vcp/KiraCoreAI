@@ -527,3 +527,13 @@ CI run `#305` завершён успешно:
 ## A2 текущая точка
 
 A1 Core Parity принята по CI и device evidence. Следующий активный этап — **A2 Persistence**, начиная с A2.0 Persistence Foundation. A2 не должен создавать второй источник истины: до подключения Room runtime не переводится на смешанный режим Python JSON + Room mirror.
+## A2.0 текущая точка — 30.09.2026
+
+Реализован первый физический persistence foundation:
+- Room 2.8.5 / SQLite schema v1;
+- core state, sessions, conversation, memory, history и runtime operation entities;
+- encrypted payloads через Android Keystore/AES-GCM;
+- Kotlin Room gateway, доступный через Android bridge;
+- runtime JSON persistence пока остаётся единственным каноническим backend до A2.1.
+
+Acceptance A2.0 ещё не объявляется закрытым: требуется green CI для текущего HEAD и self-audit. После этого открывается A2.1 Store Integration.
