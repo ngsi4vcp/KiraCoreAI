@@ -26,7 +26,7 @@ ModelAdapter
 ↓
 ModelResponse
 ↓
-runtime validation
+проверка рантайма
 ↓
 PulseStamp
 ↓
