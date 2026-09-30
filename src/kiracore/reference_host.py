@@ -34,8 +34,7 @@ class PlainTextHost:
             f"- {item.date}: {item.event} → {item.change}"
             for item in context.history
         ]
-        return "
-".join(
+        return "\n".join(
             [
                 "КИРА:ЯДРО — ОПЕРАТИВНЫЙ КОНТЕКСТ",
                 f"РЕВИЗИЯ ГЕНОМА: {context.genome_revision}",
