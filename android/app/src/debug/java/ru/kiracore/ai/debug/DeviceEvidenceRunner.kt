@@ -82,7 +82,7 @@ class DeviceEvidenceRunner(
         val runDir = File(root, runId).apply { mkdirs() }
         _state.value = DeviceEvidenceUiState(
             runId = runId,
-            phase = "A0.D1 smoke",
+            phase = "A0.D1: проверка",
             running = true,
             overall = "ВЫПОЛНЯЕТСЯ",
         )
@@ -98,7 +98,7 @@ class DeviceEvidenceRunner(
                 runCheck(runDir, "Android Keystore") { keystoreCheck() }
                 runCheck(runDir, "Хранилище") { storageCheck() }
                 writeManifest(runDir, "COMPLETED")
-                setOverall("A0.D1 базовый smoke завершён")
+                setOverall("A0.D1: базовая проверка завершена")
             } catch (error: Throwable) {
                 appendEvent(
                     runDir,
@@ -120,13 +120,13 @@ class DeviceEvidenceRunner(
         val runDir = File(root, runId).apply { mkdirs() }
         _state.value = DeviceEvidenceUiState(
             runId = runId,
-            phase = "A1.0/A1.2 parity smoke",
+            phase = "A1.0/A1.2: проверка соответствия",
             running = true,
             overall = "ВЫПОЛНЯЕТСЯ",
         )
         scope.launch {
             try {
-                runCheck(runDir, "A1: runtime health") {
+                runCheck(runDir, "A1: состояние рантайма") {
                     waitForRuntime(runDir)
                     val health = KiraRuntimeBridge.checkHealth(context)
                     require(health.status == "READY") {
@@ -134,14 +134,14 @@ class DeviceEvidenceRunner(
                     }
                     "status=${health.status}, turn=${health.turn}"
                 }
-                runCheck(runDir, "A1: GENOME info") {
+                runCheck(runDir, "A1: сведения о GENOME") {
                     val genome = KiraRuntimeBridge.getGenomeInfo(context)
                     require(genome.revision == expectedGenomeRevision)
                     require(genome.series == 1000)
                     require(genome.sha256 == expectedGenomeSha256)
                     "revision=${genome.revision}, series=${genome.series}"
                 }
-                val sessionId = runCheck(runDir, "A1: session create") {
+                val sessionId = runCheck(runDir, "A1: создание сессии") {
                     KiraRuntimeBridge.createSessionTyped(
                         context,
                         provider = "a0-test",
@@ -150,14 +150,14 @@ class DeviceEvidenceRunner(
                         require(it.sessionId.isNotBlank()) { "Session ID не получен." }
                     }.sessionId
                 }
-                runCheck(runDir, "A1: session list") {
+                runCheck(runDir, "A1: список сессий") {
                     val sessions = KiraRuntimeBridge.listSessions(context)
                     require(sessions.any { it.sessionId == sessionId }) {
                         "Созданная сессия отсутствует в list_sessions."
                     }
                     "count=${sessions.size}"
                 }
-                runCheck(runDir, "A1: session resume") {
+                runCheck(runDir, "A1: восстановление сессии") {
                     val resumed = KiraRuntimeBridge.resumeSession(context, sessionId)
                     require(resumed.session?.sessionId == sessionId) {
                         "resume_session вернул другую сессию."
@@ -167,7 +167,7 @@ class DeviceEvidenceRunner(
                     require(resumed.runtimeState.pulse == null)
                     "session=${resumed.runtimeState.activeSessionId}, turn=0, pulse=null"
                 }
-                runCheck(runDir, "A1: deterministic turn") {
+                runCheck(runDir, "A1: детерминированный ход") {
                     val turn = KiraRuntimeBridge.sendTestTurnTyped(
                         context,
                         sessionId,
@@ -181,7 +181,7 @@ class DeviceEvidenceRunner(
                     require(turn.pulse?.value == 1024)
                     "turn=${turn.runtimeState.turn}, pulse=${turn.pulse?.value}"
                 }
-                runCheck(runDir, "A1: conversation") {
+                runCheck(runDir, "A1: разговор") {
                     val messages = KiraRuntimeBridge.getConversation(context, sessionId, 20)
                     require(messages.size >= 2) {
                         "Ожидались user+assistant сообщения."
@@ -194,7 +194,7 @@ class DeviceEvidenceRunner(
                     require(tail[1].pulse?.value == 1024)
                     "messages=${messages.size}, last_turn=${tail[1].turn}"
                 }
-                runCheck(runDir, "A1: memory separation") {
+                runCheck(runDir, "A1: разделение памяти") {
                     val approved = KiraRuntimeBridge.getMemory(context)
                     val candidates = KiraRuntimeBridge.getMemoryCandidates(context)
                     require(approved.isEmpty()) {
@@ -205,7 +205,7 @@ class DeviceEvidenceRunner(
                     }
                     "approved=0, candidates=0"
                 }
-                runCheck(runDir, "A1: structured health after turn") {
+                runCheck(runDir, "A1: структурированное состояние после хода") {
                     val health = KiraRuntimeBridge.checkHealth(context)
                     require(health.status == "READY")
                     require(health.activeSessionId == sessionId)
@@ -220,7 +220,7 @@ class DeviceEvidenceRunner(
                     "session=${health.activeSessionId}, turn=${health.turn}, pulse=${health.pulse?.value}, operation=${health.operation?.phase}"
                 }
                 writeManifest(runDir, "COMPLETED", "android-a1-device")
-                setOverall("A1.0/A1.2 parity smoke завершён")
+                setOverall("A1.0/A1.2: проверка соответствия завершена")
             } catch (error: Throwable) {
                 appendEvent(
                     runDir,
@@ -231,7 +231,7 @@ class DeviceEvidenceRunner(
                         .put("message", error.message ?: error::class.java.simpleName),
                 )
                 writeManifest(runDir, "FAILED", "android-a1-device")
-                setOverall("A1 BLOCKER: ${error::class.java.simpleName}")
+                setOverall("A1: блокирующая ошибка — ${error::class.java.simpleName}")
             }
         }
     }
@@ -306,8 +306,8 @@ class DeviceEvidenceRunner(
         scope.launch {
             try {
                 waitForRuntime(runDir)
-                runCheck(runDir, "Recovery: GENOME") { genomeCheck() }
-                runCheck(runDir, "Recovery: session/state") {
+                runCheck(runDir, "Восстановление: GENOME") { genomeCheck() }
+                runCheck(runDir, "Восстановление: сессия/состояние") {
                     val state = KiraRuntimeBridge.getRuntimeState(context)
                     val actualSession = state.optString("active_session_id")
                         .takeIf { it.isNotBlank() }
@@ -491,7 +491,7 @@ class DeviceEvidenceRunner(
         require(store.get(name) == null) {
             "Keystore запись не удалена."
         }
-        return "AES-GCM round-trip 32 bytes: PASS"
+        return "AES-GCM: проверка 32 байт — PASS"
     }
 
     private fun storageCheck(): String {
@@ -503,7 +503,7 @@ class DeviceEvidenceRunner(
             "Storage read probe не совпал."
         }
         file.delete()
-        return "root writable/readable"
+        return "корень хранилища: чтение и запись доступны"
     }
 
     private suspend fun runCheck(
