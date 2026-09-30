@@ -560,3 +560,20 @@ A2.0 Persistence Foundation реализован и проверен. A2.1 Store
 - последнее завершённое evidence восстанавливается при новом запуске Activity, поэтому run/export state не возвращается ошибочно к «НЕ ЗАПУЩЕНО»;
 - фоновые checks отменяются при уничтожении Activity;
 - ожидание READY больше не остаётся немым на STOPPED/FAILED: runner показывает фазу и выполняет одну контролируемую повторную инициализацию.
+
+
+## WIP A2.1 hardening — 30.09.2026
+
+Параллельно основной acceptance-срезу создана изолированная черновая ветка `android/a2.1-hardening-wip`.
+
+Цель ветки — не открывать A2.2, а усилить доказательства текущего A2.1 и lifecycle-исправлений:
+- integration test теперь проверяет read-back после закрытия первого gateway и открытия нового экземпляра backend;
+- сохранены требования единого canonical backend и отсутствия JSON/JSONL persistence в `DATA/`;
+- G22 и активный GENOME не изменяются.
+
+CI run `#480` на commit `38ce9e3174865d3ade1d404f0d932952c82c6425` создал ожидаемые jobs, но завершился до выполнения первого шага. Поэтому этот run не считается кодовой проверкой.
+
+Физическая A2.1 persistence device acceptance ещё не выполнена. A2.2 остаётся закрытым до одновременного выполнения:
+1. green CI на актуальном code head;
+2. device read/write → process restart → read-back;
+3. проверки conversation/memory separation и отсутствия plaintext JSON/JSONL canonical storage.
