@@ -26,7 +26,9 @@ class MainActivity : ComponentActivity() {
 
         startService(Intent(this, KiraRuntimeService::class.java))
 
-        if (BuildConfig.DEBUG && savedInstanceState == null) {
+        if (BuildConfig.DEBUG && savedInstanceState == null &&
+            !intent.getBooleanExtra(EXTRA_SKIP_DEBUG_HARNESS, false)
+        ) {
             startActivity(Intent(this, Class.forName("ru.kiracore.ai.debug.DeviceEvidenceActivity")))
         }
 
@@ -62,4 +64,8 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+    companion object {
+        private const val EXTRA_SKIP_DEBUG_HARNESS = "skip_debug_harness"
+    }
 }
+
