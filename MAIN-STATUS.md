@@ -187,7 +187,7 @@ A1.0–A1.6 реализованы и покрыты CI-контрактами:
 
 ### Что пока не считается закрытым
 
-- A2.0/A2.1/A2.2/A2.3/A2.4/A2.5 Persistence quality gates — в работе;
+- A2.0 Persistence Foundation реализован в Android-ветке; его acceptance ожидает green CI и самоаудит. A2.1–A2.5 — далее по маршруту;
 - identity/authority hardening — A3;
 - Кира:Сбор — A4;
 - production recovery/reconcile после UNKNOWN — A5;
@@ -197,7 +197,7 @@ A1.0–A1.6 реализованы и покрыты CI-контрактами:
 - Genome Guard — A9;
 - КираЧек — A10;
 - Android 13–17/OEM matrix — A11;
-- A1 parity smoke на свежем APK из run `20260930-144146` — **ACCEPTED**; следующий Android этап — A2 Persistence.
+- A1 parity smoke на свежем APK из run `20260930-144146` — **ACCEPTED**; текущий Android этап — A2.0 Persistence Foundation.
 
 ### Главные Android-документы
 
