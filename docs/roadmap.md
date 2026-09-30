@@ -1,62 +1,64 @@
-# Roadmap
+# Дорожная карта
 
-## Phase 0 — Foundation
+## Этап 0 — Основание
 
-- [x] Repository audit
-- [x] Confirm main branch
-- [x] Rewrite README
-- [x] Establish architecture documents
-- [x] Establish governance rules
-- [x] Establish evaluation model
-- [ ] Import canonical G22 artifact
-- [ ] Define machine-readable Core schema
-- [ ] Define Capsule schema
+- [x] Аудит репозитория
+- [x] Проверка основной ветки
+- [x] Полное обновление README
+- [x] Формирование архитектурных документов
+- [x] Формирование правил управления геномом
+- [x] Формирование модели оценки
+- [x] Импорт канонического G22
+- [x] Проверка SHA-256 и Git blob SHA
+- [x] Закрепление русского языка документации
+- [ ] Определение машиночитаемой схемы Кира:Ядра
+- [ ] Определение схемы переносимой капсулы
 
-## Phase 1 — Minimal Harness
+## Этап 1 — Минимальная среда Кира
 
-- [ ] GenomeLoader
-- [ ] checksum/provenance
-- [ ] StateStore
-- [ ] MemoryStore
-- [ ] HistoryStore
-- [ ] ContextCompiler
-- [ ] HostAdapter
-- [ ] ModelAdapter
-- [ ] Validator
-- [ ] SessionManager
-- [ ] persistence
-- [ ] unit tests
+- [ ] `GenomeLoader`
+- [ ] контрольная сумма и происхождение
+- [ ] `StateStore`
+- [ ] `MemoryStore`
+- [ ] `HistoryStore`
+- [ ] `ContextCompiler`
+- [ ] `HostAdapter`
+- [ ] `ModelAdapter`
+- [ ] `Validator`
+- [ ] `SessionManager`
+- [ ] сохранение состояния
+- [ ] модульные тесты
 
-## Phase 2 — First Host
+## Этап 2 — Первый хост
 
-Candidate: Pi-oriented host adapter / minimal RPC host.
+Кандидат: хост, ориентированный на Pi, или минимальный RPC-хост.
 
-- [ ] host protocol
-- [ ] session lifecycle
-- [ ] model invocation
-- [ ] result validation
-- [ ] recovery
-- [ ] end-to-end test
+- [ ] протокол хоста
+- [ ] жизненный цикл сессии
+- [ ] вызов модели
+- [ ] проверка результата
+- [ ] восстановление после ошибки
+- [ ] сквозной тест
 
-## Phase 3 — Behavioral Evaluation
+## Этап 3 — Поведенческая оценка
 
-- [ ] identity tests
-- [ ] epistemic tests
-- [ ] authorization tests
-- [ ] level-separation tests
-- [ ] drift tests
-- [ ] compression/recovery tests
-- [ ] persistence tests
+- [ ] тесты идентичности
+- [ ] эпистемические тесты
+- [ ] тесты авторизации
+- [ ] тесты разделения уровней
+- [ ] тесты устойчивости к дрейфу
+- [ ] тесты сжатия и восстановления
+- [ ] тесты сохранения
 
-## Phase 4 — Additional Hosts
+## Этап 4 — Дополнительные хосты
 
-- [ ] Codex host
-- [ ] Hermes host
-- [ ] local/OpenAI-compatible host
-- [ ] comparative evaluation
+- [ ] хост Codex
+- [ ] хост Hermes
+- [ ] локальный / OpenAI-совместимый хост
+- [ ] сравнительная оценка
 
-## Phase 5 — Mature Core
+## Этап 5 — Зрелое ядро
 
-После доказательства минимальных инвариантов: richer memory, planning, motivation, decision architecture, self-model, runtime contracts, autonomous scheduler и deeper evaluation.
+После доказательства минимальных инвариантов: расширенная память, планирование, мотивация, архитектура решений, самомодель, контракты среды выполнения, автономный планировщик и более глубокая оценка.
 
-Никакой конкретный host не должен диктовать Core architecture.
+Ни один конкретный хост не должен диктовать архитектуру Кира:Ядра.
