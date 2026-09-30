@@ -10,6 +10,7 @@ from typing import Any
 
 from .errors import KiraCoreError
 from .models import SessionState
+from .persistence_backend import PersistenceBackend
 
 _SESSION_ID_RE = re.compile(r"^[a-f0-9]{32}$")
 
@@ -80,11 +81,19 @@ class JsonPersistence:
 class CoreStatePersistence:
     """Хранит агрегированный снимок актуального состояния Кира:Ядра."""
 
-    def __init__(self, root: str | Path) -> None:
+    def __init__(
+        self,
+        root: str | Path,
+        backend: PersistenceBackend | None = None,
+    ) -> None:
+        self.backend = backend
         self.path = Path(root) / "core_state.json"
         self.persistence = JsonPersistence(self.path.parent)
 
-    def save(self, payload: dict[str, Any]) -> Path:
+    def save(self, payload: dict[str, Any]) -> Path | None:
+        if self.backend is not None:
+            self.backend.save_core_state(payload)
+            return None
         return self.persistence.save_path(
             self.path,
             payload,
@@ -92,6 +101,8 @@ class CoreStatePersistence:
         )
 
     def load(self) -> dict[str, Any] | None:
+        if self.backend is not None:
+            return self.backend.load_core_state()
         if not self.path.exists():
             return None
         return json.loads(self.path.read_text(encoding="utf-8"))
