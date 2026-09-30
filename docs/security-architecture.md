@@ -73,7 +73,7 @@ Linux:
 
 Физический backend различается, доменный CryptoProvider остаётся единым.
 
-Android Keystore предназначен для долгоживущего хранения ключевого материала и поддерживает аппаратно защищённые ключи; Android рекомендует не реализовывать собственную криптографию поверх непроверенных примитивов. urlAndroid security best practiceshttps://developer.android.com/privacy-and-security/security-best-practices
+Android Keystore предназначен для долгоживущего хранения ключевого материала и поддерживает аппаратно защищённые ключи; Android рекомендует не реализовывать собственную криптографию поверх непроверенных примитивов. [Android security best practices](https://developer.android.com/privacy-and-security/security-best-practices)
 
 ## Что получает модель
 
