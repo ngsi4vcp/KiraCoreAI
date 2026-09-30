@@ -135,8 +135,8 @@ Harness размещается только в debug source set.
 Проверить:
 - session_id exists;
 - active_session_id enters RuntimeSnapshot;
-- turn starts at expected value;
-- state equals Python core state.
+- ход начинается с ожидаемого значения;
+- состояние совпадает с состоянием Python Core.
 
 ### D1.5 Test turn
 
@@ -144,7 +144,7 @@ Harness размещается только в debug source set.
 
 Проверить:
 - response exists;
-- provider/model metadata correct;
+- метаданные провайдера/модели корректны;
 - no network provider is contacted;
 - runtime state advances;
 - PulseStamp created by runtime.
@@ -152,7 +152,7 @@ Harness размещается только в debug source set.
 ### D1.6 Keystore
 
 Проверить round-trip:
-1. generate random test payload;
+1. сгенерировать случайную тестовую полезную нагрузку;
 2. put into PlatformSecureStore;
 3. get;
 4. compare exact bytes;
