@@ -7,6 +7,7 @@ from kiracore.genome import GenomeLoader
 from kiracore.model_contract import ModelResponse
 from kiracore.persistence import JsonPersistence
 from kiracore.security import disclosure_violation
+from kiracore.models import SessionState
 from kiracore.session import SessionManager
 from kiracore.stores import HistoryStore, MemoryStore, StateStore
 
@@ -39,7 +40,7 @@ class SecurityProtocolTests(unittest.TestCase):
             manifest = conversation.create("test", "example/model")
             state_store = StateStore(JsonPersistence(f"{tmp}/sessions"))
             state_store.put(
-                __import__("kiracore.models", fromlist=["SessionState"]).SessionState(
+                SessionState(
                     session_id=manifest.session_id,
                     provider="test",
                     model="example/model",
@@ -71,8 +72,9 @@ class SecurityProtocolTests(unittest.TestCase):
     def test_direct_internal_markers_are_rejected(self) -> None:
         self.assertIsNotNone(disclosure_violation("Текст: @@GENOME"))
         self.assertIsNotNone(disclosure_violation("Протокол s02_authorization_turn"))
-        self.assertIsNotNone(disclosure_violation("Маркер ~1"))
+        self.assertIsNotNone(disclosure_violation("identity_secret"))
         self.assertIsNone(disclosure_violation("Истина важнее комфорта."))
+        self.assertIsNone(disclosure_violation("~1 — протокол авторизации."))
 
 
 if __name__ == "__main__":
