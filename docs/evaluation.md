@@ -42,3 +42,15 @@
 
 Геном не изменяется runtime.
 
+
+
+## Security acceptance
+
+До Android Alpha нужно дополнительно проверить:
+
+- protected sections не попадают в ModelRequest;
+- credentials и authority keys не попадают в ModelRequest;
+- прямой запрос на раскрытие внутренних protocol markers не проходит Response Disclosure Guard;
+- non-Alek session не получает privileged capabilities;
+- identity import не восстанавливает authorization state;
+- host/UI не выполняет MergeIdentity без runtime authorization.
