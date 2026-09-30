@@ -1,5 +1,17 @@
 # AGENTS.md — Кира:Ядро / Android
 
+## Область текущего Android-чата
+
+Эта ветка и этот чат ведутся прежде всего для Android-проекта `android/alpha-parity`.
+
+Правило:
+- изменять прежде всего Android host, Android bridge, Android security/storage boundaries, Android tests и Android-документацию;
+- общий Python Core трогать только тогда, когда без изменения общего контракта Android-паритет невозможно реализовать или проверить;
+- desktop UI/Windows/Linux runtime не развивать в рамках Android-этапов;
+- общие CI/tests могут проверяться как доказательство отсутствия регрессий, но наличие desktop CI job не делает desktop разработкой текущего этапа;
+- G22.txt и GENOME/genome.txt не изменять в Android quality/audit cycles.
+
+
 ## Назначение
 
 Этот файл — инженерная передача контекста для отдельной Android-ветки KiraCoreAI.
@@ -136,11 +148,13 @@ Android должен иметь тот же логический порядок,
 
 ### Поставщики моделей
 
-В Альфе задействованы:
+Desktop и Android Alpha используют единый ModelAdapter-контракт, но состав провайдеров платформы различается.
 
+Для Android Alpha задействованы только:
 - OpenRouter;
-- Google Gemini через OpenAI-compatible API;
-- LM Studio через OpenAI-compatible API.
+- Google Gemini / Google AI Studio.
+
+LM Studio не входит в Android Alpha.
 
 Единый контракт:
 
@@ -154,21 +168,10 @@ ModelResponse
 
 Конкретный API провайдера не должен протекать в верхние слои.
 
-### Важная оговорка по LM Studio
+### Граница Android Alpha по LM Studio
 
-Desktop-шаблон использует:
-
-```
-http://localhost:1234/v1
-```
-
-Для Android это не означает автоматически «локальный LM Studio на телефоне». Текущая архитектура лишь требует доступную OpenAI-compatible конечную точку.
-
-Следовательно:
-
-- provider-конракт должен остаться тем же;
-- возможность подключения к LM Studio по адресу, доступному с Android-устройства, должна рассматриваться как целевой сценарий;
-- нативное локальное выполнение LM Studio на Android **не является зафиксированной возможностью текущего проекта** и не должно объявляться реализованным без отдельной проверки.
+Desktop может использовать локальные OpenAI-compatible endpoints, включая LM Studio.
+Android Alpha этого провайдера не включает. Возврат LM Studio в Android Alpha требует отдельного решения и проверки.
 
 ### Модель и сессии
 
