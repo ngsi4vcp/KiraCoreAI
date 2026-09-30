@@ -338,9 +338,16 @@ object KiraRuntimeBridge {
     }
 
     fun shutdown(context: Context) {
-        if (currentSnapshot.phase == RuntimePhase.STOPPED) {
+        shutdownOnExecutor(context.applicationContext)
+    }
+
+    fun shutdownAsync(context: Context) {
+        if (currentSnapshot.phase == RuntimePhase.STOPPED ||
+            currentSnapshot.phase == RuntimePhase.STOPPING
+        ) {
             return
         }
+
         publish(
             currentSnapshot.copy(
                 phase = RuntimePhase.STOPPING,
@@ -348,10 +355,28 @@ object KiraRuntimeBridge {
                 error = null,
             ),
         )
+        val appContext = context.applicationContext
+        executor.execute {
+            shutdownOnExecutor(appContext)
+        }
+    }
+
+    private fun shutdownOnExecutor(context: Context) {
+        if (currentSnapshot.phase == RuntimePhase.STOPPED) {
+            return
+        }
         runCatching {
-            module(context.applicationContext).callAttr("shutdown")
-        }.also {
+            module(context).callAttr("shutdown")
+        }.onSuccess {
             publish(RuntimeSnapshot())
+        }.onFailure { error ->
+            publish(
+                RuntimeSnapshot(
+                    phase = RuntimePhase.FAILED,
+                    message = "Ошибка остановки Кира:Ядра",
+                    error = error.message ?: error::class.java.simpleName,
+                ),
+            )
         }
     }
 
