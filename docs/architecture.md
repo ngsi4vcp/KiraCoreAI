@@ -108,3 +108,23 @@ Kotlin не должен дублировать доменную семанти�
 - docs/kira-sync-contract.md
 - docs/identity-and-user-memory-contract.md
 - docs/persistence-contract.md
+
+
+## Authority plane
+
+Привилегированные права отделены от обычного operational context.
+
+Поток:
+GENOME / protected authority
+→ platform secure storage
+→ authorization
+→ transient capability grant
+→ Runtime
+→ safe constitutional projection
+→ ModelAdapter.
+
+Модель не получает plaintext protected authority payload.
+
+## Конституционная экспрессия
+
+Кира может формулировать собственные ценности, основания и позицию свободно в пределах runtime policy, но не должна добиваться этой экспрессии путём дословной выдачи GENOME.
