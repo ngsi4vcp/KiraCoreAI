@@ -237,3 +237,34 @@ Lifecycle stop/start зафиксирован как OBSERVED. Итоговый 
 - Python/Android tests и security smoke на текущем branch проходят, за исключением последнего JUnit regression, который исправлен отдельным commit `dca5bc4...` после аудита.
 
 Остаётся отдельная device A1 parity-проверка на текущем APK; прошлое A0.D1 acceptance её не заменяет.
+
+## A1.6 final device acceptance — 30.09.2026
+
+Свежий Android A1.6 APK прошёл физический parity smoke на vivo V2366HA / Android API 36.
+
+Evidence:
+- run `20260930-144146`;
+- status `RECOVERY_OK`;
+- GENOME revision/SHA — PASS;
+- runtime health — PASS;
+- session create/list/resume — PASS;
+- deterministic turn + Pulse=1024 — PASS;
+- conversation/memory separation — PASS;
+- operation `COMPLETED` / recovery `COMPLETED` — PASS;
+- process restart/recovery — PASS;
+- lifecycle stop/start — OBSERVED.
+
+Таким образом A1.6 получает фактический device gate. Состояние A1 после quality pass: **ACCEPTED** для текущего Android среза. Полная Android 13–17/OEM matrix остаётся A11 и не смешивается с A1 acceptance.
+
+## Переход в A2
+
+A2 начинается с Persistence Foundation:
+
+1. зафиксировать единый Android physical backend через Room/SQLite;
+2. определить versioned schema и migration boundary;
+3. ввести backend abstraction в Python Core без второго domain store;
+4. перевести session/core/conversation/memory/history на один Room-backed backend;
+5. затем добавить атомарные turn transactions, duplicate prevention и recovery checkpoints;
+6. после каждого подпредела — unit/CI/security/UTF-8 self-check и device smoke.
+
+Ограничение: до завершения интеграции Room не допускается режим, в котором Room является только зеркалом JSON stores.
