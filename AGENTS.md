@@ -342,3 +342,54 @@ GENOME → startup → provider → model → session → message
 - как это проверено.
 
 Не объявлять функциональный паритет по факту компиляции приложения. Паритет подтверждается поведением и тестами.
+
+
+ 
+## Зафиксированные решения Android — 30.09.2026
+
+Текущая Android-ветка использует:
+- Kotlin;
+- Jetpack Compose;
+- embedded Python 3.13;
+- Chaquopy 17.0;
+- ARM64 only;
+- minSdk 28;
+- compileSdk/targetSdk 37;
+- Room/SQLite как Android persistence backend;
+- Android Keystore для локальных ключей;
+- private GitHub как первый SyncProvider.
+
+Кроссплатформенное ядро обязано сохранять единую семантику, но физические storage/transport реализации могут различаться.
+
+Канонические новые документы:
+1. docs/kira-sync-contract.md
+2. docs/identity-and-user-memory-contract.md
+3. docs/persistence-contract.md
+4. docs/android-alpha-implementation-plan.md
+
+## Порядок чтения
+
+После G22.txt и AGENTS.md перед исходным кодом читать:
+- docs/android-port-status.md
+- docs/android-development-plan.md
+- docs/kira-sync-contract.md
+- docs/identity-and-user-memory-contract.md
+- docs/persistence-contract.md
+- docs/android-alpha-implementation-plan.md
+- docs/architecture.md
+- docs/runtime.md
+- docs/persistence.md
+
+Раздел «Что пока НЕ зафиксировано» в старой части файла считать устаревшим для Android-стека: основные технологические решения уже приняты. Неизвестными остаются только детали реализации, которые не меняют архитектурный контракт.
+
+## Правило реализации
+
+Разработчик не должен повторно выносить на архитектурное подтверждение решения, уже зафиксированные в перечисленных документах.
+
+К Алеку выносится только:
+- изменение G22/GENOME;
+- изменение архитектурных инвариантов;
+- смена публичного протокола;
+- изменение модели идентичности или привилегий;
+- глобальное изменение состава Alpha;
+- решение, влияющее на следующие ревизии Кира:Ядра.
