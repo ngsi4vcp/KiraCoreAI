@@ -119,3 +119,39 @@ class A1BridgeContractTest {
         assertFalse(empty.length() > 0)
     }
 }
+
+
+    @Test
+    fun healthMapsOperationRecoveryState() {
+        val health = BridgeJsonParser.health(
+            JSONObject(
+                """{
+                    "status":"READY",
+                    "runtime_status":"waiting",
+                    "active_session_id":"s1",
+                    "turn":1,
+                    "pulse":{
+                        "series":1000,
+                        "revision":22,
+                        "turn":1,
+                        "value":1024,
+                        "key":"1000:22:1:1024"
+                    },
+                    "operation":{
+                        "operation_id":"op1",
+                        "session_id":"s1",
+                        "phase":"COMPLETED",
+                        "checkpoint":"completed",
+                        "provider":"a0-test",
+                        "model":"embedded/a0-test",
+                        "recovery_state":"COMPLETED",
+                        "error":null
+                    }
+                }""",
+            ),
+        )
+
+        assertEquals("COMPLETED", health.operation?.phase)
+        assertEquals("COMPLETED", health.operation?.recoveryState)
+        assertEquals("op1", health.operation?.operationId)
+    }
