@@ -79,3 +79,56 @@ PulseStamp является корреляционной меткой, а не p
 **Статус:** принято
 
 Model output не может напрямую создать approved-memory. Новый материал проходит candidate → authorized approval.
+
+
+## ADR-0014 — Кира:Сбор сначала работает через GitHub
+
+**Статус:** принято
+
+Первая Android-реализация использует private GitHub как универсальный transport/storage. Будущие VPS, SSH, Mesh и ServerSync подключаются через общий SyncProvider Contract.
+
+## ADR-0015 — Приватная синхронизация всегда шифруется до GitHub
+
+**Статус:** принято
+
+GitHub не является доверенным plaintext-хранилищем персональных данных.
+
+Приватные sync objects публикуются как encrypted envelopes с целостностью, provenance и подписью источника.
+
+## ADR-0016 — Identity пользователя отделена от авторизации Алека
+
+**Статус:** принято
+
+identity_id/device_id/identity_secret отвечают за переносимость пользовательского профиля. Привилегии Алека являются отдельным authorization state и не восстанавливаются из имени, памяти или identity_id.
+
+## ADR-0017 — Кира может хранить собственные реляционные интерпретации о пользователях
+
+**Статус:** принято
+
+Такие сведения относятся к пользовательской памяти, имеют provenance/confidence/privacy scope и не становятся GENOME.
+
+Разрешены уровни Private, Shared-by-consent, Shared-derived и Public.
+
+## ADR-0018 — Android и desktop используют общий семантический Persistence Contract
+
+**Статус:** принято
+
+Физические storage backend различаются по ОС. Android использует Room/SQLite, desktop Alpha сохраняет JSON/JSONL совместимость.
+
+Кроссплатформенная идентичность достигается едиными stores, record semantics, versioning и migration rules.
+
+## ADR-0019 — Runtime восстанавливается через checkpoints
+
+**Статус:** принято
+
+Процесс может быть уничтожен системой. Continuity реализуется через service/runtime + persistence + recovery.
+
+Неопределённый внешний model-call получает состояние UNKNOWN и не повторяется молча.
+
+## ADR-0020 — Каждый запуск получает временный runtime instance
+
+**Статус:** принято
+
+Каждая уникальная загрузка KiraCoreAI получает runtime_instance_id с ограниченным сроком жизни и provenance app/core/genome revision.
+
+Регистрация не является пользовательской памятью.
