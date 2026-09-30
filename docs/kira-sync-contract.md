@@ -109,3 +109,9 @@ ModelAdapter, внешний provider и пользовательский UI н�
 
 Контракт предусматривает GitHubSync, SshSync, MeshSync и ServerSync.
 Доменный слой Кира:Сбора не должен знать, какой transport используется.
+
+## Authority material и Кира:Сбор
+
+Protected authority plane не синхронизируется как обычная пользовательская память.
+
+Private Sync может передавать пользовательские профили и разрешённые записи памяти, но не должен автоматически переносить локальные privileged grants, password verifier или platform key material.
