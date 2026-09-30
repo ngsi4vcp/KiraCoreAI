@@ -346,7 +346,7 @@ class DeviceEvidenceRunner(
                     "FAIL",
                     JSONObject().put("exception", error::class.java.name),
                 )
-                setOverall("RECOVERY BLOCKER: ${error::class.java.simpleName}")
+                setOverall("Восстановление: блокирующая ошибка — ${error::class.java.simpleName}")
             }
         }
     }
@@ -426,7 +426,7 @@ class DeviceEvidenceRunner(
         require(sha == expectedGenomeSha256) {
             "GENOME SHA-256 не совпал."
         }
-        return "revision=${revision}, sha256=${sha}"
+        return "ревизия=${revision}, SHA-256=${sha}"
     }
 
     private fun diagnosticsCheck(): String {
@@ -462,7 +462,7 @@ class DeviceEvidenceRunner(
         )
         val text = result.optJSONObject("response")?.optString("text").orEmpty()
         require(text.isNotBlank()) { "Пустой тестовый ответ." }
-        return "response_present=true"
+        return "ответ получен: да"
     }
 
     private fun pulseStateCheck(): String {
@@ -474,7 +474,7 @@ class DeviceEvidenceRunner(
         require(snapshot.pulse == expectedPulse) {
             "Ожидался Pulse=${expectedPulse}, получен ${snapshot.pulse}."
         }
-        return "session=${snapshot.activeSessionId}, turn=${snapshot.turn}, pulse=${snapshot.pulse}"
+        return "сессия=${snapshot.activeSessionId}, ход=${snapshot.turn}, ПУЛЬС=${snapshot.pulse}"
     }
 
     private fun keystoreCheck(): String {
