@@ -80,6 +80,14 @@ class AndroidBridgeContractTest(unittest.TestCase):
         self.assertIn("pulse", turn["response"]["raw_metadata"])
         self.assertEqual(turn["runtime_state"]["turn"], 1)
         self.assertTrue(turn["runtime_state"]["authorized_alek"])
+        self.assertEqual(
+            turn["runtime_state"]["operation"]["phase"],
+            "COMPLETED",
+        )
+        self.assertEqual(
+            turn["runtime_state"]["operation"]["recovery_state"],
+            "COMPLETED",
+        )
 
         conversation = json.loads(
             android_bridge.get_conversation(first["session_id"], 20)
