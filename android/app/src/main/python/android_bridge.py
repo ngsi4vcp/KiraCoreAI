@@ -6,9 +6,11 @@ from dataclasses import asdict
 from pathlib import Path
 
 from kiracore.model_contract import ModelResponse
+from kiracore.persistence_backend import RoomPersistenceBackend
 from kiracore.runtime import KiraRuntime
 
 _RUNTIME: KiraRuntime | None = None
+_PERSISTENCE_BACKEND: RoomPersistenceBackend | None = None
 
 EXPECTED_GENOME_REVISION = 22
 EXPECTED_GENOME_SHA256 = "dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e"
@@ -35,13 +37,16 @@ def _runtime_required() -> KiraRuntime:
     return _RUNTIME
 
 
-def initialize(project_root: str) -> str:
-    global _RUNTIME
+def initialize(project_root: str, room_gateway=None) -> str:
+    global _RUNTIME, _PERSISTENCE_BACKEND
     if _RUNTIME is None:
+        if room_gateway is not None:
+            _PERSISTENCE_BACKEND = RoomPersistenceBackend(room_gateway)
         _RUNTIME = KiraRuntime.start(
             project_root=Path(project_root),
             expected_revision=EXPECTED_GENOME_REVISION,
             expected_sha256=EXPECTED_GENOME_SHA256,
+            backend=_PERSISTENCE_BACKEND,
         )
     return json.dumps(
         {
@@ -223,6 +228,11 @@ def health() -> str:
 
 
 def shutdown() -> str:
-    global _RUNTIME
+    global _RUNTIME, _PERSISTENCE_BACKEND
+    if _PERSISTENCE_BACKEND is not None:
+        close = getattr(_PERSISTENCE_BACKEND.gateway, "close", None)
+        if close is not None:
+            close()
+    _PERSISTENCE_BACKEND = None
     _RUNTIME = None
     return "Кира:Ядро остановлено"
