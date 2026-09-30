@@ -1,0 +1,40 @@
+from __future__ import annotations
+
+from .genome import GenomeArtifact, build_protected_rules
+from .models import HistoryEntry, MemoryRecord, OperationalContext, SessionState
+
+
+class ContextCompiler:
+    """Собирает минимальный оперативный контекст, не превращая память в контекст целиком."""
+
+    def compile(
+        self,
+        genome: GenomeArtifact,
+        session: SessionState,
+        task: str,
+        memories: list[MemoryRecord],
+        history: list[HistoryEntry],
+        host_constraints: dict[str, object] | None = None,
+        memory_limit: int = 8,
+        history_limit: int = 8,
+    ) -> OperationalContext:
+        ranked = sorted(
+            [m for m in memories if m.status == "approved"],
+            key=lambda m: (m.importance, m.timestamp),
+            reverse=True,
+        )[:memory_limit]
+        return OperationalContext(
+            genome_revision=genome.revision,
+            genome_sha256=genome.sha256,
+            protected_rules=build_protected_rules(genome),
+            authorization={
+                "authorized_alek": session.authorized_alek,
+                "marker": session.authorization_marker,
+                "turn": session.turn,
+            },
+            state=session.state,
+            memory=tuple(ranked),
+            history=tuple(history[-history_limit:]),
+            task=task,
+            host_constraints=dict(host_constraints or {}),
+        )
