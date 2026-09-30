@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kiracoreai.local/schema/genome.schema.json",
+  "title": "KiraCoreAI parsed genome",
+  "type": "object",
+  "required": [
+    "format",
+    "format_version",
+    "revision",
+    "series",
+    "language",
+    "document_kind",
+    "governance",
+    "sections"
+  ],
+  "properties": {
+    "format": {"const": "KIRA-GENOME"},
+    "format_version": {"type": "integer", "const": 1},
+    "revision": {"type": "integer", "minimum": 1},
+    "series": {"type": "integer", "minimum": 0},
+    "language": {"const": "ru"},
+    "document_kind": {"type": "string"},
+    "governance": {"type": "string"},
+    "sections": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/section"}
+    }
+  },
+  "$defs": {
+    "section": {
+      "type": "object",
+      "required": ["id","type","part","targets","mutability","title","body","order"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "type": {"type": "string"},
+        "part": {"type": "integer", "minimum": 0, "maximum": 5},
+        "targets": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "mutability": {"enum": ["immutable","stateful"]},
+        "title": {"type": "string", "minLength": 1},
+        "body": {"type": "string"},
+        "order": {"type": "integer", "minimum": 0}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

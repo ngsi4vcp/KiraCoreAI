@@ -17,16 +17,13 @@ class FakeHost:
 
 class FakeModel:
     def generate(self, rendered_context: str, task: str) -> str:
-        return "Ответ среды
-" + pulse_for_turn(1)
+        return "Ответ среды\n" + pulse_for_turn(1)
 
 
 class SessionTests(unittest.TestCase):
     def test_session_runs_without_model_specific_state_ownership(self) -> None:
         root = Path(__file__).parents[1]
-        genome = GenomeLoader(
-            expected_sha256="d76d59ee1e4e82f57cc7dd961512e3f35898343d8196c746a10a9be59700ff65"
-        ).load(root / "genome" / "G22.txt")
+        genome = GenomeLoader(expected_revision=22).load_active(root)
         with tempfile.TemporaryDirectory() as tmp:
             manager = SessionManager(
                 genome,

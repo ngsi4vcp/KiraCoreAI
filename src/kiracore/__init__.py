@@ -1,5 +1,16 @@
 from .context import ContextCompiler
-from .genome import GenomeArtifact, GenomeLoader, GenomeValidator
+from .genome import (
+    GenomeArtifact,
+    GenomeCompiler,
+    GenomeDocument,
+    GenomeLoader,
+    GenomeParser,
+    GenomeRuntimeIndex,
+    GenomeSection,
+    GenomeStore,
+    GenomeValidator,
+    default_genome_path,
+)
 from .models import HistoryEntry, MemoryRecord, SessionState, StateSnapshot
 from .persistence import JsonPersistence
 from .reference_host import HostDescriptor, PlainTextHost
@@ -11,8 +22,15 @@ from .validation import OutputValidator
 __all__ = [
     "ContextCompiler",
     "GenomeArtifact",
+    "GenomeCompiler",
+    "GenomeDocument",
     "GenomeLoader",
+    "GenomeParser",
+    "GenomeRuntimeIndex",
+    "GenomeSection",
+    "GenomeStore",
     "GenomeValidator",
+    "default_genome_path",
     "HistoryEntry",
     "MemoryRecord",
     "SessionState",
