@@ -65,8 +65,8 @@ class DeviceEvidenceActivity : ComponentActivity() {
                             style = MaterialTheme.typography.headlineSmall,
                         )
                         Text(text = state.overall)
-                        Text(text = "Этап: @@{state.phase}")
-                        state.runId?.let { Text(text = "Запуск: @@{it}") }
+                        Text(text = "Этап: ${state.phase}")
+                        state.runId?.let { Text(text = "Запуск: ${it}") }
 
                         Button(
                             onClick = runner::startFullSmoke,
@@ -87,7 +87,7 @@ class DeviceEvidenceActivity : ComponentActivity() {
                         Button(
                             onClick = {
                                 exportLauncher.launch(
-                                    "kira-device-evidence-@@{state.runId ?: "latest"}.zip",
+                                    "kira-device-evidence-${state.runId ?: "latest"}.zip",
                                 )
                             },
                             enabled = !state.running && state.runId != null,
@@ -117,10 +117,10 @@ class DeviceEvidenceActivity : ComponentActivity() {
                         state.checks.forEach { check ->
                             Column(modifier = Modifier.fillMaxWidth()) {
                                 Text(
-                                    text = "@@{check.status} · @@{check.name}",
+                                    text = "${check.status} · ${check.name}",
                                     style = MaterialTheme.typography.titleMedium,
                                 )
-                                Text(text = "@@{check.durationMs} мс · @@{check.details}")
+                                Text(text = "${check.durationMs} мс · ${check.details}")
                             }
                         }
 
