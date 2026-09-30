@@ -148,6 +148,11 @@ jobs:
         run: |
           test -f android/app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Проверить содержимое Chaquopy APK
+        shell: bash
+        run: |
+          python tests/android_apk_packaging_smoke.py android/app/build/outputs/apk/debug/app-debug.apk
+
       - name: Повторить security smoke по исходникам и build output
         shell: bash
         run: |
