@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from typing import Callable
 from uuid import uuid4
 
 from .context import ContextCompiler
@@ -9,6 +10,7 @@ from .errors import ProtocolViolation
 from .genome import GenomeArtifact
 from .model_contract import ModelAdapter, ModelResponse
 from .models import HistoryEntry
+from .operation import OperationPhase
 from .persistence import JsonPersistence
 from .pulse import pulse_stamp
 from .rendering import PlainTextPromptRenderer
@@ -61,6 +63,7 @@ class SessionManager:
         provider: str,
         model_id: str,
         host_constraints: dict[str, object] | None = None,
+        operation_update: Callable[[str, str], None] | None = None,
     ) -> tuple[ModelResponse, object]:
         session = self.state_store.get(session_id)
         first_turn = session.turn == 0
@@ -103,8 +106,17 @@ class SessionManager:
             host_constraints=host_constraints,
         )
         request = self.prompt_renderer.render(context)
+        if operation_update:
+            operation_update(OperationPhase.CONTEXT_READY, "context_ready")
+            operation_update(OperationPhase.MODEL_CALL_STARTED, "model_call_started")
+
         response = model.generate(request)
 
+        if operation_update:
+            operation_update(OperationPhase.MODEL_CALL_FINISHED, "model_call_finished")
+
+        if operation_update:
+            operation_update(OperationPhase.VALIDATING, "validation_started")
         validation = self.output_validator.validate(response)
         if not validation.valid:
             session = replace(
@@ -122,6 +134,8 @@ class SessionManager:
             self.genome.revision,
             self.genome.series,
         )
+        if operation_update:
+            operation_update(OperationPhase.PERSISTING, "persistence_started")
         self.conversation_store.append(
             session_id,
             session.turn,
@@ -150,5 +164,8 @@ class SessionManager:
         self.state_store.put(session)
         if self.persistence:
             self.persistence.save(session)
+
+        if operation_update:
+            operation_update(OperationPhase.COMPLETED, "completed")
 
         return response, pulse
