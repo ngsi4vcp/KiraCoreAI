@@ -12,6 +12,16 @@
 - G22.txt и GENOME/genome.txt не изменять в Android quality/audit cycles.
 
 
+## Общий старт проекта
+
+Перед Android-кодом сначала прочитать общую карту проекта и обязательный audit-маршрут из основной ветки:
+
+- https://github.com/ngsi4vcp/KiraCoreAI/blob/main/G22.txt
+- https://github.com/ngsi4vcp/KiraCoreAI/blob/main/MAIN-STATUS.md
+- https://github.com/ngsi4vcp/KiraCoreAI/blob/main/docs/project-audit-index.md
+
+После этого пройти Android-документы, указанные ниже. Исторические checkpoint не считать текущим статусом без сверки с Git/CI/device evidence.
+
 ## Назначение
 
 Этот файл — инженерная передача контекста для отдельной Android-ветки KiraCoreAI.
