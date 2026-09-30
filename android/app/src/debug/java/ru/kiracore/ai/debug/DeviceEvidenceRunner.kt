@@ -212,7 +212,7 @@ class DeviceEvidenceRunner(
                     require(health.turn == 1)
                     require(health.pulse?.value == 1024)
                     require(health.operation?.phase == "COMPLETED") {
-                        "Operation phase не COMPLETED: ${health.operation.phase}"
+                        "Operation phase не COMPLETED: ${health.operation?.phase}"
                     }
                     require(health.operation?.recoveryState == "COMPLETED") {
                         "Recovery state не COMPLETED: ${health.operation?.recoveryState}"
