@@ -81,7 +81,7 @@ Harness размещается только в debug source set.
 
 ## 5. Сценарий проверки
 
-### D1.0 Environment
+### D1.0 Окружение
 
 Записать:
 - Android SDK level;
@@ -89,7 +89,7 @@ Harness размещается только в debug source set.
 - manufacturer/model;
 - ABI;
 - app version;
-- безопасные device/runtime metadata.
+- безопасные безопасные метаданные устройства/runtime.
 
 ### D1.1 Startup
 
@@ -256,8 +256,8 @@ A0.D1 = ACCEPTED только если:
 - Keystore PASS;
 - storage PASS;
 - lifecycle observations recorded;
-- recovery PASS или explicit blocker;
-- bundle secret-free;
+- recovery PASS или явный blocker;
+- bundle без секретов;
 - результаты проанализированы и отражены в документации.
 
 ## 9. Stop conditions
