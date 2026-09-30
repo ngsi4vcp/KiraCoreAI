@@ -67,6 +67,7 @@ class AndroidBridgeContractTest(unittest.TestCase):
             second["session_id"],
         )
         self.assertEqual(health["turn"], 0)
+        self.assertIsNone(health["pulse"])
 
         turn = json.loads(
             android_bridge.send_test_turn(
