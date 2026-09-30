@@ -269,26 +269,22 @@ Android может хранить эквивалентные данные ина
 10. Ошибка model-call не должна стирать ранее сохранённые данные.
 11. Архитектурные изменения, затрагивающие конституционные правила, нельзя маскировать под Android-порт.
 
-## Что пока НЕ зафиксировано
+## Зафиксированные технологические решения Android
 
-Не считать заранее выбранными:
+Основной стек уже принят:
 
-- Kotlin vs Java;
-- Jetpack Compose vs Views;
-- способ встраивания Python runtime;
-- полный rewrite core на Kotlin;
-- общий cross-platform library;
-- SQLite/Room вместо текущего файлового представления;
-- конкретную систему DI;
-- фоновую синхронизацию;
-- streaming;
-- push/notifications;
-- офлайн-режим;
-- локальную модель на устройстве.
+- Kotlin;
+- Jetpack Compose;
+- embedded Python 3.13;
+- Chaquopy 17.0;
+- ARM64 only;
+- minSdk 28;
+- compileSdk/targetSdk 37;
+- Room/SQLite;
+- Android Keystore;
+- private GitHub как первый SyncProvider.
 
-Это инженерные решения Android-ветки, а не существующие свойства Альфы.
-
-До выбора стека нужно сохранить наблюдаемое поведение текущего runtime.
+Открыты только детали реализации, которые не изменяют архитектурный контракт.
 
 ## Приоритет разработки
 
@@ -299,7 +295,7 @@ GENOME → startup → provider → model → session → message
 → response validation → PULSE → persistence → restart → resume
 ```
 
-Затем довести до паритета:
+Затем довести до Android Alpha:
 
 - память;
 - история;
@@ -307,7 +303,10 @@ GENOME → startup → provider → model → session → message
 - диагностика;
 - ошибки;
 - настройки;
-- все provider paths.
+- OpenRouter;
+- Google Gemini.
+
+LM Studio остаётся desktop-коннектором и не входит в Android Alpha.
 
 Не заменять сначала core «красивой мобильной архитектурой». Сначала воспроизвести контракт и проверить его.
 
@@ -393,3 +392,14 @@ GENOME → startup → provider → model → session → message
 - изменение модели идентичности или привилегий;
 - глобальное изменение состава Alpha;
 - решение, влияющее на следующие ревизии Кира:Ядра.
+
+## Безопасность Android и Core
+
+Не путать семантическую саморефлексию с cryptographic authority.
+
+Модель получает только safe constitutional projection и capabilities текущей сессии. Полный текст защищённых секций GENOME, пароль, verifier и key material в ModelRequest не попадают.
+
+Следовать:
+- docs/security-architecture.md
+- docs/kira-sync-contract.md
+- docs/identity-and-user-memory-contract.md
