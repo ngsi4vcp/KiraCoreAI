@@ -21,7 +21,7 @@ VERSION = "0.1.0-alpha.1"
 
 
 class TerminalApplication:
-    """Оркестрирует пользовательский сценарий Alpha."""
+    """Оркестрирует пользовательский сценарий Альфа."""
 
     def __init__(self, project_root: str | Path) -> None:
         self.root = Path(project_root).resolve()
@@ -54,7 +54,7 @@ class TerminalApplication:
     def startup(self) -> None:
         self.host.banner(VERSION)
         self.host.status("Определение среды", True)
-        self.host.status("Создание DATA/ и persistent-контуров", True)
+        self.host.status("Создание DATA/ и контуров сохранения", True)
         self.host.status("Чтение GENOME/genome.txt", True)
         self.host.status(
             f"Геном: ревизия {self.runtime.genome.revision}, "
@@ -67,7 +67,7 @@ class TerminalApplication:
             f"Модель подготовлена: {human_provider_name(self.provider)} / {self.model_id}",
             True,
         )
-        self.host.status("Запуск KiraRuntime", True)
+        self.host.status("Запуск основного рантайма", True)
         self.host.status("Инициализация завершена", True)
 
     def select_model(self) -> None:
@@ -113,7 +113,7 @@ class TerminalApplication:
                 continue
 
             self.host.status(
-                f"Получен каталог моделей: {len(catalog)}",
+                f"Каталог моделей получен: {len(catalog)}",
                 True,
             )
             self.model = model
@@ -189,8 +189,15 @@ class TerminalApplication:
                     return 0
                 if command == "/help":
                     print(
-                        "/help /status /genome /sessions /memory "
-                        "/memory candidates /memory approve <id> /exit"
+                        "Команды:\n"
+                        "  /help — показать справку\n"
+                        "  /status — показать текущее состояние\n"
+                        "  /genome — сведения об активном геноме\n"
+                        "  /sessions — список сохранённых разговоров\n"
+                        "  /memory — утверждённая память\n"
+                        "  /memory candidates — кандидаты памяти\n"
+                        "  /memory approve <id> — утвердить запись памяти\n"
+                        "  /exit — завершить работу"
                     )
                     continue
                 if command == "/status":
@@ -204,7 +211,12 @@ class TerminalApplication:
                     )
                     continue
                 if command == "/sessions":
-                    for item in self.runtime.conversation_store.list():
+                    sessions = self.runtime.conversation_store.list()
+                    if not sessions:
+                        print("Сохранённых разговоров нет.")
+                        continue
+                    print("Сохранённые разговоры:")
+                    for item in sessions:
                         print(
                             f"{item.session_id[:8]}  "
                             f"{item.updated_at}  "
@@ -220,7 +232,7 @@ class TerminalApplication:
                 if command.startswith("/memory approve "):
                     record_id = command.removeprefix("/memory approve ").strip()
                     self.runtime.approve_memory(session_id, record_id)
-                    print(f"[OK] Память утверждена: {record_id}")
+                    print(f"[ГОТОВО] Память утверждена: {record_id}")
                     continue
                 if not task.strip():
                     continue
@@ -258,11 +270,17 @@ class TerminalApplication:
             else self.runtime.memory_store.approved()
         )
         if not items:
-            print("- нет записей")
+            print("Записей памяти нет.")
             return
+        print("Кандидаты памяти:" if candidates else "Утверждённая память:")
         for item in items:
+            status = {
+                "candidate": "кандидат",
+                "approved": "утверждено",
+                "cancelled": "отменено",
+            }.get(item.status, item.status)
             print(
-                f"- {item.id} | {item.status} | {item.type} | "
+                f"- {item.id} | {status} | {item.type} | "
                 f"{item.content}"
             )
 
@@ -274,7 +292,7 @@ class TerminalApplication:
             f"Ход: {state.get('turn', 0)}\n"
             f"Пульс: {state.get('pulse', '—')}\n"
             f"Авторизация Алека: {state.get('authorized_alek', False)}\n"
-            f"Модель: {self.provider}/{self.model_id}"
+            f"Поставщик / модель: {self.provider}/{self.model_id}"
         )
 
 
