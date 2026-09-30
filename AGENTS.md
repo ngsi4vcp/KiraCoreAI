@@ -27,15 +27,18 @@
 2. этот `AGENTS.md`;
 3. `docs/android-port-status.md`;
 4. `docs/android-development-plan.md`;
-5. `README.md`;
-5. `docs/architecture.md`;
-6. `docs/runtime.md`;
-7. `docs/persistence.md`;
-8. `docs/model-connectors.md`;
-9. `docs/evaluation.md`;
-10. затем исходный код и тесты по необходимости.
-
-Не восстанавливать архитектуру Android по памяти или по общему знанию об Android: текущий репозиторий является фактическим эталоном поведения Альфы.
+5. `docs/kira-sync-contract.md`;
+6. `docs/identity-and-user-memory-contract.md`;
+7. `docs/persistence-contract.md`;
+8. `docs/security-architecture.md`;
+9. `docs/android-alpha-implementation-plan.md`;
+10. `README.md`;
+11. `docs/architecture.md`;
+12. `docs/runtime.md`;
+13. `docs/persistence.md`;
+14. `docs/model-connectors.md`;
+15. `docs/evaluation.md`;
+16. затем исходный код и тесты по необходимости.
 
 ## Цель Android-ветки
 
