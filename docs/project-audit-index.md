@@ -53,6 +53,7 @@ GitHub: https://github.com/ngsi4vcp/KiraCoreAI
 - `docs/android-port-status.md`
 - `docs/android-readiness-audit.md`
 - `docs/android-development-plan.md`
+- `docs/android-next-steps.md` — текущий пошаговый маршрут A2 → A12 и quality gates
 - `docs/android-alpha-implementation-plan.md`
 - `docs/android-a0-plan.md`
 - `docs/android-device-evidence-plan.md`
