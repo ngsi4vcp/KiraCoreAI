@@ -49,13 +49,13 @@
 - [x] CI debug APK + security smoke
 
 ### A0.D1. Device Evidence / Device Acceptance
-- [ ] Device Evidence Harness
+- [x] Device Evidence Harness
 - [ ] vivo X100 Ultra / OriginOS 6 smoke
 - [ ] GENOME/Python/runtime evidence
 - [ ] session/test-turn/Pulse evidence
 - [ ] Keystore/storage evidence
 - [ ] process restart/recovery evidence
-- [ ] secret-free evidence export
+- [x] secret-free evidence export
 - [ ] A0 acceptance report
 
 ### A1. Core Parity
