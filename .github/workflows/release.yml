@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   build:
+    if: github.event.head_commit.message == 'Release: Кира:Ядро 0.1.0-alpha.1'
     strategy:
       fail-fast: false
       matrix:
@@ -67,17 +68,6 @@ jobs:
           path: release/*
 
   publish:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Скачать release-артефакты
-        uses: actions/download-artifact@v4
-        with:
-          pattern: release-*
-          path: release
-          merge-multiple: true
-
-  publish:
     if: github.event.head_commit.message == 'Release: Кира:Ядро 0.1.0-alpha.1'
     needs: build
     runs-on: ubuntu-latest
@@ -93,11 +83,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="v$(cat VERSION.txt)"
-          gh release create "$TAG" release/* \
-            --target "$GITHUB_SHA" \
-            --title "KiraCoreAI $TAG" \
-            --notes "Кира:Ядро 0.1.0-alpha.1 — первая исполняемая Альфа.
+          TAG="v0.1.0-alpha.1"
+          cat > release-notes.md <<'EOF'
+          Кира:Ядро 0.1.0-alpha.1 — первая исполняемая Альфа.
 
           В выпуске реализован первый вертикальный сценарий KiraCoreAI: загрузка и проверка GENOME, раздельные контуры состояния, памяти, истории и разговора, локальное сохранение состояния, единый контракт моделей и коннекторы OpenRouter, Google Gemini и LM Studio.
 
@@ -105,4 +93,9 @@ jobs:
 
           CI подтверждает тесты на Windows/Linux для Python 3.11 и 3.12, а также фактический запуск собранных PyInstaller-бинарников на Windows и Linux.
 
-          Альфа предназначена для внешнего тестирования на реальных Windows 11 и Linux. После первого реального прогона будут оцениваться реальные поведение, устойчивость сохранения и интеграция с провайдерами моделей."
+          Альфа предназначена для внешнего тестирования на реальных Windows 11 и Linux. После первого реального прогона будут оцениваться реальное поведение, устойчивость сохранения и интеграция с провайдерами моделей.
+          EOF
+          gh release create "$TAG" release/* \
+            --target "$GITHUB_SHA" \
+            --title "KiraCoreAI $TAG" \
+            --notes-file release-notes.md
