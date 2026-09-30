@@ -96,7 +96,9 @@ jobs:
 
           Альфа предназначена для внешнего тестирования на реальных Windows 11 и Linux. После первого реального прогона будут оцениваться реальное поведение, устойчивость сохранения и интеграция с провайдерами моделей.
           EOF
-          gh release create "$TAG" release/* \
+          mapfile -d '' ASSETS < <(find release -type f \( -name '*.zip' -o -name '*.tar.gz' \) -print0)
+          test "${#ASSETS[@]}" -eq 2
+          gh release create "$TAG" "${ASSETS[@]}" \
             --target "$GITHUB_SHA" \
             --title "KiraCoreAI $TAG" \
             --notes-file release-notes.md
