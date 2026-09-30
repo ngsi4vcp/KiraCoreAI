@@ -15,6 +15,7 @@ from .models import HistoryEntry, MemoryRecord, SessionState, StateSnapshot
 from .persistence import JsonPersistence
 from .reference_host import HostDescriptor, PlainTextHost
 from .pulse import pulse_for_turn, pulse_value
+from .runtime import KiraRuntime
 from .session import SessionManager
 from .stores import HistoryStore, MemoryStore, StateStore
 from .validation import OutputValidator
@@ -40,6 +41,7 @@ __all__ = [
     "PlainTextHost",
     "pulse_for_turn",
     "pulse_value",
+    "KiraRuntime",
     "SessionManager",
     "HistoryStore",
     "MemoryStore",
