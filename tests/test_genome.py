@@ -17,7 +17,10 @@ class GenomeTests(unittest.TestCase):
     def test_default_genome_path_finds_active_file_from_project_root(self) -> None:
         artifact = GenomeLoader(expected_revision=22).load_active(self.ROOT)
         self.assertTrue(Path(artifact.path).is_file())
-        self.assertTrue(artifact.path.endswith("GENOME/genome.txt"))
+        self.assertEqual(
+            Path(artifact.path).resolve(),
+            (self.ROOT / "GENOME" / "genome.txt").resolve(),
+        )
 
     def test_template_and_active_genome_are_parseable(self) -> None:
         loader = GenomeLoader(expected_revision=22)
