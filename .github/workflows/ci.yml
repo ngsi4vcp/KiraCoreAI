@@ -6,7 +6,7 @@ env:
 
 on:
   push:
-    branches: ["main", "android/alpha-parity"]
+    branches: ["main", "android/alpha-parity", "android/a2.1-hardening-wip"]
   pull_request:
     branches: ["main"]
 
