@@ -77,3 +77,17 @@ Migration: schema N → validate → transform → validate → schema N+1 → c
 Windows/Linux desktop и Android не обязаны хранить одинаковые файлы.
 Они обязаны одинаково понимать identity, memory, history, state, conversation, engram, runtime и sync envelope.
 Это и есть кроссплатформенный KiraCore Contract.
+
+## Security boundary
+
+Persistence Contract разделяет обычные records и protected authority material.
+
+Обычные records могут быть экспортированы в KiraSync.
+
+Authority material:
+- не входит в обычный export;
+- не проходит через ModelAdapter;
+- не хранится в UI state;
+- не хранится в plaintext persistence.
+
+Платформа реализует PlatformSecureStore.
