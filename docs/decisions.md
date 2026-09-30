@@ -64,7 +64,7 @@
 
 **Статус:** принято
 
-OpenRouter, Google Gemini и LM Studio используют общий нормализованный ModelRequest/ModelResponse contract.
+OpenRouter, Google Gemini и LM Studio используют общий нормализованный контракт ModelRequest/ModelResponse.
 
 ## ADR-0012 — ПУЛЬС принадлежит runtime
 
