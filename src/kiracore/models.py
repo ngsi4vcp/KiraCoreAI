@@ -72,7 +72,8 @@ class OperationalContext:
     session_id: str
     genome_revision: int
     genome_sha256: str
-    protected_rules: dict[str, str]
+    constitutional_guidance: tuple[str, ...]
+    authorization_context: dict[str, Any]
     authorization: dict[str, Any]
     state: StateSnapshot
     memory: tuple[MemoryRecord, ...]
