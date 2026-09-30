@@ -497,3 +497,33 @@ CI run `#305` завершён успешно:
 - встроенный GENOME SHA-256 совпадает с ревизией 22 baseline.
 
 Следующая граница: A1.3 session parity → A1.4 deterministic turn/Pulse → A1.5 persistence semantics → A1.6 recovery/UNKNOWN. Реальные OpenRouter/Gemini, Room и production UI пока не открываются.
+
+## A1.6 device acceptance — фактический результат 30.09.2026
+
+Свежий APK для текущего A1.6 среза проверен на том же фактическом устройстве:
+
+- evidence run: `20260930-144146`;
+- device: vivo V2366HA;
+- Android API: 36;
+- applicationId: `ru.kiracore.ai`;
+- versionName: `0.1.0-alpha.1`;
+- GENOME revision: 22;
+- GENOME SHA-256: `dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e`;
+- A1 runtime health: PASS;
+- GENOME info: PASS;
+- session create/list/resume: PASS;
+- deterministic turn: PASS;
+- conversation boundary: PASS;
+- memory separation: PASS;
+- structured health after turn: PASS;
+- operation phase: `COMPLETED`;
+- recovery state: `COMPLETED`;
+- controlled restart/recovery: PASS;
+- lifecycle stop/start: OBSERVED;
+- evidence status: `RECOVERY_OK`.
+
+Этот прогон закрывает физический A1 parity smoke gate для текущего APK. Android 13–17/OEM matrix остаётся отдельным A11 контуром.
+
+## A2 текущая точка
+
+A1 Core Parity принята по CI и device evidence. Следующий активный этап — **A2 Persistence**, начиная с A2.0 Persistence Foundation. A2 не должен создавать второй источник истины: до подключения Room runtime не переводится на смешанный режим Python JSON + Room mirror.
