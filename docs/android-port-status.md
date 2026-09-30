@@ -305,50 +305,20 @@ Android не должен быть терминалом, перенесённы�
 6. Android lifecycle не начал незаметно менять причинность сессии;
 7. UI не получил право напрямую менять конституционные слои.
 
-## Нерешённые инженерные решения
+## Текущее состояние инженерных решений Android
 
-Пока в проекте не зафиксировано:
+Основной Android-стек зафиксирован:
+- Kotlin + Jetpack Compose;
+- embedded Python 3.13 + Chaquopy 17.0;
+- ARM64;
+- minSdk 28, compileSdk/targetSdk 37;
+- Android Keystore + CryptoProvider;
+- Room/SQLite — целевой persistence backend для следующих этапов; в A0 реализована только platform foundation;
+- Service + persistence + recovery — целевой runtime-контур;
+- OpenRouter + Gemini — Android Alpha providers;
+- LM Studio — только desktop, не входит в Android Alpha.
 
-- Kotlin/Java;
-- Jetpack Compose/Views;
-- embedded Python или порт core;
-- единый multiplatform core;
-- SQLite/Room или файловая совместимость;
-- локальное хранилище секретов Android;
-- фоновая генерация;
-- streaming;
-- локальные модели;
-- offline-first.
-
-Это рабочие решения Android-ветки.
-
-### Практический критерий выбора
-
-Первый выбор должен минимизировать риск изменения поведения текущего runtime.
-
-Критерий не «какая технология современнее», а «какая технология позволяет доказать функциональный паритет с минимальным числом скрытых семантических изменений».
-
-## Минимальный первый milestone
-
-Сначала:
-
-```
-Android launch
-→ load/validate G22 runtime genome
-→ provider selection
-→ model catalog
-→ model selection
-→ new session
-→ ~1 authorization path
-→ one user turn
-→ model response
-→ runtime PULSE
-→ persistence
-→ force close / restart
-→ resume last session
-```
-
-Только после этого расширять UI и дополнительные функции.
+A0 закрывает минимальный startup/runtime bridge contour. Полноценный Chat UI, provider credentials, password authority, production foreground service, Room domain layer и sync остаются следующими этапами.
 
 ## Нормативная граница
 
