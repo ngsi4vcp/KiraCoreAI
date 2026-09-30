@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from uuid import uuid4
 
 from .context import ContextCompiler
 from .conversation import ConversationStore, utc_now
 from .errors import ProtocolViolation
 from .genome import GenomeArtifact
 from .model_contract import ModelAdapter, ModelResponse
+from .models import HistoryEntry
 from .persistence import JsonPersistence
 from .pulse import pulse_stamp
 from .rendering import PlainTextPromptRenderer
@@ -127,6 +129,19 @@ class SessionManager:
             response.text,
             pulse=pulse,
         )
+        self.history_store.append(
+            HistoryEntry(
+                id=uuid4().hex,
+                date=utc_now(),
+                event="Завершение хода сессии",
+                change=f"Завершён ход {session.turn} через {provider}/{model_id}.",
+                cause=clean_task[:500] or "Пустая задача пользователя.",
+                significance="Результат хода сохранён в разговоре и связан с ПУЛЬС.",
+                consequence="Состояние сессии переведено в ожидание следующего хода.",
+                revision=f"G{self.genome.revision}",
+            )
+        )
+
         session = replace(
             session,
             runtime_status="waiting",
