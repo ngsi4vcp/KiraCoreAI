@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "kiracoreai"
 version = "0.1.0a1"
-description = "Минимальная исполняемая среда Кира:Ядра с терминальным Alpha и независимыми model adapters."
+description = "Минимальная исполняемая среда Кира:Ядра с терминальной Альфой и независимыми адаптерами моделей."
 requires-python = ">=3.11"
 dependencies = []
 
