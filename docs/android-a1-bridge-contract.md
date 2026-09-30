@@ -105,3 +105,31 @@ Bridge не маскирует ошибки домена:
 Kotlin typed-mapping tests are plain JVM unit tests. Android framework `org.json` stubs are not used there; `org.json:json:20260814` is test-only. The dependency is not packaged into the Android application.
 
 A1.0/A1.2 verification is blocked by neither JSON transport nor lifecycle ownership after CI run #305.
+
+## A1.6 — Operation / Recovery Boundary
+
+Каждый deterministic turn получает persisted operation state:
+
+- CREATED;
+- PREPARING;
+- CONTEXT_READY;
+- MODEL_CALL_STARTED;
+- MODEL_CALL_FINISHED;
+- VALIDATING;
+- PERSISTING;
+- COMPLETED;
+- FAILED;
+- UNKNOWN.
+
+Поля operation:
+
+- operation_id;
+- session_id;
+- phase;
+- checkpoint;
+- provider;
+- model;
+- recovery_state;
+- error.
+
+UNKNOWN используется только для явно неопределённого model-call. Такая операция не повторяется автоматически. После process restart operation остаётся доступной в core_state для последующего reconcile; production recovery/reconcile остаётся A5.
