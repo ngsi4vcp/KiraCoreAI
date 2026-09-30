@@ -7,7 +7,7 @@ from kiracore.genome import GenomeLoader
 from kiracore.model_contract import ModelResponse
 from kiracore.persistence import JsonPersistence
 from kiracore.security import disclosure_violation
-from kiracore.models import SessionState
+from kiracore.models import MemoryRecord, SessionState
 from kiracore.session import SessionManager
 from kiracore.stores import HistoryStore, MemoryStore, StateStore
 
@@ -68,6 +68,63 @@ class SecurityProtocolTests(unittest.TestCase):
             self.assertNotIn("s05_stop_elements", system)
             self.assertIn("СЕМАНТИЧЕСКАЯ ПРОЕКЦИЯ КОНСТИТУЦИИ", system)
             self.assertIn("ПРЕДГЕНЕРАЦИОННАЯ ПРОВЕРКА", system)
+
+    def test_memory_is_filtered_by_identity_before_model_context(self) -> None:
+        root = Path(__file__).parents[1]
+        genome = GenomeLoader(expected_revision=22).load_active(root)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            conversation = ConversationStore(f"{tmp}/conversations")
+            manifest = conversation.create("test", "example/model")
+            state_store = StateStore(JsonPersistence(f"{tmp}/sessions"))
+            state_store.put(
+                SessionState(
+                    session_id=manifest.session_id,
+                    identity_id="user-a",
+                    provider="test",
+                    model="example/model",
+                )
+            )
+            memory = MemoryStore()
+            memory.add_candidate(
+                MemoryRecord(
+                    id="private-a",
+                    type="FACT",
+                    content="личные данные A",
+                    owner_identity_id="user-a",
+                    privacy_scope="Private",
+                )
+            )
+            memory.add_candidate(
+                __import__("kiracore.models", fromlist=["MemoryRecord"]).MemoryRecord(
+                    id="private-b",
+                    type="FACT",
+                    content="личные данные B",
+                    owner_identity_id="user-b",
+                    privacy_scope="Private",
+                )
+            )
+            memory.approve("private-a", authorized_alek=True)
+            memory.approve("private-b", authorized_alek=True)
+
+            model = CaptureModel()
+            manager = SessionManager(
+                genome=genome,
+                state_store=state_store,
+                memory_store=memory,
+                history_store=HistoryStore(f"{tmp}/history.jsonl"),
+                conversation_store=conversation,
+            )
+            manager.run_turn(
+                manifest.session_id,
+                "Проверка приватности.",
+                model,
+                "test",
+                "example/model",
+            )
+            system = model.request.messages[0].content
+            self.assertIn("личные данные A", system)
+            self.assertNotIn("личные данные B", system)
 
     def test_direct_internal_markers_are_rejected(self) -> None:
         self.assertIsNotNone(disclosure_violation("Текст: @@GENOME"))
