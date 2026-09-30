@@ -4,7 +4,10 @@
 
 Реализационный A0-контур: **кодовый quality pass и CI verification завершены; device evidence ещё не получено**.
 
-## Чек-лист
+## Архитектурно зафиксировано
+
+Эти пункты означают наличие утверждённых контрактов и решений, а не завершённую реализацию Android A0.
+
 
 - [x] G22/GENOME как нормативный источник
 - [x] разделение GENOME / MEMORY / HISTORY / STATE / CONTEXT / ENVIRONMENT
@@ -32,6 +35,35 @@
 - [x] документация ADR-0014…ADR-0023
 - [x] CI Python-пути для android/alpha-parity
 - [x] удалены устаревшие внутренние web citation markers из документации
+- [x] единая политика UTF-8 без BOM + CI enforcement
+
+## Реализовано в A0
+
+- [x] Android module + Compose host
+- [x] embedded Python 3.13 + Chaquopy bridge
+- [x] GENOME revision/SHA validation
+- [x] RuntimeService boundary
+- [x] RuntimeSnapshot и синхронизация с фактическим core_state
+- [x] diagnostics contour
+- [x] PlatformSecureStore + Android Keystore/AES-GCM foundation
+- [x] CryptoProvider + PersistenceProvider foundation
+- [x] Python bridge end-to-end smoke
+- [x] restart/persistence smoke на Python runtime
+- [x] secret/security smoke по исходникам и APK build output
+- [x] Android debug APK CI build
+- [x] Android unit tests
+- [x] repository-wide UTF-8 smoke
+
+Не следует считать реализованными в A0 только по архитектурному контракту:
+- полноценный Chat UI и утверждённое боковое меню;
+- Pulse chip/avatar UX;
+- Room/SQLite domain persistence;
+- foreground-service production hardening/recovery;
+- реальные OpenRouter/Gemini calls;
+- password authority plane и sealed packaging;
+- Кира:Сбор;
+- identity transfer/merge UI;
+- offline inference.
 
 ## Требует реализации — !
 
@@ -113,3 +145,13 @@
 - vivo X100 Ultra / OriginOS 6;
 - Android 13–17 реальная matrix;
 - instrumentation/device smoke.
+
+
+## Финальная ревизия A0 — 30.09.2026
+
+Коррекции после последнего успешного run #161:
+- UTF-8 enforcement: PYTHONUTF8/PYTHONIOENCODING в CI + tests/utf8_smoke.py без BOM;
+- RuntimeSnapshot теперь отражает active_session_id, turn и Pulse из core_state после startup/session/state/test-turn;
+- readiness-аудит разделяет архитектурно утверждённые контракты и реально реализованный A0.
+
+G22.txt и GENOME/genome.txt не изменялись.
