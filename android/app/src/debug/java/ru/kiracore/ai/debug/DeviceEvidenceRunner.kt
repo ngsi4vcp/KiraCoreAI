@@ -605,6 +605,8 @@ class DeviceEvidenceRunner(
                 JSONObject().put("check", name),
             )
             details
+        } catch (error: CancellationException) {
+            throw error
         } catch (error: Throwable) {
             recordCheck(name, "FAIL", elapsedMs(started), error::class.java.simpleName)
             appendEvent(
