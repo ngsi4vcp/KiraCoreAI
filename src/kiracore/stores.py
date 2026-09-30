@@ -1,19 +1,34 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import json
+from pathlib import Path
 
 from .errors import AuthorizationError, KiraCoreError
 from .models import HistoryEntry, MemoryRecord, SessionState
+from .persistence import JsonPersistence
 
 
 class StateStore:
-    """Изменяемое состояние сессий; доступа к геному здесь нет."""
+    """Изменяемое состояние сессий с восстановлением после перезапуска."""
 
-    def __init__(self) -> None:
+    def __init__(self, persistence: JsonPersistence | None = None) -> None:
         self._items: dict[str, SessionState] = {}
+        self.persistence = persistence
+        if persistence and persistence.directory.exists():
+            for path in persistence.directory.glob("*.json"):
+                try:
+                    session_id = path.stem
+                    self._items[session_id] = self._from_dict(
+                        json.loads(path.read_text(encoding="utf-8"))
+                    )
+                except (OSError, ValueError, KeyError, TypeError):
+                    continue
 
     def put(self, state: SessionState) -> None:
         self._items[state.session_id] = deepcopy(state)
+        if self.persistence:
+            self.persistence.save(state)
 
     def get(self, session_id: str) -> SessionState:
         try:
@@ -24,12 +39,65 @@ class StateStore:
     def exists(self, session_id: str) -> bool:
         return session_id in self._items
 
+    @staticmethod
+    def _from_dict(item: dict) -> SessionState:
+        from .models import StateSnapshot
+
+        state = StateSnapshot(**item.get("state", {}))
+        return SessionState(
+            session_id=item["session_id"],
+            turn=item.get("turn", 0),
+            authorized_alek=item.get("authorized_alek", False),
+            authorization_marker=item.get("authorization_marker"),
+            environment=item.get("environment", {}),
+            state=state,
+            runtime_status=item.get("runtime_status", "created"),
+            created_at=item.get("created_at"),
+            updated_at=item.get("updated_at"),
+        )
+
 
 class MemoryStore:
-    """Хранилище памяти. Обычная запись создаётся только как кандидат."""
+    """Постоянное хранилище памяти; автоматическая активация не разрешена."""
 
-    def __init__(self) -> None:
+    def __init__(self, path: str | Path | None = None) -> None:
         self._items: dict[str, MemoryRecord] = {}
+        self.path = Path(path) if path else None
+        self._load()
+
+    def _load(self) -> None:
+        if not self.path or not self.path.exists():
+            return
+        for line in self.path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            item = MemoryRecord(**json.loads(line))
+            self._items[item.id] = item
+
+    def _persist(self) -> None:
+        if not self.path:
+            return
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        self.path.write_text(
+            "".join(
+                json.dumps(deepcopy(item).__dict__ if False else {
+                    "id": item.id,
+                    "type": item.type,
+                    "content": item.content,
+                    "timestamp": item.timestamp,
+                    "source": item.source,
+                    "confidence": item.confidence,
+                    "importance": item.importance,
+                    "provenance": item.provenance,
+                    "entities": item.entities,
+                    "valid_from": item.valid_from,
+                    "valid_to": item.valid_to,
+                    "status": item.status,
+                }, ensure_ascii=False) + "\n"
+                for item in self._items.values()
+            ),
+            encoding="utf-8",
+        )
 
     def add_candidate(self, record: MemoryRecord) -> None:
         if record.id in self._items:
@@ -37,6 +105,7 @@ class MemoryStore:
         item = deepcopy(record)
         item.status = "candidate"
         self._items[item.id] = item
+        self._persist()
 
     def approve(self, record_id: str, authorized_alek: bool) -> MemoryRecord:
         if not authorized_alek:
@@ -44,6 +113,7 @@ class MemoryStore:
         item = self._get(record_id)
         item.status = "approved"
         self._items[record_id] = item
+        self._persist()
         return deepcopy(item)
 
     def cancel(self, record_id: str, authorized_alek: bool) -> MemoryRecord:
@@ -52,6 +122,7 @@ class MemoryStore:
         item = self._get(record_id)
         item.status = "cancelled"
         self._items[record_id] = item
+        self._persist()
         return deepcopy(item)
 
     def _get(self, record_id: str) -> MemoryRecord:
@@ -72,13 +143,41 @@ class MemoryStore:
 
 
 class HistoryStore:
-    """Добавляемая причинная история. Изменение генома сюда не ведёт."""
+    """Постоянная причинная история; запись только добавлением."""
 
-    def __init__(self) -> None:
+    def __init__(self, path: str | Path | None = None) -> None:
         self._items: list[HistoryEntry] = []
+        self.path = Path(path) if path else None
+        self._load()
+
+    def _load(self) -> None:
+        if not self.path or not self.path.exists():
+            return
+        for line in self.path.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                self._items.append(HistoryEntry(**json.loads(line)))
 
     def append(self, entry: HistoryEntry) -> None:
         self._items.append(deepcopy(entry))
+        if self.path:
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with self.path.open("a", encoding="utf-8") as handle:
+                handle.write(
+                    json.dumps(
+                        {
+                            "id": entry.id,
+                            "date": entry.date,
+                            "event": entry.event,
+                            "change": entry.change,
+                            "cause": entry.cause,
+                            "significance": entry.significance,
+                            "consequence": entry.consequence,
+                            "revision": entry.revision,
+                        },
+                        ensure_ascii=False,
+                    )
+                    + "\n"
+                )
 
     def recent(self, limit: int = 10) -> list[HistoryEntry]:
         if limit < 0:
