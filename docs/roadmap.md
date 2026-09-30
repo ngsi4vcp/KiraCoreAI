@@ -72,7 +72,7 @@
 - [ ] A1 regression tests
 
 ### Текущая контрольная точка Android
-A1.6 — граница операции и восстановления — реализован. Свежая проверка соответствия A1 на устройстве `20260930-144146` принята со статусом `RECOVERY_OK`. Текущий этап — A2.0 Persistence Foundation; production recovery/reconcile остаётся A5.
+A1.6 — граница операции и восстановления — реализован. Свежая проверка соответствия A1 на устройстве `20260930-144146` принята со статусом `RECOVERY_OK`. A2.0 Persistence Foundation реализован; текущий этап — A2.1 Store Integration. Production recovery/reconcile остаётся A5.
 
 ### A2. Персистентность
 - [ ] Persistence Contract implementation
