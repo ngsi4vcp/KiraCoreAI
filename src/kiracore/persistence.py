@@ -6,6 +6,7 @@ from pathlib import Path
 import os
 import re
 import tempfile
+from typing import Any
 
 from .errors import KiraCoreError
 from .models import SessionState
@@ -27,8 +28,22 @@ class JsonPersistence:
 
     def save(self, state: SessionState) -> Path:
         target = self._target(state.session_id)
-        payload = json.dumps(
+        return self.save_path(
+            target,
             asdict(state),
+            prefix=f".{state.session_id}.",
+        )
+
+    def save_path(
+        self,
+        target: str | Path,
+        payload: dict[str, Any],
+        prefix: str = ".tmp.",
+    ) -> Path:
+        target = Path(target)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        encoded = json.dumps(
+            payload,
             ensure_ascii=False,
             indent=2,
             sort_keys=True,
@@ -38,11 +53,11 @@ class JsonPersistence:
             with tempfile.NamedTemporaryFile(
                 "w",
                 encoding="utf-8",
-                dir=self.directory,
+                dir=target.parent,
                 delete=False,
-                prefix=f".{state.session_id}.",
+                prefix=prefix,
             ) as handle:
-                handle.write(payload)
+                handle.write(encoded)
                 handle.flush()
                 os.fsync(handle.fileno())
                 temp_path = Path(handle.name)
@@ -52,7 +67,7 @@ class JsonPersistence:
             if temp_path is not None and temp_path.exists():
                 temp_path.unlink(missing_ok=True)
 
-    def load(self, session_id: str) -> dict:
+    def load(self, session_id: str) -> dict[str, Any]:
         target = self._target(session_id)
         try:
             return json.loads(target.read_text(encoding="utf-8"))
@@ -60,3 +75,23 @@ class JsonPersistence:
             raise KiraCoreError(
                 f"Сохранённая сессия не найдена: {session_id}"
             ) from exc
+
+
+class CoreStatePersistence:
+    """Хранит агрегированный снимок актуального состояния Кира:Ядра."""
+
+    def __init__(self, root: str | Path) -> None:
+        self.path = Path(root) / "core_state.json"
+        self.persistence = JsonPersistence(self.path.parent)
+
+    def save(self, payload: dict[str, Any]) -> Path:
+        return self.persistence.save_path(
+            self.path,
+            payload,
+            prefix=".core_state.",
+        )
+
+    def load(self) -> dict[str, Any] | None:
+        if not self.path.exists():
+            return None
+        return json.loads(self.path.read_text(encoding="utf-8"))
