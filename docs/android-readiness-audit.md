@@ -1,9 +1,10 @@
 # Аудит готовности Android Alpha — 30.09.2026
 
+> Актуальная контрольная точка: A0.D1 принят по run `20260930-131718`; A1 Core Parity принят по свежему device evidence run `20260930-144146` на vivo V2366HA / API 36 (`RECOVERY_OK`). Текущий инженерный этап — A2.0 Persistence Foundation. Исторические checkpoints ниже сохраняются для трассируемости.
+
 ## Состояние
 
-A0.D1 device acceptance: **принят** по фактическому evidence run `20260930-131718` на vivo V2366HA / Android API 36 (`RECOVERY_OK`).
-Текущий инженерный контур: **A1.6 Operation / Recovery boundary**.
+A0.D1 device acceptance: **принят** по фактическому run `20260930-131718`. A1 Core Parity: **принят** по run `20260930-144146`. Текущий инженерный контур: **A2.0 Persistence Foundation**.
 
 ## Фактический build baseline
 
@@ -268,3 +269,7 @@ A2 начинается с Persistence Foundation:
 6. после каждого подпредела — unit/CI/security/UTF-8 self-check и device smoke.
 
 Ограничение: до завершения интеграции Room не допускается режим, в котором Room является только зеркалом JSON stores.
+
+## A2.0 актуальная контрольная точка
+
+Room/SQLite schema v1, защищённый gateway через Android Keystore/AES-GCM и Kotlin persistence foundation реализованы. Acceptance A2.0 не закрывается до green CI и самоаудита. A2.1 Store Integration ещё не открыт.
