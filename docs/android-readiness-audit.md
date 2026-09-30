@@ -86,3 +86,8 @@
 - реальный CI результат текущего head;
 - устройство vivo X100 Ultra / OriginOS 6;
 - Android 13–17 matrix.
+
+
+## Верификационный цикл A0 — 30.09.2026
+
+Контрольная точка CI: код и документация quality pass завершены; далее проверяются фактический CI build/test/security и доступные device evidence.
