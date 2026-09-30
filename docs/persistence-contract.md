@@ -91,3 +91,17 @@ Authority material:
 - не хранится в plaintext persistence.
 
 Платформа реализует PlatformSecureStore.
+
+## Android A2.0 — фактический implementation checkpoint
+
+На ветке `android/alpha-parity` добавлен физический Room foundation без перевода runtime на него:
+
+- Room 2.8.5 + SQLite;
+- schema version 1;
+- logical tables для core state, sessions, conversation manifests/messages, memory, history и runtime operations;
+- чувствительные payloads шифруются через Android Keystore-backed AES-GCM с AAD, привязанным к типу записи;
+- gateway доступен через Kotlin/Android bridge, но Python Core пока продолжает использовать существующий JSON backend;
+- `delete conversation` удаляет только manifest/messages и не затрагивает memory;
+- runtime integration, atomic turn transactions, migration и duplicate/reconcile semantics остаются A2.1–A2.4.
+
+Это намеренное промежуточное состояние: Room не является зеркалом канонического JSON и не участвует одновременно с ним в одном runtime turn.
