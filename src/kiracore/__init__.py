@@ -2,6 +2,7 @@ from .context import ContextCompiler
 from .genome import GenomeArtifact, GenomeLoader, GenomeValidator
 from .models import HistoryEntry, MemoryRecord, SessionState, StateSnapshot
 from .persistence import JsonPersistence
+from .reference_host import HostDescriptor, PlainTextHost
 from .pulse import pulse_for_turn, pulse_value
 from .session import SessionManager
 from .stores import HistoryStore, MemoryStore, StateStore
@@ -17,6 +18,8 @@ __all__ = [
     "SessionState",
     "StateSnapshot",
     "JsonPersistence",
+    "HostDescriptor",
+    "PlainTextHost",
     "pulse_for_turn",
     "pulse_value",
     "SessionManager",
