@@ -61,7 +61,7 @@ class DeviceEvidenceActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         Text(
-                            text = "Кира:Ядро — Android verification",
+                            text = "Кира:Ядро — проверка Android",
                             style = MaterialTheme.typography.headlineSmall,
                         )
                         Text(text = state.overall)
@@ -73,7 +73,7 @@ class DeviceEvidenceActivity : ComponentActivity() {
                             enabled = !state.running,
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text("Запустить полный A0 smoke")
+                            Text("Запустить полную проверку A0")
                         }
 
                         Button(
@@ -81,7 +81,7 @@ class DeviceEvidenceActivity : ComponentActivity() {
                             enabled = !state.running,
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text("Запустить A1 parity smoke")
+                            Text("Запустить проверку соответствия A1")
                         }
 
                         Button(
@@ -89,7 +89,7 @@ class DeviceEvidenceActivity : ComponentActivity() {
                             enabled = !state.running && state.runId != null,
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text("Перезапустить процесс и проверить recovery")
+                            Text("Перезапустить процесс и проверить восстановление")
                         }
 
                         Button(
@@ -101,7 +101,7 @@ class DeviceEvidenceActivity : ComponentActivity() {
                             enabled = !state.running && state.runId != null,
                             modifier = Modifier.fillMaxWidth(),
                         ) {
-                            Text("Экспортировать evidence")
+                            Text("Экспортировать диагностические материалы")
                         }
 
                         OutlinedButton(
@@ -133,7 +133,7 @@ class DeviceEvidenceActivity : ComponentActivity() {
                         }
 
                         Text(
-                            text = "Evidence хранится внутри приложения до экспорта. Пароли, ключи и значения SecureStore в bundle не записываются.",
+                            text = "Диагностические материалы хранятся внутри приложения до экспорта. Пароли, ключи и значения SecureStore в bundle не записываются.",
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
