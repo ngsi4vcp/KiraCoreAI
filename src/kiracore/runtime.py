@@ -108,6 +108,7 @@ class KiraRuntime:
             "schema_version": 1,
             "runtime_status": "initialized",
             "active_session_id": None,
+            "identity_id": None,
             "turn": 0,
             "pulse": None,
             "active_provider": None,
@@ -117,12 +118,13 @@ class KiraRuntime:
             "last_error": None,
         }
 
-    def create_session(self, provider: str, model: str) -> ConversationManifest:
+    def create_session(self, provider: str, model: str, identity_id: str | None = None) -> ConversationManifest:
         manifest = self.conversation_store.create(provider, model)
         from .models import SessionState
 
         session = SessionState(
             session_id=manifest.session_id,
+            identity_id=identity_id,
             provider=provider,
             model=model,
             runtime_status="active",
@@ -214,6 +216,7 @@ class KiraRuntime:
             "genome_sha256": self.genome.sha256,
             "runtime_status": status,
             "active_session_id": session.session_id,
+            "identity_id": session.identity_id,
             "turn": session.turn,
             "pulse": asdict(pulse) if pulse else self.core_state.get("pulse"),
             "active_provider": provider,
