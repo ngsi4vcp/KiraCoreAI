@@ -16,6 +16,7 @@
 - G22.txt и `GENOME/genome.txt` не изменяются;
 - A2.1 кодовый baseline: `219c641a6b74526e0774346b35b3dbe912e96246`;
 - lifecycle fixes находятся выше этого baseline и ещё не прошли новый green CI.
+- текущий WIP head после hardening: `12041e49855e544ee10ac057330ce914ca15c558`.
 
 ## Почему ветка создана
 
@@ -83,6 +84,8 @@ Room backend → write → shutdown → новый gateway/runtime → read-back
 
 Отдельно проверяется отсутствие plaintext conversation payload в Room main DB/WAL/SHM. Это evidence-level check; он не заменяет полноценный cryptographic audit.
 ## Acceptance boundary
+
+Последняя попытка CI: run #481, head `12041e49855e544ee10ac057330ce914ca15c558`, attempt 2. Все five jobs завершились `failure` без шагов (`steps=[]`) за несколько секунд. Это infrastructure/runner blocker, а не результат выполнения тестов.
 
 Текущий статус:
 
