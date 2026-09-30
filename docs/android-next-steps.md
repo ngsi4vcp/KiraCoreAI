@@ -8,7 +8,7 @@
 - device evidence run: `20260930-144146`
 - device: vivo V2366HA / Android API 36
 - A1 Core Parity: **ACCEPTED** для текущего среза
-- текущий этап: **A2.0 Persistence Foundation**
+- текущий этап: **A2.1 Store Integration** — реализация завершена, CI `#450` green; физическая device-приёмка остаётся частью общего A2.5 gate
 - активный GENOME: revision 22
 - GENOME SHA-256: `dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e`
 
