@@ -76,12 +76,20 @@ object KiraRuntimeBridge {
                         .callAttr("initialize", appContext.filesDir.absolutePath)
                         .toString(),
                 )
+                val runtimeState = JSONObject(
+                    module(appContext)
+                        .callAttr("get_runtime_state")
+                        .toString(),
+                )
                 publish(
-                    RuntimeSnapshot(
-                        phase = RuntimePhase.READY,
-                        message = "Кира:Ядро готово",
-                        genomeRevision = result.optInt("genome_revision"),
-                        genomeSha256 = result.optString("genome_sha256"),
+                    snapshotFromRuntimeState(
+                        RuntimeSnapshot(
+                            phase = RuntimePhase.READY,
+                            message = "Кира:Ядро готово",
+                            genomeRevision = result.optInt("genome_revision"),
+                            genomeSha256 = result.optString("genome_sha256"),
+                        ),
+                        runtimeState,
                     ),
                 )
             } catch (error: Throwable) {
@@ -118,25 +126,35 @@ object KiraRuntimeBridge {
         } else {
             pyModule.callAttr("create_session", provider, model, identityId)
         }
-        return JSONObject(raw.toString())
+        val result = JSONObject(raw.toString())
+        currentSnapshot = currentSnapshot.copy(
+            activeSessionId = result.optString("session_id").takeIf { it.isNotBlank() },
+            turn = 0,
+            pulse = null,
+        )
+        return result
     }
 
     fun getRuntimeState(context: Context): JSONObject {
         ensureReady()
-        return JSONObject(
+        val state = JSONObject(
             module(context.applicationContext)
                 .callAttr("get_runtime_state")
                 .toString(),
         )
+        syncSnapshot(state)
+        return state
     }
 
     fun runTestTurn(context: Context, sessionId: String, task: String): JSONObject {
         ensureReady()
-        return JSONObject(
+        val result = JSONObject(
             module(context.applicationContext)
                 .callAttr("run_test_turn", sessionId, task)
                 .toString(),
         )
+        syncSnapshot(result.optJSONObject("runtime_state"))
+        return result
     }
 
     fun diagnostics(context: Context): JSONObject {
@@ -202,6 +220,29 @@ object KiraRuntimeBridge {
     private fun ensureReady() {
         check(currentSnapshot.phase == RuntimePhase.READY) {
             "Кира:Ядро ещё не готово."
+        }
+    }
+
+    private fun snapshotFromRuntimeState(
+        base: RuntimeSnapshot,
+        state: JSONObject?,
+    ): RuntimeSnapshot {
+        if (state == null) return base
+        return base.copy(
+            activeSessionId = state.optString("active_session_id")
+                .takeIf { it.isNotBlank() },
+            turn = state.optInt("turn", 0),
+            pulse = state.optJSONObject("pulse")
+                ?.optInt("value")
+                ?.takeIf { it != 0 },
+        )
+    }
+
+    private fun syncSnapshot(state: JSONObject?) {
+        if (state == null) return
+        currentSnapshot = snapshotFromRuntimeState(currentSnapshot, state)
+        listeners.forEach { listener ->
+            runCatching { listener(currentSnapshot) }
         }
     }
 
