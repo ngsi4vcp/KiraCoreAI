@@ -67,6 +67,7 @@ class AndroidBridgeTests(unittest.TestCase):
         diagnostics = json.loads(android_bridge.diagnostics())
         self.assertEqual(diagnostics["core_version"], "0.1.0a1")
         self.assertEqual(diagnostics["python_version"].split(".")[0], "3")
+        self.assertEqual(diagnostics["persistence_backend"], "json")
 
         self.assertEqual(android_bridge.shutdown(), "Кира:Ядро остановлено")
         self.assertEqual(android_bridge.health(), "Кира:Ядро не инициализировано")
