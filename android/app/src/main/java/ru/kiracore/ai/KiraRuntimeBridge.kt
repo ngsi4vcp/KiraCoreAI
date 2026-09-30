@@ -3,6 +3,7 @@ package ru.kiracore.ai
 import android.content.Context
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
+import org.json.JSONArray
 import org.json.JSONObject
 import ru.kiracore.ai.runtime.RuntimePhase
 import ru.kiracore.ai.runtime.RuntimeSnapshot
@@ -15,7 +16,6 @@ import java.util.concurrent.Executors
 
 object KiraRuntimeBridge {
     private const val MODULE = "android_bridge"
-    private const val EXPECTED_GENOME_REVISION = 22
 
     private val executor: ExecutorService = Executors.newSingleThreadExecutor {
         Thread(it, "KiraRuntime").apply { isDaemon = true }
@@ -113,6 +113,17 @@ object KiraRuntimeBridge {
         )
     }
 
+    fun getGenomeInfo(context: Context): BridgeGenomeInfo {
+        ensureReady()
+        return BridgeJsonParser.genome(
+            JSONObject(
+                module(context.applicationContext)
+                    .callAttr("get_genome_info")
+                    .toString(),
+            ),
+        )
+    }
+
     fun createSession(
         context: Context,
         provider: String,
@@ -137,6 +148,57 @@ object KiraRuntimeBridge {
         return result
     }
 
+    fun createSessionTyped(
+        context: Context,
+        provider: String,
+        model: String,
+        identityId: String? = null,
+    ): BridgeSession =
+        BridgeJsonParser.session(
+            createSession(context, provider, model, identityId),
+        )
+
+    fun listSessions(context: Context): List<BridgeSession> {
+        ensureReady()
+        val array = JSONArray(
+            module(context.applicationContext)
+                .callAttr("list_sessions")
+                .toString(),
+        )
+        return buildList(array.length()) {
+            for (index in 0 until array.length()) {
+                add(BridgeJsonParser.session(array.getJSONObject(index)))
+            }
+        }
+    }
+
+    fun resumeSession(
+        context: Context,
+        sessionId: String? = null,
+    ): BridgeResumeResult {
+        ensureReady()
+        val pyModule = module(context.applicationContext)
+        val result = if (sessionId == null) {
+            JSONObject(pyModule.callAttr("resume_session").toString())
+        } else {
+            JSONObject(pyModule.callAttr("resume_session", sessionId).toString())
+        }
+        val runtimeState = BridgeJsonParser.runtimeState(
+            result.getJSONObject("runtime_state"),
+        )
+        publish(
+            snapshotFromRuntimeState(
+                currentSnapshot.copy(
+                    phase = RuntimePhase.READY,
+                    message = "Кира:Ядро готово",
+                ),
+                result.getJSONObject("runtime_state"),
+            ),
+        )
+        val session = result.optJSONObject("session")?.let(BridgeJsonParser::session)
+        return BridgeResumeResult(session = session, runtimeState = runtimeState)
+    }
+
     fun getRuntimeState(context: Context): JSONObject {
         ensureReady()
         val state = JSONObject(
@@ -148,15 +210,78 @@ object KiraRuntimeBridge {
         return state
     }
 
+    fun getRuntimeStateTyped(context: Context): BridgeRuntimeState =
+        BridgeJsonParser.runtimeState(getRuntimeState(context))
+
+    fun getConversation(
+        context: Context,
+        sessionId: String,
+        limit: Int = 20,
+    ): List<BridgeConversationMessage> {
+        require(limit >= 0) { "Лимит разговора не может быть отрицательным." }
+        ensureReady()
+        val array = JSONArray(
+            module(context.applicationContext)
+                .callAttr("get_conversation", sessionId, limit)
+                .toString(),
+        )
+        return buildList(array.length()) {
+            for (index in 0 until array.length()) {
+                add(BridgeJsonParser.conversation(array.getJSONObject(index)))
+            }
+        }
+    }
+
+    fun getMemory(context: Context): List<BridgeMemoryRecord> {
+        ensureReady()
+        return parseMemoryArray(
+            JSONArray(
+                module(context.applicationContext)
+                    .callAttr("get_memory")
+                    .toString(),
+            ),
+        )
+    }
+
+    fun getMemoryCandidates(context: Context): List<BridgeMemoryRecord> {
+        ensureReady()
+        return parseMemoryArray(
+            JSONArray(
+                module(context.applicationContext)
+                    .callAttr("get_memory_candidates")
+                    .toString(),
+            ),
+        )
+    }
+
     fun runTestTurn(context: Context, sessionId: String, task: String): JSONObject {
         ensureReady()
         val result = JSONObject(
             module(context.applicationContext)
-                .callAttr("run_test_turn", sessionId, task)
+                .callAttr("send_test_turn", sessionId, task)
                 .toString(),
         )
         syncSnapshot(result.optJSONObject("runtime_state"))
         return result
+    }
+
+    fun sendTestTurnTyped(
+        context: Context,
+        sessionId: String,
+        task: String,
+    ): BridgeTestTurnResult {
+        val result = runTestTurn(context, sessionId, task)
+        val response = result.getJSONObject("response")
+        val runtimeState = BridgeJsonParser.runtimeState(
+            result.getJSONObject("runtime_state"),
+        )
+        return BridgeTestTurnResult(
+            text = response.optString("text"),
+            provider = response.optString("provider"),
+            model = response.optString("model"),
+            pulse = BridgeJsonParser.pulse(response.optJSONObject("raw_metadata")?.optJSONObject("pulse")),
+            runtimeState = runtimeState,
+        )
     }
 
     fun diagnostics(context: Context): JSONObject {
@@ -194,6 +319,17 @@ object KiraRuntimeBridge {
         return result
     }
 
+    fun checkHealth(context: Context): BridgeHealth {
+        ensureReady()
+        return BridgeJsonParser.health(
+            JSONObject(
+                module(context.applicationContext)
+                    .callAttr("check_health")
+                    .toString(),
+            ),
+        )
+    }
+
     fun health(context: Context): String {
         if (currentSnapshot.phase != RuntimePhase.READY) {
             return currentSnapshot.message
@@ -218,6 +354,13 @@ object KiraRuntimeBridge {
             publish(RuntimeSnapshot())
         }
     }
+
+    private fun parseMemoryArray(array: JSONArray): List<BridgeMemoryRecord> =
+        buildList(array.length()) {
+            for (index in 0 until array.length()) {
+                add(BridgeJsonParser.memory(array.getJSONObject(index)))
+            }
+        }
 
     private fun ensureReady() {
         check(currentSnapshot.phase == RuntimePhase.READY) {
