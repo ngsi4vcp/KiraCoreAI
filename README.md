@@ -190,14 +190,13 @@ SyncProvider → CryptoProvider → encrypted envelopes → private GitHub.
 
 ### Текущий статус Android
 
-Кодовый фундамент A0 и CI verification завершены. Фактический build baseline использует AGP 9.2.1, Gradle 9.4.1, Kotlin/Compose plugin 2.3.10, Compose BOM 2026.09.00, JDK 17, Python 3.13, Chaquopy 17.0.0, compileSdk/targetSdk 37, minSdk 28, arm64-v8a.
+A0.D1 фактическое device acceptance закрыт: evidence run `20260930-131718` на vivo V2366HA (Android API 36) завершён со статусом `RECOVERY_OK`. Проверены GENOME rev 22/SHA, diagnostics, session, deterministic turn, Pulse/state, Android Keystore, storage и recovery; lifecycle stop/start зафиксирован как OBSERVED.
 
-GitHub Actions run #190 подтвердил Android unit tests, debug APK build, APK existence check и security smoke. Внешний device acceptance ещё не выполнен.
+Текущий инженерный этап — `A1 Core Parity`, достигнут boundary A1.6 Operation / Recovery. Реализованы typed bridge, session create/list/resume, conversation/memory separation, deterministic turn, Pulse/state parity и persisted operation state с явным `UNKNOWN` для неопределённого model-call. Production reconcile/recovery остаётся A5.
 
-Текущий этап: `A0.D1 — Device Evidence / Device Acceptance`.
-После его прохождения открывается `A1 — Core Parity`.
+Последний CI на текущем кодовом срезе должен оставаться green до выдачи APK; физический A1 parity smoke ещё не считается пройденным, пока его не выполнить на устройстве.
 
-Временный debug-only Device Evidence Harness допускается именно для получения фактического evidence и не является production UI.
+Временный debug-only Device Evidence Harness используется для фактического evidence и не является production UI.
 
 ## Безопасность и переносимость
 
