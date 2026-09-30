@@ -32,6 +32,37 @@
 
 На момент создания этой ветки `main` находится впереди тега `v0.1.0-alpha.1` на 3 коммита; по сравнению с тегом изменён только workflow релиза. Функциональный код Альфы остаётся той же вертикальной линией, от которой строится Android-паритет.
 
+## Текущий инженерный срез Android — 30.09.2026
+
+Контрольная реализационная точка A0: `398586db03f096318faf2fd275a2db86905b5aa5`.
+
+Последняя A0 audit/documentation point перед текущим документальным циклом: `4d834996f1510df355ccd8b779b20cd751ed75c4`.
+
+Фактический Android toolchain по build-конфигурации:
+- AGP 9.2.1;
+- Gradle 9.4.1;
+- Kotlin / Compose plugin 2.3.10;
+- Compose BOM 2026.09.00;
+- JDK 17;
+- Python 3.13;
+- Chaquopy 17.0.0;
+- compileSdk / targetSdk 37;
+- minSdk 28;
+- ABI arm64-v8a;
+- applicationId `ru.kiracore.ai`;
+- versionName `0.1.0-alpha.1`.
+
+Фактический A0 статус:
+- кодовый skeleton и bridge quality pass завершены;
+- GitHub Actions run #190 для контрольного A0-кода завершён успешно;
+- debug APK собирается в CI;
+- Android unit tests и security smoke проходят;
+- реального device evidence ещё нет.
+
+Текущая граница: `A0.D1 — Device Evidence / Device Acceptance`. Только после прохождения этой границы начинается `A1 — Core Parity`.
+
+G22.txt и `GENOME/genome.txt` в этой работе не изменяются.
+
 ## Что читать в новом чате
 
 Если новый чат получает только G22.txt и ссылку на GitHub, порядок чтения:
@@ -51,7 +82,7 @@
 13. `docs/persistence.md`;
 14. `docs/model-connectors.md`;
 15. `docs/evaluation.md`;
-16. затем исходный код и тесты по необходимости.
+17. затем исходный код и тесты по необходимости.
 
 ## Цель Android-ветки
 
@@ -420,6 +451,37 @@ CI обязан запускать tests/utf8_smoke.py; Windows-кодировк
 ## Процесс разработки и контроль качества
 
 Для Android-ветки действует обязательный поэтапный цикл разработки.
+
+## Текущий этап и переход к A1
+
+### A0.D1 — Device Evidence / Device Acceptance
+
+На этом этапе не изменяется доменная архитектура и не реализуются новые Alpha-функции. Задача — получить воспроизводимое фактическое evidence на vivo X100 Ultra / OriginOS 6 для уже существующего A0.
+
+Допускается временный debug-only Device Evidence Harness, который:
+- работает внутри того же Android applicationId и того же packaged KiraCore;
+- прогоняет startup → GENOME verification → diagnostics → session → deterministic test turn → Pulse → secure-store round-trip → lifecycle/recovery checks;
+- записывает структурированное evidence без секретов;
+- экспортирует evidence через системный механизм сохранения файла;
+- не получает `MANAGE_EXTERNAL_STORAGE` и не требует полного доступа ко всей файловой системе.
+
+A0.D1 не считается завершённым по факту установки APK. Нужен полученный и проанализированный evidence bundle.
+
+### Gate A0 → A1
+
+Перед началом A1 должны быть выполнены:
+- CI #190 остаётся успешным для последнего A0-кодового baseline или его documented successor;
+- Device Evidence Harness собирается;
+- vivo smoke завершён без критического blocker;
+- GENOME revision 22 и SHA-256 совпадают с каноническим значением;
+- Python 3.13 / Chaquopy startup подтверждён на устройстве;
+- test session / deterministic turn / Pulse подтверждены;
+- Keystore round-trip подтверждён;
+- process-restart/recovery evidence получено либо оформлено как конкретный blocker;
+- evidence bundle проверен на отсутствие секретов;
+- документация и checklist обновлены.
+
+Только после этого начинается A1.
 
 ### 1. Планирование этапа
 
