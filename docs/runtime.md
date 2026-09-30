@@ -65,3 +65,14 @@ ModelAdapter не получает доступ к identity secrets, sync tokens
 Crypto/Synchronization операции вызываются только через внутренние типизированные runtime API.
 
 UI не может напрямую изменять GENOME или выполнять MergeIdentity.
+
+
+## Безопасность цикла генерации
+
+Перед каждым вызовом ModelAdapter выполняется Pre-Generation Reflection Gate.
+
+Он формирует безопасную семантическую проекцию конституции и текущих прав сессии. Полный текст защищённых секций GENOME в ModelRequest не попадает.
+
+После ModelAdapter выполняется Response Disclosure Guard.
+
+Model output не может самостоятельно активировать privileged операции.
