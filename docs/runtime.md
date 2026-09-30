@@ -56,7 +56,15 @@ Activity → RuntimeService → PythonRuntime → Persistence.
 
 Activity не является владельцем причинного runtime-состояния.
 
-Foreground service повышает устойчивость runtime, но не является гарантией бессмертия процесса.
+Текущее A0 состояние:
+- `RuntimeService` и bridge boundary реализованы;
+- production foreground-service hardening ещё не реализован;
+- текущий Android persistence contour — platform storage foundation, не Room/SQLite domain backend;
+- device lifecycle/recovery evidence ещё не получено.
+
+Foreground service и production recovery не должны считаться реализованными только из-за наличия `Service` и `START_STICKY`.
+
+A0.D1 отдельно проверяет фактическое поведение текущего service/runtime на vivo. Production background policy реализуется позже после сверки фактических ограничений Android и результатов device evidence.
 
 ## Безопасный runtime
 
