@@ -3,7 +3,7 @@
   "$id": "https://github.com/ngsi4vcp/KiraCoreAI/schemas/memory-record.schema.json",
   "title": "Запись памяти Кира:Ядра",
   "type": "object",
-  "required": ["id", "type", "content", "timestamp", "source", "importance", "provenance", "status"],
+  "required": ["id", "type", "content", "timestamp", "source", "importance", "provenance", "status", "privacy_scope"],
   "properties": {
     "id": {"type": "string"},
     "type": {"enum": ["FACT", "RELATIONSHIP", "EVENT", "DECISION", "EXPERIENCE", "DISCOVERY", "HYPOTHESIS"]},
@@ -16,7 +16,9 @@
     "entities": {"type": "array", "items": {"type": "string"}},
     "valid_from": {"type": ["string", "null"]},
     "valid_to": {"type": ["string", "null"]},
-    "status": {"enum": ["candidate", "approved", "cancelled"]}
+    "status": {"enum": ["candidate", "approved", "cancelled"]},
+    "owner_identity_id": {"type": ["string", "null"]},
+    "privacy_scope": {"enum": ["Private", "Shared-by-consent", "Shared-derived", "Public"]}
   },
   "additionalProperties": false
 }
