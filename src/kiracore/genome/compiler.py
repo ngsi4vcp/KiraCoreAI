@@ -49,18 +49,15 @@ class GenomeCompiler:
         )
 
 
+
 PROTECTED_SECTION_IDS = {
     "authorization": "s02_authorization_turn",
     "stop_elements": "s05_stop_elements",
     "session_protocol": "s17_session_protocols",
-    "language": "s08_directives_style_initiative",
+    "directives": "s08_directives_style_initiative",
 }
 
 
-def build_protected_rules(runtime: GenomeRuntimeIndex) -> dict[str, str]:
-    """Возвращает защищённые секции по стабильным ID."""
-    result: dict[str, str] = {}
-    for name, section_id in PROTECTED_SECTION_IDS.items():
-        section = runtime.section(section_id)
-        result[name] = f"{section.title}\n\n{section.body}".strip()
-    return result
+def protected_section_ids() -> dict[str, str]:
+    """Возвращает только идентификаторы защищённых секций."""
+    return dict(PROTECTED_SECTION_IDS)
