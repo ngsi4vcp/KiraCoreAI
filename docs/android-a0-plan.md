@@ -78,7 +78,7 @@ UI можно уничтожить и восстановить без потер
 Критерий:
 последующие A2-реализации не потребуют переделывать RuntimeBridge.
 
-Android private/internal storage выбран как базовая область для чувствительных app-specific данных; Android также предоставляет Room как стандартный механизм private structured storage. citeturn341934search0turn341934search6
+Android private/internal storage выбран как базовая область для чувствительных app-specific данных; Room используется как базовый механизм private structured storage.
 
 ## A0.5 — GENOME startup
 
