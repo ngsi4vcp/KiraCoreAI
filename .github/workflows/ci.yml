@@ -2,7 +2,7 @@ name: Проверка KiraCoreAI
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "android/alpha-parity"]
   pull_request:
     branches: ["main"]
 
