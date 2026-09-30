@@ -247,6 +247,163 @@ class DeviceEvidenceRunner(
         }
     }
 
+    fun startA2PersistenceSmoke() {
+        if (_state.value.running) return
+        val runId = timestamp()
+        val runDir = File(root, runId).apply { mkdirs() }
+        _state.value = DeviceEvidenceUiState(
+            runId = runId,
+            phase = "A2.1: физическая персистентность",
+            running = true,
+            overall = "ВЫПОЛНЯЕТСЯ",
+        )
+        scope.launch {
+            try {
+                waitForRuntime(runDir)
+                runCheck(runDir, "A2.1: backend identity") {
+                    val diagnostics = KiraRuntimeBridge.diagnostics(context)
+                    require(diagnostics.optString("persistence_backend") == "android-room") {
+                        "Ожидался android-room, получено: " +
+                            diagnostics.optString("persistence_backend")
+                    }
+                    "backend=${diagnostics.optString("persistence_backend")}"
+                }
+                val sessionId = runCheck(runDir, "A2.1: запись session/conversation") {
+                    val session = KiraRuntimeBridge.createSession(
+                        context = context,
+                        provider = "a2-test",
+                        model = "embedded/a2-test",
+                    )
+                    val id = session.optString("session_id")
+                    require(id.isNotBlank()) { "Session ID не получен." }
+                    val turn = KiraRuntimeBridge.runTestTurn(
+                        context = context,
+                        sessionId = id,
+                        task = "Диагностический A2.1 persistence turn.",
+                    )
+                    require(turn.optJSONObject("runtime_state")?.optInt("turn") == 1) {
+                        "После тестового хода turn не равен 1."
+                    }
+                    require(
+                        turn.optJSONObject("response")?.optString("text").orEmpty().isNotBlank()
+                    )
+                    id
+                }
+
+                runCheck(runDir, "A2.1: перед restart") {
+                    val state = KiraRuntimeBridge.getRuntimeState(context)
+                    require(state.optString("active_session_id") == sessionId)
+                    require(state.optInt("turn") == 1)
+                    require(
+                        state.optJSONObject("operation")?.optString("phase") == "COMPLETED"
+                    )
+                    val messages = KiraRuntimeBridge.getConversation(context, sessionId, 20)
+                    require(messages.size >= 2) {
+                        "До restart не найдены user+assistant сообщения."
+                    }
+                    "messages=${messages.size}, turn=${state.optInt("turn")}"
+                }
+
+                runCheck(runDir, "A2.1: закрытие runtime и новый backend") {
+                    KiraRuntimeBridge.shutdown(context)
+                    require(KiraRuntimeBridge.snapshot().phase.name == "STOPPED")
+                    "runtime остановлен"
+                }
+
+                waitForRuntime(runDir)
+
+                runCheck(runDir, "A2.1: read-back session/state/operation") {
+                    val resumed = KiraRuntimeBridge.resumeSession(context, sessionId)
+                    require(resumed.session?.sessionId == sessionId) {
+                        "Session после restart не восстановлена."
+                    }
+                    require(resumed.runtimeState.turn == 1)
+                    require(resumed.runtimeState.activeSessionId == sessionId)
+                    val health = KiraRuntimeBridge.checkHealth(context)
+                    require(health.operation?.phase == "COMPLETED") {
+                        "Operation после restart не COMPLETED: ${health.operation?.phase}"
+                    }
+                    require(health.operation?.recoveryState == "COMPLETED")
+                    "session=$sessionId, turn=1, operation=COMPLETED"
+                }
+
+                runCheck(runDir, "A2.1: read-back conversation") {
+                    val messages = KiraRuntimeBridge.getConversation(context, sessionId, 20)
+                    require(messages.size >= 2)
+                    require(messages[0].role == "user")
+                    require(messages[0].content == "Диагностический A2.1 persistence turn.")
+                    require(messages[1].role == "assistant")
+                    require(messages[1].pulse?.value == 1024)
+                    "messages=${messages.size}, pulse=${messages[1].pulse?.value}"
+                }
+
+                runCheck(runDir, "A2.1: backend identity после restart") {
+                    val diagnostics = KiraRuntimeBridge.diagnostics(context)
+                    require(diagnostics.optString("persistence_backend") == "android-room")
+                    "backend=${diagnostics.optString("persistence_backend")}"
+                }
+
+                runCheck(runDir, "A2.1: canonical JSON guard") {
+                    val dataRoot = File(context.filesDir, "DATA")
+                    val jsonFiles = dataRoot.walkTopDown()
+                        .filter { it.isFile && (it.extension == "json" || it.extension == "jsonl") }
+                        .toList()
+                    require(jsonFiles.isEmpty()) {
+                        "Обнаружен canonical JSON/JSONL в Room mode: " +
+                            jsonFiles.joinToString(",") { it.relativeTo(dataRoot).path }
+                    }
+                    "DATA без JSON/JSONL"
+                }
+
+                runCheck(runDir, "A2.1: payload encryption at rest") {
+                    val markers = listOf(
+                        "Диагностический A2.1 persistence turn.",
+                        "Тестовый ход A0 успешно выполнен.",
+                    )
+                    val database = context.getDatabasePath("kira-core.db")
+                    val databaseCandidates = listOf(
+                        database,
+                        File(database.parentFile, "kira-core.db-wal"),
+                        File(database.parentFile, "kira-core.db-shm"),
+                    )
+                    val readable = databaseCandidates.filter { it.isFile }
+                    require(readable.isNotEmpty()) { "Room database files не найдены." }
+                    val plaintext = readable.any { file ->
+                        val data = file.readBytes()
+                        markers.any { marker ->
+                            data.indexOf(marker.toByteArray(Charsets.UTF_8)) >= 0
+                        }
+                    }
+                    require(!plaintext) {
+                        "Известный conversation payload обнаружен в Room files в plaintext."
+                    }
+                    "известный payload не обнаружен в DB/WAL/SHM"
+                }
+
+                appendEvent(
+                    runDir,
+                    "a2.1.device.persistence.completed",
+                    "PASS",
+                    JSONObject().put("session_id", sessionId).put("backend", "android-room"),
+                )
+                writeManifest(runDir, "A2_1_PERSISTENCE_OK", "android-a2.1-device")
+                setOverall("A2.1: физическая персистентность подтверждена")
+            } catch (error: CancellationException) {
+                throw error
+            } catch (error: Throwable) {
+                appendEvent(
+                    runDir,
+                    "a2.1.device.persistence.failed",
+                    "FAIL",
+                    JSONObject()
+                        .put("exception", error::class.java.name)
+                        .put("message", error.message ?: error::class.java.simpleName),
+                )
+                writeManifest(runDir, "FAILED", "android-a2.1-device")
+                setOverall("A2.1: блокирующая ошибка — ${error::class.java.simpleName}")
+            }
+        }
+    }
     fun prepareAndRestart() {
         if (_state.value.running) return
         scope.launch {
