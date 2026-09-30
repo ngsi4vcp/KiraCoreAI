@@ -74,7 +74,6 @@ class OperationalContext:
     genome_sha256: str
     constitutional_guidance: tuple[str, ...]
     authorization_context: dict[str, Any]
-    authorization: dict[str, Any]
     state: StateSnapshot
     memory: tuple[MemoryRecord, ...]
     history: tuple[HistoryEntry, ...]
