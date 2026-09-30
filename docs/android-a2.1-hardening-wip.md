@@ -51,15 +51,17 @@ A2.1 integration test больше не переиспользует тот же
 2. Добавлять только локальные hardening-изменения, которые усиливают доказуемость текущего контракта.
 3. Не открывать A2.2 Atomic Turn до green CI актуального code head.
 4. После green CI получить APK именно с текущего code head.
-5. Выполнить физическую A2.1 device acceptance на vivo V2366HA/API 36:
-   - create/write;
-   - process restart;
-   - новый runtime/backend read-back;
-   - session/conversation/state/history/memory/operation;
+5. Выполнить физическую A2.1 device acceptance на vivo V2366HA/API 36 через новый debug probe:
+   - backend identity = android-room;
+   - create/write session + conversation + operation;
+   - controlled runtime shutdown;
+   - новый Room gateway/runtime;
+   - session/state/operation/conversation read-back;
+   - Pulse read-back;
    - отсутствие plaintext JSON/JSONL canonical storage;
-   - conversation delete != memory delete.
+   - отсутствие известных conversation payloads в Room DB/WAL/SHM;
+   - conversation delete != memory delete остаётся отдельной core/integration проверкой.
 6. Только после выполнения предыдущих пунктов обновить operational status и открыть A2.2.
-
 ## Stop conditions
 
 Работа останавливается и исправляет foundation, если появляется:
@@ -72,6 +74,14 @@ A2.1 integration test больше не переиспользует тот же
 - неявный retry UNKNOWN model-call;
 - изменение G22/GENOME.
 
+## Device evidence implementation
+
+Debug-only A2.1 probe добавляет физическую проверку Room-backed runtime без создания долговечных memory fixtures. Он специально не изменяет production memory semantics.
+
+Проверяемый путь:
+Room backend → write → shutdown → новый gateway/runtime → read-back.
+
+Отдельно проверяется отсутствие plaintext conversation payload в Room main DB/WAL/SHM. Это evidence-level check; он не заменяет полноценный cryptographic audit.
 ## Acceptance boundary
 
 Текущий статус:
