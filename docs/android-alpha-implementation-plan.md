@@ -11,10 +11,10 @@
 - ABI: arm64-v8a;
 - Python: 3.13;
 - Chaquopy: 17.0;
-- Android Gradle Plugin: 9.2.x;
+- Android Gradle Plugin: 9.2.1;
 - Gradle: 9.4.1;
 - JDK: 17;
-- Kotlin: 2.2.10;
+- Kotlin: 2.3.10;
 - Compose BOM: 2026.09.00;
 - applicationId: ru.kiracore.ai.
 
@@ -24,6 +24,31 @@ AGP 9.2 поддерживает API 37 и Gradle 9.4.1. Chaquopy 17.0 подд�
 
 Создать один application module, одну Activity, Compose, Navigation, theme, notification channel, foreground-service каркас, health/diagnostic framework и Python bridge skeleton.
 Проверки: APK собирается, устанавливается, Python 3.13 стартует, runtime возвращает status, APK содержит только arm64-v8a.
+
+## A0.D1 — Device Evidence / Device Acceptance
+
+A0 code and CI verification are already complete. Before A1, the project performs an external device acceptance cycle on vivo X100 Ultra / OriginOS 6.
+
+A0.D1 uses the same APK/applicationId as the A0 code baseline and may include a temporary debug-only Device Evidence Harness.
+
+Required evidence:
+- device/build identity;
+- Android version and OEM/runtime information;
+- Python 3.13 / Chaquopy startup;
+- GENOME revision 22 + SHA-256;
+- diagnostics and health;
+- test session creation;
+- deterministic test turn;
+- Pulse/state synchronization;
+- Android Keystore round-trip;
+- storage write/read;
+- service/background observation;
+- controlled process restart and recovery checkpoint;
+- secret-free evidence export.
+
+Evidence is exported through a user-mediated system file API; full filesystem access is not a requirement.
+
+The A0 → A1 gate is defined in `docs/android-development-checklist.md`.
 
 ## A1 — Core Parity
 
