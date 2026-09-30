@@ -187,7 +187,7 @@ A1.0–A1.6 реализованы и покрыты CI-контрактами:
 
 ### Что пока не считается закрытым
 
-- полноценный production Room/SQLite domain backend — A2;
+- A2.0/A2.1/A2.2/A2.3/A2.4/A2.5 Persistence quality gates — в работе;
 - identity/authority hardening — A3;
 - Кира:Сбор — A4;
 - production recovery/reconcile после UNKNOWN — A5;
@@ -197,7 +197,7 @@ A1.0–A1.6 реализованы и покрыты CI-контрактами:
 - Genome Guard — A9;
 - КираЧек — A10;
 - Android 13–17/OEM matrix — A11;
-- физический A1 parity smoke на **свежем** APK из run #379.
+- A1 parity smoke на свежем APK из run `20260930-144146` — **ACCEPTED**; следующий Android этап — A2 Persistence.
 
 ### Главные Android-документы
 
@@ -208,6 +208,7 @@ A1.0–A1.6 реализованы и покрыты CI-контрактами:
 - `docs/android-readiness-audit.md`
 - `docs/android-development-plan.md`
 - `docs/android-alpha-implementation-plan.md`
+- `docs/android-next-steps.md`
 - `docs/android-a0-plan.md`
 - `docs/android-device-evidence-plan.md`
 - `docs/android-a1-plan.md`
