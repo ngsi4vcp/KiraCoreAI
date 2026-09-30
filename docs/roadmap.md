@@ -98,9 +98,14 @@
 ### A7. Security hardening
 - [ ] privileged Alek auth
 - [ ] no secret leakage in logs/APK
+- [ ] sealed authority payload
+- [ ] PlatformSecureStore
+- [ ] Pre-Generation Reflection Gate
+- [ ] Response Disclosure Guard
 - [ ] secure export/import
 - [ ] sync conflict handling
 - [ ] migration tests
+- [ ] packaged-app leakage audit
 
 ### A8. Real-device matrix
 - [ ] Android 13
