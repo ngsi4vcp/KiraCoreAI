@@ -15,6 +15,9 @@ from .session import SessionManager
 from .stores import HistoryStore, MemoryStore, StateStore
 
 
+_KEEP_PULSE = object()
+
+
 class KiraRuntime:
     """Основной runtime Кира:Ядра."""
 
@@ -214,17 +217,15 @@ class KiraRuntime:
         session = self.state_store.get(manifest.session_id)
         provider = session.provider or manifest.provider
         model = session.model or manifest.model
-        pulse = None
-        previous_pulse = self.core_state.get("pulse")
-        if session.turn > 0 and isinstance(previous_pulse, dict):
-            try:
-                pulse = pulse_stamp(
-                    session.turn,
-                    self.genome.revision,
-                    self.genome.series,
-                )
-            except ValueError:
-                pulse = None
+        pulse = (
+            pulse_stamp(
+                session.turn,
+                self.genome.revision,
+                self.genome.series,
+            )
+            if session.turn > 0
+            else None
+        )
 
         self._save_core(
             session,
@@ -252,7 +253,7 @@ class KiraRuntime:
         provider: str,
         model: str,
         status: str,
-        pulse: Any = None,
+        pulse: Any = _KEEP_PULSE,
         error: str | None = None,
     ) -> None:
         self.core_state = {
@@ -264,7 +265,13 @@ class KiraRuntime:
             "active_session_id": session.session_id,
             "identity_id": session.identity_id,
             "turn": session.turn,
-            "pulse": asdict(pulse) if pulse else self.core_state.get("pulse"),
+            "pulse": (
+                asdict(pulse)
+                if pulse is not _KEEP_PULSE and pulse is not None
+                else None
+                if pulse is None
+                else self.core_state.get("pulse")
+            ),
             "active_provider": provider,
             "active_model": model,
             "authorized_alek": session.authorized_alek,
