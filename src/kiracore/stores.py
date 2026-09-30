@@ -48,6 +48,7 @@ class StateStore:
         state = StateSnapshot(**item.get("state", {}))
         return SessionState(
             session_id=item["session_id"],
+            identity_id=item.get("identity_id"),
             turn=item.get("turn", 0),
             authorized_alek=item.get("authorized_alek", False),
             authorization_marker=item.get("authorization_marker"),
@@ -96,6 +97,8 @@ class MemoryStore:
                     "valid_from": item.valid_from,
                     "valid_to": item.valid_to,
                     "status": item.status,
+                    "owner_identity_id": item.owner_identity_id,
+                    "privacy_scope": item.privacy_scope,
                 }
                 for item in self._items.values()
             ],
