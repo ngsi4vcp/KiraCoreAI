@@ -117,7 +117,7 @@ jobs:
       - name: Установить Android SDK 37
         shell: bash
         run: |
-          sdkmanager "platforms;android-37" "build-tools;36.0.0" "platform-tools"
+          sdkmanager --channel=1 "platforms;android-37" "build-tools;36.0.0" "platform-tools"
 
       - name: Подготовить Gradle
         uses: gradle/actions/setup-gradle@v5
