@@ -52,6 +52,9 @@ interface KiraRoomDao {
     @Query("SELECT * FROM history_entries ORDER BY date DESC LIMIT :limit")
     fun recentHistory(limit: Int): List<HistoryEntryEntity>
 
+    @Query("SELECT * FROM history_entries ORDER BY date ASC")
+    fun listHistory(): List<HistoryEntryEntity>
+
     @Upsert
     fun upsertOperation(entity: RuntimeOperationEntity)
 
