@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ngsi4vcp/KiraCoreAI/schemas/core-state.schema.json",
+  "title": "Актуальное состояние Кира:Ядра",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "runtime_status",
+    "active_session_id",
+    "turn",
+    "pulse",
+    "active_provider",
+    "active_model",
+    "authorized_alek",
+    "state",
+    "last_error"
+  ],
+  "properties": {
+    "schema_version": {"type": "integer", "const": 1},
+    "runtime_status": {"type": "string"},
+    "active_session_id": {"type": ["string", "null"]},
+    "turn": {"type": "integer", "minimum": 0},
+    "pulse": {"type": ["object", "null"]},
+    "active_provider": {"type": ["string", "null"]},
+    "active_model": {"type": ["string", "null"]},
+    "authorized_alek": {"type": "boolean"},
+    "state": {"type": "object"},
+    "updated_at": {"type": ["string", "null"]},
+    "last_error": {"type": ["string", "null"]}
+  },
+  "additionalProperties": true
+}

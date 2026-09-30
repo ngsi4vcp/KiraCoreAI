@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ngsi4vcp/KiraCoreAI/schemas/model-response.schema.json",
+  "title": "Ответ модели Кира:Ядра",
+  "type": "object",
+  "required": ["text", "provider", "model"],
+  "properties": {
+    "text": {"type": "string"},
+    "provider": {"type": "string"},
+    "model": {"type": "string"},
+    "request_id": {"type": ["string", "null"]},
+    "finish_reason": {"type": ["string", "null"]},
+    "usage": {
+      "type": ["object", "null"],
+      "properties": {
+        "prompt_tokens": {"type": ["integer", "null"]},
+        "completion_tokens": {"type": ["integer", "null"]},
+        "total_tokens": {"type": ["integer", "null"]}
+      },
+      "additionalProperties": false
+    },
+    "raw_metadata": {"type": "object"}
+  },
+  "additionalProperties": false
+}

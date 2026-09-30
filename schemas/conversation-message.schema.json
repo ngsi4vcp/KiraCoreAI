@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ngsi4vcp/KiraCoreAI/schemas/conversation-message.schema.json",
+  "title": "Сообщение разговора Кира:Ядра",
+  "type": "object",
+  "required": ["id", "session_id", "turn", "role", "content", "timestamp", "pulse"],
+  "properties": {
+    "id": {"type": "string"},
+    "session_id": {"type": "string"},
+    "turn": {"type": "integer", "minimum": 0},
+    "role": {"enum": ["system", "user", "assistant", "tool"]},
+    "content": {"type": "string"},
+    "timestamp": {"type": "string"},
+    "pulse": {"type": ["object", "null"]}
+  },
+  "additionalProperties": true
+}
