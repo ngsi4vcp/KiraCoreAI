@@ -104,7 +104,9 @@ class DeviceEvidenceRunner(
                     runDir,
                     "smoke.failed",
                     "FAIL",
-                    JSONObject().put("exception", error::class.java.name),
+                    JSONObject()
+                        .put("exception", error::class.java.name)
+                        .put("message", error.message ?: error::class.java.simpleName),
                 )
                 writeManifest(runDir, "FAILED")
                 setOverall("ОШИБКА: ${error::class.java.simpleName}")
@@ -250,12 +252,38 @@ class DeviceEvidenceRunner(
         withContext(Dispatchers.Main) {
             _state.value = _state.value.copy(phase = "Инициализация runtime")
         }
-        repeat(80) {
-            if (KiraRuntimeBridge.snapshot().phase.name == "READY") return
+        repeat(480) {
+            val snapshot = KiraRuntimeBridge.snapshot()
+            when (snapshot.phase.name) {
+                "READY" -> return
+                "FAILED" -> {
+                    appendEvent(
+                        runDir,
+                        "runtime.failed",
+                        "FAIL",
+                        JSONObject().put("error", snapshot.error ?: snapshot.message),
+                    )
+                    error(
+                        "Runtime завершился с FAILED: " +
+                            (snapshot.error ?: snapshot.message),
+                    )
+                }
+            }
             delay(250)
         }
         val snapshot = KiraRuntimeBridge.snapshot()
-        error("Runtime не достиг READY: ${snapshot.phase}")
+        appendEvent(
+            runDir,
+            "runtime.wait_timeout",
+            "FAIL",
+            JSONObject()
+                .put("phase", snapshot.phase.name)
+                .put("error", snapshot.error ?: JSONObject.NULL),
+        )
+        error(
+            "Runtime не достиг READY за 120s: " +
+                "phase=" + snapshot.phase + ", error=" + (snapshot.error ?: "нет"),
+        )
     }
 
     private fun environmentCheck(): String {
