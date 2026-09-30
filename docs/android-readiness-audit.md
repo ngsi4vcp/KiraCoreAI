@@ -2,7 +2,8 @@
 
 ## Состояние
 
-Реализационный A0-контур: **кодовый quality pass и CI verification завершены; внешний device acceptance ещё не выполнен**.
+A0.D1 device acceptance: **принят** по фактическому evidence run `20260930-131718` на vivo V2366HA / Android API 36 (`RECOVERY_OK`).
+Текущий инженерный контур: **A1.6 Operation / Recovery boundary**.
 
 ## Фактический build baseline
 
@@ -222,3 +223,17 @@ Lifecycle stop/start зафиксирован как OBSERVED. Итоговый 
 - typed Kotlin mapping.
 
 Следующие device проверки должны повторно подтвердить A0.D1 harness после изменений bridge.
+
+## Актуальный A1.6 audit checkpoint — 30.09.2026
+
+Проверено:
+- bridge contract и typed Kotlin mapping;
+- session create/list/resume;
+- conversation vs approved/candidate memory separation;
+- deterministic test turn и Pulse=1024 на turn 1;
+- authorization `~1` parity;
+- persisted operation state и explicit UNKNOWN boundary;
+- recovery state остаётся в `core_state` после операции;
+- Python/Android tests и security smoke на текущем branch проходят, за исключением последнего JUnit regression, который исправлен отдельным commit `dca5bc4...` после аудита.
+
+Остаётся отдельная device A1 parity-проверка на текущем APK; прошлое A0.D1 acceptance её не заменяет.
