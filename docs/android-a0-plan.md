@@ -6,6 +6,23 @@
 
 A0 не реализует весь Android Alpha и не должен преждевременно включать Kira:Сбор, полноценную identity, сложную память, background hardening или красивый room UI.
 
+## Фактический toolchain на 30.09.2026
+
+- AGP 9.2.1;
+- Gradle 9.4.1;
+- Kotlin / Compose plugin 2.3.10;
+- Compose BOM 2026.09.00;
+- JDK 17;
+- Python 3.13;
+- Chaquopy 17.0.0;
+- compileSdk / targetSdk 37;
+- minSdk 28;
+- ABI arm64-v8a;
+- applicationId `ru.kiracore.ai`;
+- versionName `0.1.0-alpha.1`.
+
+Это фактическая конфигурация текущей Android-ветки, а не только целевой план.
+
 ## Входные условия
 
 - активный GENOME: ревизия 22;
