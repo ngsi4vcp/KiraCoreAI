@@ -1,5 +1,7 @@
 # План разработки Android — Кира:Ядро
 
+> Актуальная контрольная точка на 30.09.2026: A0.D1 принят; A1 Core Parity принят по run `20260930-144146`; текущий этап — A2.0 Persistence Foundation. Исторические разделы ниже сохраняются как план и журнал решений.
+
 Дата среза: 30 сентября 2026 года.
 
 ## 1. Назначение
@@ -57,25 +59,25 @@ Chaquopy 17 используется с Python 3.13. Текущий Android tool
 - versionName `0.1.0-alpha.1`.
 
 Фактически завершено:
-- Android module + Compose host;
+- Android-модуль + Compose host;
 - embedded Python bridge;
-- GENOME revision/SHA verification;
+- проверка ревизии/SHA GENOME;
 - RuntimeService boundary;
 - RuntimeSnapshot;
 - diagnostics;
-- Android Keystore/AES-GCM foundation;
+- основа Android Keystore/AES-GCM;
 - persistence/crypto interfaces;
 - A0 Python bridge smoke;
 - Android unit tests;
 - repository UTF-8 smoke;
-- CI debug APK build, APK existence check и security smoke.
+- сборка отладочного APK в CI, проверка наличия APK и проверка безопасности.
 
 Фактически ещё не завершено:
 - A0 device acceptance;
-- Android instrumentation/device matrix;
-- Room/SQLite domain persistence;
-- production foreground-service/recovery hardening;
-- real OpenRouter/Gemini calls;
+- инструментация Android и матрица устройств;
+- доменная персистентность Room/SQLite;
+- усиление production-контуров фонового сервиса и восстановления;
+- реальные вызовы OpenRouter/Gemini;
 - privileged authority plane;
 - Кира:Сбор;
 - full Android UX.
@@ -893,9 +895,9 @@ Streaming токенов не требуется на первом этапе, �
 
 ### Предварительно принято как инженерная стратегия
 
-Foreground service + persistence + watchdog + recovery.
+Фоновый сервис + персистентность + контроль + восстановление.
 
-SQLite-backed Android storage.
+Хранилище Android на базе SQLite.
 
 Типизированный Kotlin ↔ Python Host Bridge.
 
@@ -1024,6 +1026,11 @@ Foreground runtime строится как service + persistence + recovery. Д�
 UI/host не являются источником privileged authority.
 
 Целевой packaging-контур для будущего Android Alpha:
-canonical GENOME source → public semantic projection + sealed protected payload.
+канонический источник GENOME → открытая семантическая проекция + запечатанные защищённые данные.
 
 Текущий G22 не изменяется этим решением.
+
+
+## Текущий Android status
+
+A1 device acceptance закрыт. A2.0 foundation реализован на ветке `android/alpha-parity`; green CI и самоаудит требуются до его закрытия. Следующий подпредел после A2.0 — A2.1 Store Integration.
