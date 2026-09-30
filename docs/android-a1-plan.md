@@ -53,10 +53,10 @@ G22.txt и `GENOME/genome.txt` не изменяются.
 11. Android lifecycle не является источником истины доменного состояния.
 12. G22/GENOME/security identity contracts не меняются скрытым образом.
 
-## 4. Этап A1.0 — Contract freeze
+## 4. Этап A1.0 — Контрактная фиксация
 
 Перед кодом:
-- сверить current Python Runtime API;
+- сверить актуальный API Python Runtime;
 - зафиксировать точные JSON/typed payload schemas bridge;
 - определить mapping RuntimeSnapshot ↔ core_state;
 - определить event/progress model;
@@ -68,9 +68,9 @@ G22.txt и `GENOME/genome.txt` не изменяются.
 - Android bridge contract;
 - список unchanged core APIs;
 - тестовые fixtures;
-- matrix of expected transitions.
+- matrix of ожидаемых переходов.
 
-## 5. Этап A1.1 — Typed runtime bridge
+## 5. Этап A1.1 — Типизированный runtime bridge
 
 Расширить `KiraRuntimeBridge` и Python bridge до минимально необходимого parity API:
 
@@ -92,7 +92,7 @@ G22.txt и `GENOME/genome.txt` не изменяются.
 
 Обязательное свойство: UI вызывает типизированные operations, а не Python module internals.
 
-## 6. Этап A1.2 — Runtime ownership and lifecycle
+## 6. Этап A1.2 — Владение runtime и lifecycle
 
 Уточнить:
 - Activity/Compose не владеет runtime;
@@ -110,7 +110,7 @@ G22.txt и `GENOME/genome.txt` не изменяются.
 - stop/start;
 - failure injection.
 
-## 7. Этап A1.3 — Session parity
+## 7. Этап A1.3 — Паритет сессий
 
 Реализовать semantic parity:
 - create session;
@@ -119,14 +119,14 @@ G22.txt и `GENOME/genome.txt` не изменяются.
 - last session;
 - resume;
 - provider/model metadata;
-- identity_id как metadata only на этом этапе;
+- identity_id только как метаданные на этом этапе;
 - authorization state boundary.
 
 Сохранить desktop-совместимую семантику `~1` первого сообщения.
 
 Важно: A1 не делает парольную authority plane. Это A3b/A3.
 
-## 8. Этап A1.4 — Conversation / state / Pulse
+## 8. Этап A1.4 — Разговор / состояние / ПУЛЬС
 
 Доказать полный deterministic turn:
 
@@ -139,7 +139,7 @@ G22.txt и `GENOME/genome.txt` не изменяются.
 7. сформировать PulseStamp;
 8. обновить core state;
 9. сохранить assistant result;
-10. вернуть typed result в UI.
+10. вернуть типизированный результат в UI.
 
 Проверки:
 - turn increments once;
@@ -148,7 +148,7 @@ G22.txt и `GENOME/genome.txt` не изменяются.
 - response metadata сохранены;
 - error path не стирает предыдущий state.
 
-## 9. Этап A1.5 — Domain persistence boundary
+## 9. Этап A1.5 — Граница доменной персистентности
 
 A1 обязан доказать семантику persistence, но не должен одновременно переписывать физический backend.
 
@@ -162,7 +162,7 @@ Room/SQLite физический backend реализуется в A2 после
 
 Это разделение необходимо, чтобы ошибки Core parity и ошибки Room integration не смешивались.
 
-## 10. Этап A1.6 — Recovery readiness
+## 10. Этап A1.6 — Готовность к восстановлению
 
 Создать минимальный operation/recovery model:
 - operation_id;
@@ -187,7 +187,7 @@ CREATED
 
 A1 завершает semantic recovery boundary. Полный production recovery реализуется в A5.
 
-## 11. Этап A1.7 — Diagnostics and event stream
+## 11. Этап A1.7 — Диагностика и поток событий
 
 Расширить diagnostics:
 - app;
@@ -210,7 +210,7 @@ A1 завершает semantic recovery boundary. Полный production recove
 - identity_secret;
 - protected GENOME body.
 
-## 12. Этап A1.8 — Tests
+## 12. Этап A1.8 — Тестирование
 
 ### Unit
 
@@ -222,7 +222,7 @@ A1 завершает semantic recovery boundary. Полный production recove
 - error mapping;
 - UNKNOWN semantics.
 
-### JVM/integration where possible
+### JVM/интеграционные проверки, где применимо
 
 - deterministic test turn;
 - restart of bridge object;
@@ -241,7 +241,7 @@ A1 завершает semantic recovery boundary. Полный production recove
 
 A0.D1 harness должен продолжать работать.
 
-## 13. Этап A1.9 — Quality pass
+## 13. Этап A1.9 — Финальный quality pass
 
 Перед закрытием A1:
 - самоаудит по AGENTS;
