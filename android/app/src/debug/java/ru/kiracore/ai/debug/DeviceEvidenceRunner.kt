@@ -5,9 +5,11 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.os.Process
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -65,6 +67,11 @@ class DeviceEvidenceRunner(
     init {
         root.mkdirs()
         _state.value = _state.value.copy(recoveryPending = checkpoint.isFile)
+        restoreLatestEvidenceState()
+    }
+
+    fun close() {
+        scope.cancel()
     }
 
     fun observeLifecycle(event: String) {
@@ -99,6 +106,8 @@ class DeviceEvidenceRunner(
                 runCheck(runDir, "Хранилище") { storageCheck() }
                 writeManifest(runDir, "COMPLETED")
                 setOverall("A0.D1: базовая проверка завершена")
+            } catch (error: CancellationException) {
+                throw error
             } catch (error: Throwable) {
                 appendEvent(
                     runDir,
@@ -221,6 +230,8 @@ class DeviceEvidenceRunner(
                 }
                 writeManifest(runDir, "COMPLETED", "android-a1-device")
                 setOverall("A1.0/A1.2: проверка соответствия завершена")
+            } catch (error: CancellationException) {
+                throw error
             } catch (error: Throwable) {
                 appendEvent(
                     runDir,
@@ -273,6 +284,8 @@ class DeviceEvidenceRunner(
                 }
                 delay(400)
                 Process.killProcess(Process.myPid())
+            } catch (error: CancellationException) {
+                throw error
             } catch (error: Throwable) {
                 setOverall("Recovery подготовка: ${error::class.java.simpleName}")
             }
@@ -339,6 +352,8 @@ class DeviceEvidenceRunner(
                 checkpoint.delete()
                 writeManifest(runDir, "RECOVERY_OK")
                 setOverall("A0.D1 recovery после process death подтверждён")
+            } catch (error: CancellationException) {
+                throw error
             } catch (error: Throwable) {
                 appendEvent(
                     runDir,
@@ -371,25 +386,57 @@ class DeviceEvidenceRunner(
     }
 
     private suspend fun waitForRuntime(runDir: File) {
-        withContext(Dispatchers.Main) {
-            _state.value = _state.value.copy(phase = "Инициализация runtime")
-        }
-        repeat(480) {
+        var reinitializeAttempted = false
+        repeat(480) { iteration ->
             val snapshot = KiraRuntimeBridge.snapshot()
             when (snapshot.phase.name) {
                 "READY" -> return
-                "FAILED" -> {
-                    appendEvent(
-                        runDir,
-                        "runtime.failed",
-                        "FAIL",
-                        JSONObject().put("error", snapshot.error ?: snapshot.message),
-                    )
-                    error(
-                        "Runtime завершился с FAILED: " +
-                            (snapshot.error ?: snapshot.message),
-                    )
+                "INITIALIZING" -> {
+                    updatePhase("Инициализация runtime: ${snapshot.message}")
                 }
+                "STOPPED" -> {
+                    if (!reinitializeAttempted) {
+                        reinitializeAttempted = true
+                        appendEvent(
+                            runDir,
+                            "runtime.reinitialize_requested",
+                            "PASS",
+                            JSONObject().put("reason", "STOPPED"),
+                        )
+                        KiraRuntimeBridge.initializeAsync(context)
+                    }
+                    updatePhase("Runtime остановлен — повторная инициализация…")
+                }
+                "FAILED" -> {
+                    if (!reinitializeAttempted) {
+                        reinitializeAttempted = true
+                        appendEvent(
+                            runDir,
+                            "runtime.reinitialize_requested",
+                            "PASS",
+                            JSONObject().put("reason", "FAILED"),
+                        )
+                        KiraRuntimeBridge.initializeAsync(context)
+                        updatePhase("Runtime завершился с ошибкой — повторная инициализация…")
+                    } else {
+                        appendEvent(
+                            runDir,
+                            "runtime.failed",
+                            "FAIL",
+                            JSONObject().put("error", snapshot.error ?: snapshot.message),
+                        )
+                        error(
+                            "Runtime завершился с FAILED: " +
+                                (snapshot.error ?: snapshot.message),
+                        )
+                    }
+                }
+                "STOPPING" -> {
+                    updatePhase("Runtime останавливается…")
+                }
+            }
+            if (iteration % 20 == 0) {
+                updatePhase(KiraRuntimeBridge.snapshot().message)
             }
             delay(250)
         }
@@ -408,6 +455,39 @@ class DeviceEvidenceRunner(
         )
     }
 
+    private suspend fun updatePhase(message: String) {
+        withContext(Dispatchers.Main) {
+            _state.value = _state.value.copy(phase = message)
+        }
+    }
+    private fun restoreLatestEvidenceState() {
+        val latestRun = root.listFiles()
+            ?.asSequence()
+            ?.filter { it.isDirectory }
+            ?.sortedByDescending { it.name }
+            ?.firstOrNull { File(it, "manifest.json").isFile }
+            ?: return
+        runCatching {
+            val manifest = JSONObject(
+                File(latestRun, "manifest.json").readText(Charsets.UTF_8),
+            )
+            val status = manifest.optString("status", "UNKNOWN")
+            val overall = when (status) {
+                "RECOVERY_OK" -> "Последняя проверка: RECOVERY_OK"
+                "COMPLETED" -> "Последняя проверка: завершена"
+                "FAILED" -> "Последняя проверка: завершилась с ошибкой"
+                else -> "Последняя проверка: $status"
+            }
+            _state.value = DeviceEvidenceUiState(
+                runId = manifest.optString("run_id").takeIf { it.isNotBlank() }
+                    ?: latestRun.name,
+                phase = "Готово",
+                running = false,
+                recoveryPending = checkpoint.isFile,
+                overall = overall,
+            )
+        }
+    }
     private fun environmentCheck(): String {
         val abis = Build.SUPPORTED_ABIS.joinToString(",")
         require("arm64-v8a" in Build.SUPPORTED_ABIS) {
