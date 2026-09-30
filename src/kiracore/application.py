@@ -11,7 +11,6 @@ from .connectors import (
     human_provider_name,
 )
 from .errors import KiraCoreError
-from .persistence import CoreStatePersistence
 from .runtime import KiraRuntime
 from .secrets import SecretStore
 from .selector import select_from_list, select_provider
@@ -80,49 +79,73 @@ class TerminalApplication:
                 "SECRETS/credentials.ini или запустите LM Studio."
             )
 
-        preferred = self.preferences.get("provider")
-        provider = preferred if preferred in names else select_provider(
-            "Выберите коннектор:",
-            labels,
-        )
-        if provider is None:
-            raise KeyboardInterrupt
+        preferred_provider = self.preferences.get("provider")
 
-        self.model = connector_for(provider, self.credentials)
-        self.provider = provider
-
-        preferred_model = self.preferences.get("model")
-        catalog = self.model.list_models("")
-        if not catalog:
-            raise ModelConnectionError(
-                f"Коннектор {human_provider_name(provider)} не вернул модели."
+        while True:
+            provider = (
+                preferred_provider
+                if preferred_provider in names
+                else select_provider(
+                    "Выберите коннектор:",
+                    labels,
+                )
             )
-
-        model_labels = [
-            f"{item.id} — {item.name}"
-            for item in catalog
-        ]
-        preferred_index = next(
-            (i for i, item in enumerate(catalog) if item.id == preferred_model),
-            None,
-        )
-        if preferred_index is not None:
-            model_id = catalog[preferred_index].id
-        else:
-            selected = select_from_list(
-                "Выберите модель (поиск фильтрует каталог сразу):",
-                model_labels,
-            )
-            if selected is None:
+            if provider is None:
                 raise KeyboardInterrupt
-            model_id = catalog[selected].id
 
-        self.model_id = model_id
-        self.preferences.update({
-            "provider": provider,
-            "model": model_id,
-        })
-        self._save_preferences()
+            try:
+                self.host.status(
+                    f"Подключение к {human_provider_name(provider)}",
+                    None,
+                )
+                model = connector_for(provider, self.credentials)
+                catalog = model.list_models("")
+            except ModelConnectionError as exc:
+                self.host.error(str(exc))
+                preferred_provider = None
+                continue
+
+            if not catalog:
+                self.host.error(
+                    f"Коннектор {human_provider_name(provider)} не вернул моделей."
+                )
+                preferred_provider = None
+                continue
+
+            self.host.status(
+                f"Получен каталог моделей: {len(catalog)}",
+                True,
+            )
+            self.model = model
+            self.provider = provider
+
+            preferred_model = self.preferences.get("model")
+            preferred_index = next(
+                (i for i, item in enumerate(catalog) if item.id == preferred_model),
+                None,
+            )
+            if preferred_index is not None:
+                model_id = catalog[preferred_index].id
+            else:
+                model_labels = [
+                    f"{item.id} — {item.name}"
+                    for item in catalog
+                ]
+                selected = select_from_list(
+                    "Выберите модель (поиск фильтрует каталог сразу):",
+                    model_labels,
+                )
+                if selected is None:
+                    raise KeyboardInterrupt
+                model_id = catalog[selected].id
+
+            self.model_id = model_id
+            self.preferences.update({
+                "provider": provider,
+                "model": model_id,
+            })
+            self._save_preferences()
+            return
 
     def _session_menu(self) -> str:
         sessions = self.runtime.conversation_store.list()
@@ -175,8 +198,10 @@ class TerminalApplication:
                     continue
                 if command == "/genome":
                     print(
-                        f"Ревизия: {self.runtime.genome.revision}\n"
-                        f"SHA-256: {self.runtime.genome.sha256}\n"
+                        f"Ревизия: {self.runtime.genome.revision}
+"
+                        f"SHA-256: {self.runtime.genome.sha256}
+"
                         f"Секций: {len(self.runtime.genome.document.sections)}"
                     )
                     continue
@@ -246,11 +271,16 @@ class TerminalApplication:
     def _print_status(self) -> None:
         state = self.runtime.core_state
         print(
-            f"Ревизия: {self.runtime.genome.revision}\n"
-            f"Сессия: {state.get('active_session_id', '—')}\n"
-            f"Ход: {state.get('turn', 0)}\n"
-            f"Пульс: {state.get('pulse', '—')}\n"
-            f"Авторизация Алека: {state.get('authorized_alek', False)}\n"
+            f"Ревизия: {self.runtime.genome.revision}
+"
+            f"Сессия: {state.get('active_session_id', '—')}
+"
+            f"Ход: {state.get('turn', 0)}
+"
+            f"Пульс: {state.get('pulse', '—')}
+"
+            f"Авторизация Алека: {state.get('authorized_alek', False)}
+"
             f"Модель: {self.provider}/{self.model_id}"
         )
 

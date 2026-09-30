@@ -1,79 +1,150 @@
 # KiraCoreAI
 
-KiraCoreAI — нормативное и исполняемое ядро проекта Кира:Ядро.
+KiraCoreAI — исполняемое ядро проекта Кира:Ядро.
+
+## Alpha 0.1.0-alpha.1
+
+Цель этой Alpha — получить первый вертикальный пользовательский сценарий:
+
+распаковать архив → START → считать GENOME → открыть DATA/SECRETS → выбрать connector → получить актуальный каталог моделей → выбрать модель → запустить runtime → вести разговор → перезапустить и продолжить.
+
+Целевая среда: Windows 11 x64 и Linux x64.
 
 ## Источник генома
 
 Активный runtime-геном читается только из GENOME/genome.txt.
 
-Файл G22.txt в корне — шаблон и база для разработки. Runtime его не загружает.
+G22.txt в корне — шаблон разработки. Runtime его не загружает.
 
-Схема запуска:
+Текст GENOME/genome.txt — единственный источник истины. Парсер и индексы производны от него.
+
+## Runtime
 
 GENOME/genome.txt
-    ↓
+↓
 GenomeLoader
-    ↓
+↓
 GenomeParser
-    ↓
+↓
 GenomeValidator
-    ↓
-GenomeCompiler
-    ↓
-GenomeStore / ContextCompiler / SessionManager
+↓
+GenomeCompiler / GenomeStore
+↓
+StateStore + MemoryStore + HistoryStore + ConversationStore
+↓
+ContextCompiler
+↓
+PromptRenderer
+↓
+ModelAdapter
+↓
+ModelResponse
+↓
+PulseStamp
+↓
+Persistence
+↓
+TerminalHost
 
-Текст GENOME/genome.txt — единственный источник истины. Секционные индексы и runtime-представления являются производными и не могут изменять исходный текст генома.
+## Коннекторы моделей
 
-## Формат генома
+Alpha предоставляет:
 
-Формат KIRA-GENOME v1 использует явные маркеры @@GENOME, @@SECTION, @@BODY, @@END и @@ENDGENOME.
+- OpenRouter;
+- Google Gemini / Google AI Studio через OpenAI-compatible API;
+- LM Studio через локальный OpenAI-compatible API.
 
-Каждый раздел содержит стабильный ID, TYPE, PART, TARGETS, MUTABILITY и TITLE. Содержимое BODY не извлекается по догадке и не ищется по Markdown-заголовкам.
+Каталог моделей получает runtime через API коннектора. Селектор поддерживает поиск по уже загруженному каталогу с выбором стрелками.
 
-## Что реализовано
+Подробности и официальные API-контракты: docs/model-connectors.md.
 
-- загрузка активного GENOME/genome.txt;
-- явный машинный формат с секционными границами;
-- проверка обязательных метаданных и конституционных инвариантов;
-- индексация разделов по ID, части и runtime-целям;
-- неизменяемый GenomeStore;
-- извлечение защищённых правил по стабильным ID;
-- авторизация Алека через ~1 в первом сообщении;
-- формула и валидация ПУЛЬС;
-- раздельные хранилища состояния, памяти и истории;
-- память по умолчанию как candidate, с отдельным авторизованным утверждением;
-- атомарное сохранение состояния;
-- независимые контракты хоста и модели;
-- единая точка запуска KiraRuntime, загружающая активный геном до создания сессионных хранилищ.
+## Локальные данные
 
-## Разделение уровней
+При первом старте автоматически создаётся:
 
-ГЕНОМ ≠ СОСТОЯНИЕ ≠ ПАМЯТЬ ≠ ИСТОРИЯ ≠ КОНТЕКСТ ≠ СРЕДА ВЫПОЛНЕНИЯ ≠ ХОСТ.
+DATA/
+├── core_state.json
+├── preferences.json
+├── sessions/
+├── conversations/
+├── memory/
+└── history/
 
-GenomeCompiler создаёт только производные индексы. Ни StateStore, ни MemoryStore, ни HistoryStore не получают права записи в источник генома.
+Секреты хранятся отдельно:
+
+SECRETS/credentials.ini
+
+Файл создаётся автоматически из шаблона и не входит в Git.
+
+## Память
+
+Модель не имеет прямого права записывать активную память.
+
+Новая запись должна пройти состояние candidate, а утверждение выполняется отдельно авторизованным действием.
+
+Это сознательная защита от автоматической фиксации галлюцинаций модели.
+
+## ПУЛЬС
+
+ПУЛЬС теперь формируется runtime, а не моделью.
+
+Формула сохраняется:
+
+series + revision + turn + turn²
+
+Он служит детерминированной меткой активности, сохраняется в состоянии и разговоре и не используется как первичный ключ базы.
+
+## Интерфейс
+
+После запуска доступны:
+
+/help
+/status
+/genome
+/sessions
+/memory
+/memory candidates
+/memory approve <id>
+/exit
+
+## Сборка
+
+Для release используется PyInstaller.
+
+GitHub Actions собирает отдельные артефакты для Windows x64 и Linux x64. В бинарник не встраивается активный геном: GENOME/genome.txt поставляется рядом с исполняемым файлом.
 
 ## Проверки
 
-PYTHONPATH=src python -m unittest discover -s tests -v
+CI запускает тесты на Ubuntu и Windows для Python 3.11 и 3.12.
 
-## Язык проекта
+Локально:
 
-Русский — канонический язык Кира:Ядра и основной язык нетехнической документации.
+python -m pip install -e .
+python -m unittest discover -s tests -v
 
-Английское написание допускается для стабильных технических идентификаторов, API, имён файлов, каталогов, классов, функций и полей схем.
+## Архитектурные инварианты
+
+Геном ≠ состояние ≠ память ≠ история ≠ разговор ≠ контекст ≠ среда.
+
+Хост не владеет геномом.
+
+Модель не владеет памятью и состоянием.
+
+Изменение генома — отдельная управляемая ревизия.
 
 ## Документация
 
-- docs/genome-format.md — формат генома;
-- docs/architecture.md — архитектура;
-- docs/runtime.md — исполняемый слой;
-- docs/context-model.md — модель контекста и памяти;
-- docs/genome-governance.md — управление геномом;
-- docs/evaluation.md — оценка;
-- docs/decisions.md — решения;
-- docs/language-policy.md — язык;
-- docs/roadmap.md — дорожная карта;
-- schemas/ — машиночитаемые контракты;
-- capsule/KIRA_CORE_CAPSULE.md — переносимая капсула.
-
-main остаётся рабочей веткой.
+- docs/architecture.md
+- docs/runtime.md
+- docs/context-model.md
+- docs/genome-format.md
+- docs/genome-governance.md
+- docs/model-connectors.md
+- docs/persistence.md
+- docs/terminal-alpha.md
+- docs/evaluation.md
+- docs/roadmap.md
+- docs/decisions.md
+- docs/language-policy.md
+- schemas/
+- capsule/KIRA_CORE_CAPSULE.md

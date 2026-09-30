@@ -1,33 +1,37 @@
 # Исполняемый слой
 
-Единая точка старта: KiraRuntime.start().
+Единая точка старта продукта — START, который запускает TerminalApplication и KiraRuntime.
 
-При старте runtime:
+При запуске:
 
-1. загружает GENOME/genome.txt;
-2. разбирает документ GenomeParser;
-3. проверяет его GenomeValidator;
-4. строит GenomeRuntimeIndex через GenomeCompiler;
-5. помещает неизменяемый снимок в GenomeStore;
-6. создаёт StateStore, MemoryStore и HistoryStore;
-7. создаёт SessionManager, работающий с тем же снимком генома.
+1. определяется корень portable-приложения;
+2. создаётся DATA;
+3. загружается GENOME/genome.txt;
+4. парсится и валидируется KIRA-GENOME;
+5. строится неизменяемый GenomeStore;
+6. восстанавливаются sessions, memory, history и conversations;
+7. читается SECRETS/credentials.ini;
+8. выбирается connector;
+9. получается актуальный каталог моделей;
+10. выбирается модель;
+11. начинается разговорный runtime.
 
-Нормативный путь: GENOME/genome.txt.
+G22.txt в корне проекта не участвует в runtime.
 
-G22.txt в корне проекта не участвует в запуске и используется только как шаблон для разработки новой ревизии.
+## После загрузки
 
-После загрузки выполняется цепочка:
+ContextCompiler получает только нужные фрагменты отдельных слоёв.
 
-GENOME/genome.txt → parser → validator → compiler → immutable store → state/memory/history → context/session.
+PromptRenderer превращает их в ModelRequest.
 
-GenomeParser отвечает только за синтаксическое извлечение секций.
+ModelAdapter выполняет внешний API-вызов.
 
-GenomeValidator отвечает за документные и конституционные инварианты.
+Runtime проверяет ModelResponse, записывает ход и формирует PulseStamp.
 
-GenomeCompiler строит производные индексы по стабильным ID, частям и TARGETS.
+Модель не генерирует ПУЛЬС.
 
-GenomeStore удерживает неизменяемый снимок активного генома.
+## Ошибки
 
-ContextCompiler получает защищённые секции через эти индексы и не выполняет эвристический поиск по Markdown-заголовкам.
+Ошибка model-call сохраняется в core_state.json и не должна уничтожать уже сохранённые разговор или состояние.
 
-Геном не получает API записи из StateStore, MemoryStore или HistoryStore.
+Сессия останется в статусе running/error для последующего анализа.
