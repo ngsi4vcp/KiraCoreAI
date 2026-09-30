@@ -216,8 +216,9 @@ class KiraRuntime:
                 ),
                 error=str(exc),
             )
+            current_session = self.state_store.get(session_id)
             self._save_core(
-                session,
+                current_session,
                 provider,
                 model_id,
                 "error",
