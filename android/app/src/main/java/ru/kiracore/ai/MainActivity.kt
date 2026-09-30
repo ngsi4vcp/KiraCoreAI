@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,17 +18,24 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import ru.kiracore.ai.runtime.KiraRuntimeService
+import ru.kiracore.ai.runtime.RuntimeSnapshot
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         startService(Intent(this, KiraRuntimeService::class.java))
 
         setContent {
-            var status by remember { mutableStateOf("Запуск Кира:Ядра…") }
+            var snapshot by remember {
+                mutableStateOf(KiraRuntimeBridge.snapshot())
+            }
 
-            LaunchedEffect(Unit) {
-                status = KiraRuntimeBridge.health(this@MainActivity)
+            DisposableEffect(Unit) {
+                val subscription = KiraRuntimeBridge.subscribe { next ->
+                    runOnUiThread { snapshot = next }
+                }
+                onDispose { subscription.close() }
             }
 
             MaterialTheme {
@@ -36,10 +43,16 @@ class MainActivity : ComponentActivity() {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        verticalArrangement = Arrangement.Center,
                     ) {
                         Text(text = "Кира:Ядро — A0")
-                        Text(text = status)
+                        Text(text = snapshot.message)
+                        snapshot.genomeRevision?.let {
+                            Text(text = "Геном: G$it")
+                        }
+                        snapshot.error?.let {
+                            Text(text = "Причина: $it")
+                        }
                     }
                 }
             }
