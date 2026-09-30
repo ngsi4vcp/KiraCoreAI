@@ -191,7 +191,7 @@ A0 завершён, когда:
 - RuntimeService поднимает Python в отдельном исполнительном потоке;
 - RuntimeSnapshot задаёт явные фазы INITIALIZING/READY/FAILED/STOPPING/STOPPED;
 - Python bridge реализует initialize(), health(), load_genome(), create_session(), get_runtime_state(), run_test_turn(), shutdown();
-- GENOME загружается с обязательной проверкой ревизии 22 и ожидаемого SHA-256;
+- GENOME загружается с обязательной проверкой ревизии 22 и SHA-256 содержимого;
 - Android internal storage root диагностически совпадает с Python DATA root;
 - PlatformSecureStore имеет Android Keystore + AES/GCM реализацию;
 - CryptoProvider имеет SecureRandom/SHA-256 реализацию;
