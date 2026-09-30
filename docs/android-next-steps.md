@@ -8,7 +8,7 @@
 - device evidence run: `20260930-144146`
 - device: vivo V2366HA / Android API 36
 - A1 Core Parity: **ACCEPTED** для текущего среза
-- следующий этап: **A2 Persistence**
+- текущий этап: **A2.0 Persistence Foundation**
 - активный GENOME: revision 22
 - GENOME SHA-256: `dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e`
 
@@ -33,9 +33,9 @@ Android продолжает реализовываться как host над �
 - запрет plaintext secret material в persistence/UI;
 - self-check: build, unit tests, security smoke, UTF-8, APK content.
 
-Критерий завершения:
+Фактически уже реализовано в текущем срезе:
 
-`Room schema + gateway` компилируются и покрыты контрактными тестами, но runtime ещё не переводится на смешанный режим.
+`Room schema + gateway` реализованы в commit `54f185bba7360f0551ad2e460b91e0758bdf484f`; CI подтвердит сборку. Runtime ещё не переведён на смешанный режим.
 
 ### A2.1 Store Integration
 
