@@ -48,19 +48,19 @@
 - [x] Android unit tests
 - [x] CI debug APK + security smoke
 
-### A0.D1. Device Evidence / Device Acceptance
-- [x] Device Evidence Harness
-- [x] real vivo device smoke — фактический прогон на vivo V2366HA / Android API 36
-- [x] GENOME/Python/runtime evidence
-- [x] session/test-turn/Pulse evidence
-- [x] Keystore/storage evidence
-- [x] process restart/recovery evidence
-- [x] secret-free evidence export
-- [x] A0 acceptance report / `RECOVERY_OK`
+### A0.D1. Диагностика устройства / приёмка устройства
+- [x] модуль диагностики устройства
+- [x] фактическая проверка на vivo — прогон на vivo V2366HA / Android API 36
+- [x] диагностические данные GENOME/Python/рантайма
+- [x] диагностические данные сессии/тестового хода/ПУЛЬС
+- [x] диагностические данные Keystore/хранилища
+- [x] диагностические данные перезапуска/восстановления процесса
+- [x] экспорт диагностических материалов без секретов
+- [x] отчёт о приёмке A0 / `RECOVERY_OK`
 
 Тестовая модель устройства в историческом плане остаётся vivo X100 Ultra / OriginOS 6, но фактический принятый A0.D1 device — V2366HA/API 36. Матрица Android 13–17 остаётся отдельным A11 контуром.
 
-### A1. Core Parity
+### A1. Соответствие Core
 - [ ] расширенный typed Kotlin ↔ Python bridge
 - [ ] startup/resume/session lifecycle
 - [ ] session/conversation/state/memory/history semantic parity
@@ -71,10 +71,10 @@
 - [ ] runtime events / diagnostics
 - [ ] A1 regression tests
 
-### Текущая Android контрольная точка
-A1.6 Operation / Recovery boundary реализован. Следующий production recovery/reconcile остаётся A5; текущий отдельный A1 device parity smoke ещё требует физического прогона на свежем APK.
+### Текущая контрольная точка Android
+A1.6 — граница операции и восстановления — реализован. Свежая проверка соответствия A1 на устройстве `20260930-144146` принята со статусом `RECOVERY_OK`. Текущий этап — A2.0 Persistence Foundation; production recovery/reconcile остаётся A5.
 
-### A2. Persistence
+### A2. Персистентность
 - [ ] Persistence Contract implementation
 - [ ] Room/SQLite backend
 - [ ] encrypted sensitive payload fields
@@ -84,7 +84,7 @@ A1.6 Operation / Recovery boundary реализован. Следующий prod
 - [ ] duplicate prevention / idempotency
 - [ ] conversation != retained memory semantics
 
-### A3. Identity + Authority Security
+### A3. Идентичность и защищённые полномочия
 - [ ] identity_id/device_id
 - [ ] identity_secret
 - [ ] QR/manual transfer
@@ -95,7 +95,7 @@ A1.6 Operation / Recovery boundary реализован. Следующий prod
 - [ ] sealed authority payload
 - [ ] transient capability grants
 
-### A4. Kira:Сбор
+### A4. Кира:Сбор
 - [ ] GitHub App / user authorization
 - [ ] encrypted envelopes
 - [ ] signing/verification
@@ -105,14 +105,14 @@ A1.6 Operation / Recovery boundary реализован. Следующий prod
 - [ ] conflict/rollback handling
 - [ ] shared snapshot consumption
 
-### A5. Runtime Recovery
+### A5. Восстановление рантайма
 - [x] operation state machine foundation (A1.6)
 - [x] UNKNOWN boundary semantics (A1.6)
 - [ ] production checkpoint/reconcile
 - [ ] no silent repeat of uncertain model-call
 - [ ] deterministic recovery tests
 
-### A6. Background Runtime
+### A6. Фоновый рантайм
 - [ ] foreground service design selected from actual Android constraints
 - [ ] Android 13 notifications
 - [ ] Android 14+ FGS type/permission compliance
@@ -124,7 +124,7 @@ A1.6 Operation / Recovery boundary реализован. Следующий prod
 - [ ] Кира:Сон
 - [ ] no “immortal process” assumption
 
-### A7. Main UX
+### A7. Основной интерфейс
 - [ ] full-screen conversation
 - [ ] side menu
 - [ ] Pulse chip
@@ -137,7 +137,7 @@ A1.6 Operation / Recovery boundary реализован. Следующий prod
 - [ ] Кира:Сбор
 - [ ] Надстройки
 
-### A8. Providers
+### A8. Провайдеры
 - [ ] OpenRouter credentials/storage
 - [ ] OpenRouter catalog + ModelRequest/Response
 - [ ] Gemini credentials/storage
@@ -145,7 +145,7 @@ A1.6 Operation / Recovery boundary реализован. Следующий prod
 - [ ] provider error handling
 - [ ] no secrets in UI/logs/APK
 
-### A9. Genome Guard
+### A9. Защита GENOME
 - [ ] privileged authorization
 - [ ] candidate file
 - [ ] parse/validate
@@ -166,7 +166,7 @@ A1.6 Operation / Recovery boundary реализован. Следующий prod
 - [ ] recovery readiness
 - [ ] concise overall health state
 
-### A11. Real-device/Test Matrix
+### A11. Матрица реальных устройств и тестов
 - [ ] Android 13
 - [ ] Android 14
 - [ ] Android 15
@@ -182,14 +182,14 @@ A1.6 Operation / Recovery boundary реализован. Следующий prod
 - [ ] identity import/merge
 - [ ] sync interruption
 
-### A12. APK Alpha / Release
+### A12. APK Alpha / релиз
 - [ ] classic APK release packaging
 - [ ] debug signing only for development
 - [ ] release signing architecture
 - [ ] packaged security/leakage audit
 - [ ] release artifact verification
 
-### Cross-cutting A3b. Authority Security
+### Сквозной контур A3b. Защита полномочий
 - [ ] PlatformSecureStore
 - [ ] password verifier
 - [ ] no hardcoded secrets
