@@ -231,8 +231,12 @@ class TerminalApplication:
                     continue
                 if command.startswith("/memory approve "):
                     record_id = command.removeprefix("/memory approve ").strip()
-                    self.runtime.approve_memory(session_id, record_id)
-                    print(f"[ГОТОВО] Память утверждена: {record_id}")
+                    try:
+                        self.runtime.approve_memory(session_id, record_id)
+                    except KiraCoreError as exc:
+                        self.host.error(str(exc))
+                    else:
+                        print(f"[ГОТОВО] Память утверждена: {record_id}")
                     continue
                 if not task.strip():
                     continue
