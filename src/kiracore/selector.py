@@ -82,7 +82,7 @@ def select_from_list(
         os.system("cls" if os.name == "nt" else "clear")
         print(title)
         print(f"Фильтр: {query}")
-        print("↑/↓ — выбор; Enter — подтвердить; Backspace — удалить символ; Esc — отмена")
+        print("↑/↓ — выбор; ↵ — подтвердить; ⌫ — удалить символ; ⎋ — отмена")
         print()
 
         if not filtered:
