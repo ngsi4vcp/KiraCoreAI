@@ -82,7 +82,10 @@ G22.txt и `GENOME/genome.txt` в этой работе не изменяютс�
 13. `docs/persistence.md`;
 14. `docs/model-connectors.md`;
 15. `docs/evaluation.md`;
-17. затем исходный код и тесты по необходимости.
+16. `docs/android-device-evidence-plan.md`;
+17. `docs/android-a1-plan.md`;
+18. `docs/android-development-checklist.md`;
+19. затем исходный код и тесты по необходимости.
 
 ## Цель Android-ветки
 
