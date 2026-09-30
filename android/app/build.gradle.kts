@@ -55,7 +55,7 @@ chaquopy {
     }
     sourceSets {
         getByName("main") {
-            setSrcDirs(listOf(rootProject.layout.projectDirectory.dir("src").asFile))
+            srcDir(rootProject.layout.projectDirectory.dir("src").asFile)
         }
     }
 }
