@@ -434,7 +434,7 @@ class DeviceEvidenceRunner(
         require(diagnostics.optString("application_id") == BuildConfig.APPLICATION_ID)
         require(diagnostics.optBoolean("storage_writable"))
         require(diagnostics.optBoolean("secure_store_available"))
-        return "core=${diagnostics.optString("core_version")}, python=${diagnostics.optString("python_version")}"
+        return "ядро=${diagnostics.optString("core_version")}, Python=${diagnostics.optString("python_version")}"
     }
 
     private fun sessionCheck(): String {
