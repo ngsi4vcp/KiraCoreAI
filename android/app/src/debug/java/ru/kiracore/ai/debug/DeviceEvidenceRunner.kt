@@ -818,11 +818,13 @@ class DeviceEvidenceRunner(
             .put("manufacturer", Build.MANUFACTURER)
             .put("model", Build.MODEL)
         File(runDir, "manifest.json").writeText(manifest.toString(2), Charsets.UTF_8)
-        File(runDir, "README.txt").writeText(
-            "Диагностический evidence A0.D1. Bundle не содержит секретов.\n",
-            Charsets.UTF_8,
-        )
-    }
+        val readme = when (evidenceType) {
+            "android-a2.1-device" ->
+                "Диагностический evidence A2.1. Bundle не содержит секретов.\n"
+            else ->
+                "Диагностический evidence A0.D1. Bundle не содержит секретов.\n"
+        }
+        File(runDir, "README.txt").writeText(readme, Charsets.UTF_8)    }
 
     private fun containsBytes(haystack: ByteArray, needle: ByteArray): Boolean {
         if (needle.isEmpty()) return true
