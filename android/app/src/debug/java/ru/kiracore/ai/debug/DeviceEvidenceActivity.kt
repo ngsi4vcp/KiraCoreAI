@@ -111,7 +111,8 @@ class DeviceEvidenceActivity : ComponentActivity() {
                                         this@DeviceEvidenceActivity,
                                         MainActivity::class.java,
                                     )
-                                        .putExtra("skip_debug_harness", true),
+                                        .putExtra("skip_debug_harness", true)
+                                        .addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT),
                                 )
                             },
                             modifier = Modifier.fillMaxWidth(),
