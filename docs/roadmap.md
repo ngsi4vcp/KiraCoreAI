@@ -28,3 +28,86 @@
 7. только после этого углублять агентное планирование.
 
 Не следует до первого Alpha усложнять хранение в распределённую БД или добавлять полноценный vector search без фактической потребности.
+
+
+
+## Android Alpha — 0.x
+
+### A0. Skeleton
+- [ ] Android module
+- [ ] Kotlin/Compose
+- [ ] Chaquopy/Python 3.13
+- [ ] ARM64
+- [ ] compileSdk/targetSdk 37
+- [ ] diagnostics skeleton
+
+### A1. Core parity
+- [ ] GENOME load/validate
+- [ ] Session/Conversation
+- [ ] OpenRouter
+- [ ] Gemini
+- [ ] Pulse
+- [ ] first end-to-end turn
+
+### A2. Persistence
+- [ ] Persistence Contract implementation
+- [ ] Room/SQLite backend
+- [ ] CryptoProvider
+- [ ] recovery checkpoint
+- [ ] restart/resume
+
+### A3. Identity
+- [ ] identity_id/device_id
+- [ ] identity secret
+- [ ] QR/manual transfer
+- [ ] merge transaction
+- [ ] tombstones
+- [ ] runtime instance registration
+
+### A4. Kira:Сбор
+- [ ] GitHub App authorization
+- [ ] encrypted envelope
+- [ ] signing/verification
+- [ ] private sync
+- [ ] core update
+- [ ] shared snapshot consumption
+
+### A5. Android lifecycle
+- [ ] foreground service
+- [ ] Android 13 notifications
+- [ ] Android 14+ FGS types
+- [ ] Android 15 restrictions
+- [ ] Android 16 quota interactions
+- [ ] Android 17 local-network/security checks
+- [ ] OEM background diagnostics
+- [ ] Кира:Сон
+
+### A6. UX
+- [ ] Main conversation
+- [ ] side menu
+- [ ] Pulse chip
+- [ ] avatar state model
+- [ ] sessions
+- [ ] memory
+- [ ] settings
+- [ ] КираЧек
+- [ ] Геном
+- [ ] Кира:Сбор
+- [ ] Надстройки
+
+### A7. Security hardening
+- [ ] privileged Alek auth
+- [ ] no secret leakage in logs/APK
+- [ ] secure export/import
+- [ ] sync conflict handling
+- [ ] migration tests
+
+### A8. Real-device matrix
+- [ ] Android 13
+- [ ] Android 14
+- [ ] Android 15
+- [ ] Android 16
+- [ ] Android 17
+- [ ] vivo X100 Ultra / OriginOS 6
+
+Пока эти пункты не закрыты тестами, Android Alpha не считается функционально эквивалентной desktop Alpha.
