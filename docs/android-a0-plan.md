@@ -1,3 +1,5 @@
+> Примечание статуса: этот документ сохраняет нормативный A0-план и исторические критерии. Фактический результат A0.D1 зафиксирован в `docs/android-port-status.md` и `test-exchange/manifest.json`: run `20260930-131718`, `RECOVERY_OK`, vivo V2366HA / API 36.
+
 # A0 — Android Skeleton + Runtime Bridge
 
 ## Цель этапа
