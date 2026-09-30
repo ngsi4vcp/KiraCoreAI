@@ -33,18 +33,18 @@ A0.D1 использует тот же APK/applicationId, что и кодовы
 
 Требуемые диагностические материалы:
 - device/build identity;
-- Android version and OEM/runtime information;
+- версия Android и сведения об OEM/рантайме;
 - Python 3.13 / Chaquopy startup;
 - GENOME revision 22 + SHA-256;
 - diagnostics and health;
 - test session creation;
 - deterministic test turn;
 - Pulse/state synchronization;
-- Android Keystore round-trip;
+- полный цикл проверки Android Keystore;
 - storage write/read;
 - service/background observation;
-- controlled process restart and recovery checkpoint;
-- secret-free evidence export.
+- контролируемый перезапуск процесса и checkpoint восстановления;
+- экспорт диагностических материалов без секретов.
 
 Диагностические материалы экспортируются через системный API выбора файла с участием пользователя; полный доступ к файловой системе не требуется.
 
@@ -68,7 +68,7 @@ Python runtime не получает отдельную БД.
 
 ## A3 — Identity и безопасность
 
-Реализовать identity_id, device_id, identity_secret, export, QR, manual phrase, import, merge, tombstone и device registration.
+Реализовать identity_id, device_id, identity_secret, экспорт, QR, ручную фразу, импорт, объединение, tombstone и регистрацию устройства.
 Пароль Алека хранится только как verifier/KDF.
 Secrets не попадают в model prompt.
 SyncManager не должен быть произвольным model tool.
@@ -76,7 +76,7 @@ SyncManager не должен быть произвольным model tool.
 ## A4 — Кира:Сбор
 
 Подключить GitHub Sync Provider.
-Поддержать проверку доступности, GitHub authorization, manifest, core snapshot, encrypted private objects, outbox, signing, signature verification, decrypt, merge, sync cursor и rollback.
+Поддержать проверку доступности, авторизацию GitHub, manifest, снимок core, зашифрованные приватные объекты, outbox, подпись, проверку подписи, расшифровку, объединение, курсор синхронизации и откат.
 GitHub является transport/storage, а не доменной базой Киры.
 
 ## A5 — Runtime Recovery
@@ -90,7 +90,7 @@ UNKNOWN — полноценное состояние.
 Основной контур: Activity → RuntimeService → PythonRuntime → Persistence.
 Для Android 14+ FGS type должен быть явно заявлен.
 Для long-running KiraRuntime исследуется specialUse; dataSync не используется как бессрочный тип.
-Реализовать notification, boot/recovery path, battery optimization guidance, background diagnostics, OEM diagnostics и Кира:Сон.
+Реализовать уведомления, путь запуска/восстановления после загрузки, рекомендации по оптимизации батареи, фоновые диагностические проверки и OEM-диагностику, а также Кира:Сон.
 Нельзя обещать бессмертие процесса.
 
 ## A7 — Main UX
@@ -98,7 +98,7 @@ UNKNOWN — полноценное состояние.
 Главная поверхность: full-screen room, Kira avatar, conversation, Pulse chip и текущий operation status.
 Side menu: Сессии, Память, Настройки, КираЧек, Геном, Кира:Сбор, Надстройки.
 Все пользовательские сообщения — русский.
-Первые avatar states: idle, thinking, working, answering, error, sleep.
+Первые состояния аватара: ожидание, размышление, работа, ответ, ошибка, сон.
 Token streaming в Alpha не требуется.
 
 ## A8 — Providers
@@ -109,7 +109,7 @@ Provider API не выходит напрямую в UI.
 
 ## A9 — Genome Guard
 
-Экран Геном: privileged authorization → просмотр → candidate file → parse → validate → revision check → SHA-256 → diff → explicit confirmation → atomic activation.
+Экран Геном: привилегированная авторизация → просмотр → файл-кандидат → разбор → валидация → проверка ревизии → SHA-256 → сравнение → явное подтверждение → атомарная активация.
 GenomeStore не может быть записан MemoryStore, StateStore или UI.
 
 ## A10 — КираЧек
@@ -121,7 +121,7 @@ GenomeStore не может быть записан MemoryStore, StateStore ил
 
 Обязательная матрица: Android 13, 14, 15, 16, 17.
 Первое устройство: vivo X100 Ultra / OriginOS 6.
-Проверяются background execution, process kill, reboot, notifications, battery optimization, network loss, GitHub authorization, sync interruption, storage corruption, identity import и identity merge.
+Проверяются фоновое выполнение, завершение процесса, перезагрузка, уведомления, оптимизация батареи, потеря сети, авторизация GitHub, прерывание синхронизации, повреждение хранилища, импорт и объединение identity.
 
 ## A12 — APK Alpha
 
@@ -155,7 +155,7 @@ Release signing architecture оформить отдельно до первой
 - password verifier;
 - sealed authority payload;
 - transient capability grant;
-- Pre-Generation Reflection Gate;
+- контур предгенерационной рефлексии;
 - Response Disclosure Guard;
 - отсутствие protected genome text в ModelRequest;
 - отсутствие secrets в APK/resources/Python bytecode;
