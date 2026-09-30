@@ -211,7 +211,9 @@ def check_health() -> str:
 
 
 def health() -> str:
-    runtime = _runtime_required()
+    if _RUNTIME is None:
+        return "Кира:Ядро не инициализировано"
+    runtime = _RUNTIME
     return (
         "Кира:Ядро готово · "
         f"G{runtime.genome.revision} · "
