@@ -9,6 +9,7 @@ from .conversation import ConversationManifest, ConversationStore
 from .genome import GenomeArtifact, GenomeLoader, GenomeStore
 from .model_contract import ModelAdapter, ModelResponse
 from .persistence import CoreStatePersistence, JsonPersistence
+from .pulse import pulse_stamp
 from .rendering import PlainTextPromptRenderer
 from .session import SessionManager
 from .stores import HistoryStore, MemoryStore, StateStore
@@ -118,7 +119,12 @@ class KiraRuntime:
             "last_error": None,
         }
 
-    def create_session(self, provider: str, model: str, identity_id: str | None = None) -> ConversationManifest:
+    def create_session(
+        self,
+        provider: str,
+        model: str,
+        identity_id: str | None = None,
+    ) -> ConversationManifest:
         manifest = self.conversation_store.create(provider, model)
         from .models import SessionState
 
@@ -135,6 +141,7 @@ class KiraRuntime:
             provider,
             model,
             "session_created",
+            pulse=None,
         )
         return manifest
 
@@ -189,8 +196,47 @@ class KiraRuntime:
         )
         return response
 
+    def list_sessions(self) -> list[ConversationManifest]:
+        return self.conversation_store.list()
+
+    def resume_session(
+        self,
+        session_id: str | None = None,
+    ) -> ConversationManifest | None:
+        manifest = (
+            self.conversation_store.get_manifest(session_id)
+            if session_id is not None
+            else self.resume_latest_session()
+        )
+        if manifest is None:
+            return None
+
+        session = self.state_store.get(manifest.session_id)
+        provider = session.provider or manifest.provider
+        model = session.model or manifest.model
+        pulse = None
+        previous_pulse = self.core_state.get("pulse")
+        if session.turn > 0 and isinstance(previous_pulse, dict):
+            try:
+                pulse = pulse_stamp(
+                    session.turn,
+                    self.genome.revision,
+                    self.genome.series,
+                )
+            except ValueError:
+                pulse = None
+
+        self._save_core(
+            session,
+            provider,
+            model,
+            "resumed",
+            pulse=pulse,
+        )
+        return manifest
+
     def resume_latest_session(self) -> ConversationManifest | None:
-        sessions = self.conversation_store.list()
+        sessions = self.list_sessions()
         return sessions[0] if sessions else None
 
     def approve_memory(self, session_id: str, record_id: str):
