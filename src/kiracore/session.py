@@ -11,6 +11,7 @@ from .persistence import JsonPersistence
 from .pulse import pulse_stamp
 from .rendering import PlainTextPromptRenderer
 from .stores import HistoryStore, MemoryStore, StateStore
+from .validation import OutputValidator
 
 
 class SessionManager:
@@ -26,6 +27,7 @@ class SessionManager:
         prompt_renderer: PlainTextPromptRenderer | None = None,
         persistence: JsonPersistence | None = None,
         context_compiler: ContextCompiler | None = None,
+        output_validator: OutputValidator | None = None,
     ) -> None:
         self.genome = genome
         self.state_store = state_store
@@ -35,6 +37,7 @@ class SessionManager:
         self.prompt_renderer = prompt_renderer or PlainTextPromptRenderer()
         self.persistence = persistence
         self.context_compiler = context_compiler or ContextCompiler()
+        self.output_validator = output_validator or OutputValidator()
 
     @staticmethod
     def authorize(first_message: str) -> bool:
@@ -100,14 +103,17 @@ class SessionManager:
         request = self.prompt_renderer.render(context)
         response = model.generate(request)
 
-        if not response.text.strip():
+        validation = self.output_validator.validate(response)
+        if not validation.valid:
             session = replace(
                 session,
                 runtime_status="validation_failed",
                 updated_at=utc_now(),
             )
             self.state_store.put(session)
-            raise ProtocolViolation("Модель вернула пустой ответ.")
+            if self.persistence:
+                self.persistence.save(session)
+            raise ProtocolViolation("; ".join(validation.errors))
 
         pulse = pulse_stamp(
             session.turn,

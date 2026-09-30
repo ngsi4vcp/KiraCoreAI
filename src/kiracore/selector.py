@@ -2,18 +2,13 @@ from __future__ import annotations
 
 import os
 import sys
-import time
 from contextlib import contextmanager
 from typing import Iterator
 
 
 @contextmanager
 def _raw_input() -> Iterator[None]:
-    if os.name == "nt":
-        yield
-        return
-
-    if not sys.stdin.isatty():
+    if os.name == "nt" or not sys.stdin.isatty():
         yield
         return
 
@@ -53,13 +48,12 @@ def _read_key() -> str:
     if char == "\x1b":
         second = sys.stdin.read(1)
         third = sys.stdin.read(1)
-        sequence = second + third
         return {
             "[A": "up",
             "[B": "down",
             "[C": "right",
             "[D": "left",
-        }.get(sequence, "esc")
+        }.get(second + third, "esc")
     if char in ("\n", "\r"):
         return "enter"
     if char in ("\x7f", "\b"):
@@ -71,6 +65,7 @@ def select_from_list(
     title: str,
     items: list[str],
     initial_filter: str = "",
+    visible: int = 20,
 ) -> int | None:
     if not items:
         return None
@@ -84,9 +79,6 @@ def select_from_list(
             for position, item in enumerate(items)
             if query.casefold() in item.casefold()
         ]
-        if not filtered:
-            filtered = []
-
         os.system("cls" if os.name == "nt" else "clear")
         print(title)
         print(f"Фильтр: {query}")
@@ -96,13 +88,24 @@ def select_from_list(
         if not filtered:
             print("Нет совпадений.")
         else:
-            index = min(index, len(filtered) - 1)
-            for position, (_, item) in enumerate(filtered[:20]):
+            index %= len(filtered)
+            window_size = min(visible, len(filtered))
+            start = min(
+                max(index - window_size // 2, 0),
+                max(len(filtered) - window_size, 0),
+            )
+            stop = start + window_size
+            for position, (_, item) in enumerate(filtered[start:stop], start):
                 marker = "▶" if position == index else " "
                 print(f"{marker} {item}")
+            print(f"\nПоказано {start + 1}–{stop} из {len(filtered)}")
 
         with _raw_input():
             key = _read_key()
+
+        if not sys.stdin.isatty() and key not in {"up", "down", "enter", "esc", "backspace"}:
+            query = input("Фильтр: ")
+            continue
 
         if key == "esc":
             return None
@@ -118,7 +121,6 @@ def select_from_list(
         elif len(key) == 1 and key.isprintable():
             query += key
             index = 0
-        time.sleep(0.02)
 
 
 def select_provider(

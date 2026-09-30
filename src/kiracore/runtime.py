@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import asdict, replace
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
 from .context import ContextCompiler
-from .conversation import ConversationManifest, ConversationStore, utc_now
+from .conversation import ConversationManifest, ConversationStore
 from .genome import GenomeArtifact, GenomeLoader, GenomeStore
 from .model_contract import ModelAdapter, ModelResponse
 from .persistence import CoreStatePersistence, JsonPersistence
@@ -112,6 +112,8 @@ class KiraRuntime:
             "pulse": None,
             "active_provider": None,
             "active_model": None,
+            "authorized_alek": False,
+            "state": {},
             "last_error": None,
         }
 
@@ -173,6 +175,7 @@ class KiraRuntime:
             raw_metadata={
                 **response.raw_metadata,
                 "pulse": asdict(pulse),
+                "pulse_rendered": pulse.render(),
             },
         )
         self._save_core(

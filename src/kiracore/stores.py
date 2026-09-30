@@ -3,6 +3,8 @@ from __future__ import annotations
 from copy import deepcopy
 import json
 from pathlib import Path
+import tempfile
+import os
 
 from .errors import AuthorizationError, KiraCoreError
 from .models import HistoryEntry, MemoryRecord, SessionState
@@ -49,11 +51,13 @@ class StateStore:
             turn=item.get("turn", 0),
             authorized_alek=item.get("authorized_alek", False),
             authorization_marker=item.get("authorization_marker"),
+            provider=item.get("provider"),
+            model=item.get("model"),
             environment=item.get("environment", {}),
             state=state,
             runtime_status=item.get("runtime_status", "created"),
-            created_at=item.get("created_at"),
-            updated_at=item.get("updated_at"),
+            created_at=item.get("created_at") or "",
+            updated_at=item.get("updated_at") or "",
         )
 
 
@@ -68,19 +72,18 @@ class MemoryStore:
     def _load(self) -> None:
         if not self.path or not self.path.exists():
             return
-        for line in self.path.read_text(encoding="utf-8").splitlines():
-            if not line.strip():
-                continue
-            item = MemoryRecord(**json.loads(line))
-            self._items[item.id] = item
+        data = json.loads(self.path.read_text(encoding="utf-8"))
+        for item in data.get("records", []):
+            record = MemoryRecord(**item)
+            self._items[record.id] = record
 
     def _persist(self) -> None:
         if not self.path:
             return
-        self.path.parent.mkdir(parents=True, exist_ok=True)
-        self.path.write_text(
-            "".join(
-                json.dumps(deepcopy(item).__dict__ if False else {
+        payload = {
+            "schema_version": 1,
+            "records": [
+                {
                     "id": item.id,
                     "type": item.type,
                     "content": item.content,
@@ -93,11 +96,29 @@ class MemoryStore:
                     "valid_from": item.valid_from,
                     "valid_to": item.valid_to,
                     "status": item.status,
-                }, ensure_ascii=False) + "\n"
+                }
                 for item in self._items.values()
-            ),
-            encoding="utf-8",
-        )
+            ],
+        }
+        self.path.parent.mkdir(parents=True, exist_ok=True)
+        encoded = json.dumps(payload, ensure_ascii=False, indent=2)
+        tmp_path: Path | None = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                "w",
+                encoding="utf-8",
+                dir=self.path.parent,
+                delete=False,
+                prefix=".memory.",
+            ) as handle:
+                handle.write(encoded)
+                handle.flush()
+                os.fsync(handle.fileno())
+                tmp_path = Path(handle.name)
+            os.replace(tmp_path, self.path)
+        finally:
+            if tmp_path is not None and tmp_path.exists():
+                tmp_path.unlink(missing_ok=True)
 
     def add_candidate(self, record: MemoryRecord) -> None:
         if record.id in self._items:
@@ -139,6 +160,13 @@ class MemoryStore:
             deepcopy(x)
             for x in self._items.values()
             if x.status == "approved"
+        ]
+
+    def candidates(self) -> list[MemoryRecord]:
+        return [
+            deepcopy(x)
+            for x in self._items.values()
+            if x.status == "candidate"
         ]
 
 
