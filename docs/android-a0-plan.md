@@ -91,7 +91,7 @@ UI можно уничтожить и восстановить без потер
 - PlatformSecureStore interface;
 - CryptoProvider interface;
 - PersistenceProvider interface;
-- Android internal storage root;
+- корень внутреннего хранилища Android;
 - диагностическая проверка доступности backend.
 
 Критерий:
@@ -251,7 +251,7 @@ A0 завершён, когда:
 - PlatformSecureStore имеет Android Keystore + AES/GCM реализацию;
 - CryptoProvider имеет SecureRandom/SHA-256 реализацию;
 - diagnostics возвращает app/core/GENOME/Python/provider/storage/secure-store/runtime сведения без секретов;
-- Python A0 bridge smoke и Android unit tests добавлены в CI;
+- сквозная проверка Python A0 bridge и модульные тесты Android добавлены в CI;
 - Android security smoke проверяет отсутствие hardcoded credentials/private keys;
 - неполный Gradle Wrapper не оставлен: CI явно фиксирует Gradle 9.4.1.
 
@@ -259,7 +259,7 @@ A0 завершён, когда:
 - полноценная password authorization Алека;
 - запечатанная упаковка полномочий;
 - Room/SQLite domain persistence вместо текущей platform foundation;
-- foreground-service production hardening;
+- усиление production-контура фонового сервиса;
 - Android 13–17 matrix;
 - реальный vivo X100 Ultra;
 - полноценный Chat UI/avatar/Pulse chip;
