@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   build:
-    if: github.event.head_commit.message == 'Release: Кира:Ядро 0.1.0-alpha.1'
     strategy:
       fail-fast: false
       matrix:
@@ -68,7 +67,6 @@ jobs:
           path: release/*
 
   publish:
-    if: github.event.head_commit.message == 'Release: Кира:Ядро 0.1.0-alpha.1'
     needs: build
     runs-on: ubuntu-latest
     steps:
