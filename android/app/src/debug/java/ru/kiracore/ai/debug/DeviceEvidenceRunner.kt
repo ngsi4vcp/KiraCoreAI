@@ -107,7 +107,7 @@ class DeviceEvidenceRunner(
                     JSONObject().put("exception", error::class.java.name),
                 )
                 writeManifest(runDir, "FAILED")
-                setOverall("ОШИБКА: @@{error::class.java.simpleName}")
+                setOverall("ОШИБКА: ${error::class.java.simpleName}")
             }
         }
     }
@@ -150,7 +150,7 @@ class DeviceEvidenceRunner(
                 delay(400)
                 Process.killProcess(Process.myPid())
             } catch (error: Throwable) {
-                setOverall("Recovery подготовка: @@{error::class.java.simpleName}")
+                setOverall("Recovery подготовка: ${error::class.java.simpleName}")
             }
         }
     }
@@ -194,7 +194,7 @@ class DeviceEvidenceRunner(
                     require(actualTurn == pending.turn) {
                         "turn после restart не совпал."
                     }
-                    "session=@@{actualSession}, turn=@@{actualTurn}"
+                    "session=${actualSession}, turn=${actualTurn}"
                 }
                 runCheck(runDir, "Recovery: ПУЛЬС") {
                     val state = KiraRuntimeBridge.getRuntimeState(context)
@@ -204,7 +204,7 @@ class DeviceEvidenceRunner(
                     require(pulse == pending.pulse) {
                         "Pulse после restart не совпал."
                     }
-                    "pulse=@@{pulse}"
+                    "pulse=${pulse}"
                 }
                 appendEvent(
                     runDir,
@@ -222,7 +222,7 @@ class DeviceEvidenceRunner(
                     "FAIL",
                     JSONObject().put("exception", error::class.java.name),
                 )
-                setOverall("RECOVERY BLOCKER: @@{error::class.java.simpleName}")
+                setOverall("RECOVERY BLOCKER: ${error::class.java.simpleName}")
             }
         }
     }
@@ -241,7 +241,7 @@ class DeviceEvidenceRunner(
             }.onSuccess {
                 setOverall("Evidence bundle экспортирован")
             }.onFailure {
-                setOverall("Экспорт не выполнен: @@{it::class.java.simpleName}")
+                setOverall("Экспорт не выполнен: ${it::class.java.simpleName}")
             }
         }
     }
@@ -255,7 +255,7 @@ class DeviceEvidenceRunner(
             delay(250)
         }
         val snapshot = KiraRuntimeBridge.snapshot()
-        error("Runtime не достиг READY: @@{snapshot.phase}")
+        error("Runtime не достиг READY: ${snapshot.phase}")
     }
 
     private fun environmentCheck(): String {
@@ -263,7 +263,7 @@ class DeviceEvidenceRunner(
         require("arm64-v8a" in Build.SUPPORTED_ABIS) {
             "Устройство не сообщает arm64-v8a."
         }
-        return "Android API @@{Build.VERSION.SDK_INT}, @@{Build.MANUFACTURER} @@{Build.MODEL}, ABI=@@{abis}"
+        return "Android API ${Build.VERSION.SDK_INT}, ${Build.MANUFACTURER} ${Build.MODEL}, ABI=${abis}"
     }
 
     private fun genomeCheck(): String {
@@ -271,12 +271,12 @@ class DeviceEvidenceRunner(
         val revision = result.optInt("genome_revision")
         val sha = result.optString("genome_sha256")
         require(revision == expectedGenomeRevision) {
-            "Ожидалась GENOME revision @@{expectedGenomeRevision}, получена @@{revision}."
+            "Ожидалась GENOME revision ${expectedGenomeRevision}, получена ${revision}."
         }
         require(sha == expectedGenomeSha256) {
             "GENOME SHA-256 не совпал."
         }
-        return "revision=@@{revision}, sha256=@@{sha}"
+        return "revision=${revision}, sha256=${sha}"
     }
 
     private fun diagnosticsCheck(): String {
@@ -284,7 +284,7 @@ class DeviceEvidenceRunner(
         require(diagnostics.optString("application_id") == BuildConfig.APPLICATION_ID)
         require(diagnostics.optBoolean("storage_writable"))
         require(diagnostics.optBoolean("secure_store_available"))
-        return "core=@@{diagnostics.optString("core_version")}, python=@@{diagnostics.optString("python_version")}"
+        return "core=${diagnostics.optString("core_version")}, python=${diagnostics.optString("python_version")}"
     }
 
     private fun sessionCheck(): String {
@@ -322,15 +322,15 @@ class DeviceEvidenceRunner(
         val expectedPulse = 1000 + expectedGenomeRevision +
             snapshot.turn + snapshot.turn * snapshot.turn
         require(snapshot.pulse == expectedPulse) {
-            "Ожидался Pulse=@@{expectedPulse}, получен @@{snapshot.pulse}."
+            "Ожидался Pulse=${expectedPulse}, получен ${snapshot.pulse}."
         }
-        return "session=@@{snapshot.activeSessionId}, turn=@@{snapshot.turn}, pulse=@@{snapshot.pulse}"
+        return "session=${snapshot.activeSessionId}, turn=${snapshot.turn}, pulse=${snapshot.pulse}"
     }
 
     private fun keystoreCheck(): String {
         val store = AndroidSecureStore(context)
         require(store.isAvailable()) { "Android Keystore недоступен." }
-        val name = "device-evidence-@@{timestamp()}"
+        val name = "device-evidence-${timestamp()}"
         val payload = AndroidCryptoProvider().randomBytes(32)
         store.put(name, payload)
         val restored = store.get(name)
