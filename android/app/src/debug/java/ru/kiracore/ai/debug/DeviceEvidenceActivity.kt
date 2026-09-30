@@ -85,6 +85,13 @@ class DeviceEvidenceActivity : ComponentActivity() {
                         }
 
                         Button(
+                            onClick = runner::startA2PersistenceSmoke,
+                            enabled = !state.running,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Проверить физическую персистентность A2.1")
+                        }
+                        Button(
                             onClick = runner::prepareAndRestart,
                             enabled = !state.running && state.runId != null,
                             modifier = Modifier.fillMaxWidth(),
