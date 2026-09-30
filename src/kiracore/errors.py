@@ -12,3 +12,7 @@ class AuthorizationError(KiraCoreError):
 
 class ProtocolViolation(KiraCoreError):
     """Результат или переход состояния нарушает обязательный протокол."""
+
+
+class UnknownModelCall(KiraCoreError):
+    """Результат внешнего model-call не определён однозначно."""
