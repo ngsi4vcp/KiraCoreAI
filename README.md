@@ -165,7 +165,7 @@ Android Alpha использует OpenRouter и Google AI Studio/Gemini. LM Stu
 
 Android UI русскоязычный и не является переносом терминала.
 
-### Android architecture
+### Архитектура Android
 
 Android:
 Kotlin → Android Host → KiraRuntime Bridge → Python KiraCore → ModelAdapter.
@@ -192,9 +192,9 @@ SyncProvider → CryptoProvider → encrypted envelopes → private GitHub.
 
 A0.D1 фактическое device acceptance закрыт: evidence run `20260930-131718` на vivo V2366HA (Android API 36) завершён со статусом `RECOVERY_OK`. Проверены GENOME rev 22/SHA, diagnostics, session, deterministic turn, Pulse/state, Android Keystore, storage и recovery; lifecycle stop/start зафиксирован как OBSERVED.
 
-Текущий инженерный этап — `A1 Core Parity`, достигнут boundary A1.6 Operation / Recovery. Реализованы typed bridge, session create/list/resume, conversation/memory separation, deterministic turn, Pulse/state parity и persisted operation state с явным `UNKNOWN` для неопределённого model-call. Production reconcile/recovery остаётся A5.
+A1 Core Parity принят для текущего Android-среза по device evidence run `20260930-144146` на vivo V2366HA / Android API 36 (`RECOVERY_OK`). Реализованы typed bridge, session create/list/resume, conversation/memory separation, deterministic turn, Pulse/state parity и persisted operation state с явным `UNKNOWN` для неопределённого model-call. Текущий этап — `A2.0 Persistence Foundation`; production reconcile/recovery остаётся A5.
 
-Последний CI на текущем кодовом срезе должен оставаться green до выдачи APK; физический A1 parity smoke ещё не считается пройденным, пока его не выполнить на устройстве.
+Последний CI и device evidence должны оставаться проверяемыми для каждого следующего APK; A1 device parity уже принят, а A2.0 закрывается только после собственного green CI и самоаудита.
 
 Временный debug-only Device Evidence Harness используется для фактического evidence и не является production UI.
 
