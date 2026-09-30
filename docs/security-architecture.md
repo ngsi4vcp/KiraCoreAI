@@ -29,7 +29,7 @@ Alpha должна учитывать:
 
 ### 1. Пользовательские данные
 
-Это memory, history, state, conversation, engrams, profiles и private sync objects.
+Это memory, history, state, conversation, engrams, profiles и приватные объекты синхронизации.
 
 Они шифруются и подписываются до отправки в транспорт.
 
@@ -84,7 +84,7 @@ Android Keystore предназначен для долгоживущего хр
 - identity secret;
 - GitHub tokens;
 - device signing key;
-- plaintext protected authority payload;
+- защищённый payload полномочий в открытом виде;
 - полный текст защищённых секций GENOME;
 - внутренние идентификаторы защищённого протокола.
 
@@ -273,7 +273,7 @@ Windows: DPAPI/CNG DPAPI.
 ### Android-specific boundary
 
 - protected payload хранится во внутреннем app-specific storage;
-- platform key material хранится в Android Keystore;
+- ключевой материал платформы хранится в Android Keystore;
 - Keystore key не экспортируется в plaintext;
 - Compose UI и UI state не получают key material;
 - Service/Bridge работает с типизированными SecureStore/CryptoProvider операциями.
