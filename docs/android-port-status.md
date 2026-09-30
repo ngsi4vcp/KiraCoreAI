@@ -549,6 +549,6 @@ A2.0 Persistence Foundation реализован и проверен. A2.1 Store
 - Android runtime не создаёт параллельный canonical JSON backend при включённом Room backend;
 - restart read-back и separation conversation/memory покрыты новым integration contract test.
 
-Последняя полная CI-проверка: run `#450`, HEAD `219c641a6b74526e0774346b35b3dbe912e96246`, результат `success`.
+Последняя полная CI-проверка кода: run `#450`, commit `219c641a6b74526e0774346b35b3dbe912e96246`, результат `success`. Все изменения после этого commit на текущей точке — только Markdown-документация; отдельного green run для docs-only HEAD не было.
 
-Текущий этап: **A2.1 Store Integration — implementation + CI acceptance**. Физическая device-проверка нового persistence runtime ещё не выполнена; она остаётся обязательной частью A2.5. Исторические A0/A1 checkpoint выше сохраняются как история и не являются текущим статусом.
+Текущий этап: **A2.1 Store Integration — implementation + CI acceptance**. Физическая device-проверка нового persistence runtime ещё не выполнена. Она остаётся обязательным acceptance-критерием физического Android-контура; до неё следующий значимый persistence-предел не открывается. Исторические A0/A1 checkpoint выше сохраняются как история и не являются текущим статусом.
