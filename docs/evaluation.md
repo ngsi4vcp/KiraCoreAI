@@ -1,5 +1,18 @@
 # Оценка и проверка
 
+## Текущий Android checkpoint — 30.09.2026
+
+A0.D1 physical evidence принят: run `20260930-131718`, vivo V2366HA, API 36, `RECOVERY_OK`.
+
+Текущий Android engineering boundary — A1.6 Operation / Recovery:
+- typed bridge и session parity;
+- deterministic turn/Pulse parity;
+- explicit UNKNOWN model-call semantics;
+- persisted operation state;
+- no automatic retry for UNKNOWN.
+
+Это не закрывает production recovery/reconcile A5 и отдельный A1 device parity smoke на текущем APK.
+
 ## Уже автоматизировано
 
 - целостность активного генома;
