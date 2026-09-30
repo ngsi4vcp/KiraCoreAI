@@ -2,7 +2,7 @@
 
 ## Состояние
 
-Реализационный A0-контур: **кодовый quality pass завершён; внешнее build/device evidence ещё не получено**.
+Реализационный A0-контур: **кодовый quality pass и CI verification завершены; device evidence ещё не получено**.
 
 ## Чек-лист
 
@@ -91,3 +91,25 @@
 ## Верификационный цикл A0 — 30.09.2026
 
 Контрольная точка CI: код и документация quality pass завершены; далее проверяются фактический CI build/test/security и доступные device evidence.
+
+
+## CI-доказательство A0 — run #161
+
+Контрольный commit: `eaf178c9bd231f85d6ef98ef7b2b95e398ffbde9`.
+
+Фактический GitHub Actions run #161 завершён успешно:
+- Python 3.11/3.12 — Ubuntu/Windows: все матричные тестовые jobs успешны;
+- package-smoke Linux/Windows: успешны;
+- Android A0 smoke: успешен;
+- Android API 37.0 SDK установлен;
+- `testDebugUnitTest` выполнен успешно;
+- `assembleDebug` выполнен успешно;
+- debug APK существовал по проверяемому пути `android/app/build/outputs/apk/debug/app-debug.apk`;
+- security smoke после сборки прошёл успешно.
+
+Таким образом, A0 имеет фактическое CI evidence для сборки, unit-тестов, Python bridge/security smoke и debug APK.
+
+Не закрыты только внешние device-критерии:
+- vivo X100 Ultra / OriginOS 6;
+- Android 13–17 реальная matrix;
+- instrumentation/device smoke.
