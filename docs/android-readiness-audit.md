@@ -2,7 +2,7 @@
 
 ## Состояние
 
-Архитектурный этап перед A0: **предварительно готов к запуску разработки**.
+Реализационный A0-контур: **кодовый quality pass завершён; внешнее build/device evidence ещё не получено**.
 
 ## Чек-лист
 
@@ -48,18 +48,11 @@
 
 ## Следующий этап
 
-**A0 — Android Skeleton + Runtime Bridge.**
-
-Порядок:
-1. Android-модуль;
-2. Compose Activity;
-3. Python 3.13 / Chaquopy bridge;
-4. RuntimeService;
-5. PlatformSecureStore/CryptoProvider interfaces;
-6. загрузка и валидация G22;
-7. диагностический статус;
-8. первый сквозной smoke без полноценного UI;
-9. затем A1 Core Parity.
+**A1 — Core Parity**, но только после закрытия внешнего доказательного контура A0:
+1. фактический GitHub CI run для текущего head;
+2. подтверждение debug APK;
+3. базовый device smoke;
+4. затем согласование перехода в A1.
 
 ## Граница согласования
 
