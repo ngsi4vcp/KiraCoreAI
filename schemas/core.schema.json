@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ngsi4vcp/KiraCoreAI/schemas/core.schema.json",
+  "title": "Контракт Кира:Ядра",
+  "type": "object",
+  "required": ["genome", "state", "memory", "history", "context", "environment"],
+  "properties": {
+    "genome": {
+      "type": "object",
+      "required": ["revision", "sha256"],
+      "properties": {
+        "revision": {"type": "integer"},
+        "sha256": {"type": "string"}
+      },
+      "additionalProperties": false
+    },
+    "state": {"$ref": "state.schema.json"},
+    "memory": {"type": "array", "items": {"$ref": "memory-record.schema.json"}},
+    "history": {"type": "array", "items": {"type": "object"}},
+    "context": {
+      "type": "object",
+      "description": "Скомпилированное оперативное представление, а не новый нормативный слой."
+    },
+    "environment": {
+      "type": "object",
+      "description": "Фактические ограничения и возможности среды реализации."
+    }
+  },
+  "additionalProperties": false
+}
