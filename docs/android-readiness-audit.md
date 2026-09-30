@@ -95,7 +95,8 @@
 - [!] Release signing: финальная схема хранения release key ещё не зафиксирована; debug остаётся текущим режимом.
 - [!] A0.D1: реальный тест на vivo X100 Ultra / OriginOS 6 ещё не пройден.
 - [!] Реальный Android 13–17 matrix ещё не пройден.
-- [!] Device instrumentation/evidence harness ещё не добавлен.
+- [x] Device instrumentation/evidence harness реализован и собран CI run #243.
+- [!] Реальный device acceptance ещё не выполнен.
 - [!] Локальная сборка и устройство из текущей среды не подтверждены; источником факта сборки должен быть реальный CI run, а device evidence — отдельный smoke на vivo X100 Ultra.
 - [!] Сложная фильтрация, обезличивание и обобщение глобального опыта сознательно оставлены на поздний PC-контур.
 
@@ -185,3 +186,16 @@ A1 открывается только после успешного A0.D1 gate.
 - readiness-аудит разделяет архитектурно утверждённые контракты и реально реализованный A0.
 
 G22.txt и GENOME/genome.txt не изменялись. После контрольного A0-кода `eaf178c9bd231f85d6ef98ef7b2b95e398ffbde9` в Android quality pass изменялись только CI/config/documentation и `KiraRuntimeBridge.kt`; desktop runtime `src/` и GENOME не затрагивались.
+
+
+## A0.D1 implementation result
+
+Device Evidence Harness реализован в debug source set и подтверждён CI run #243.
+
+- code commit: f09df4539c31287dfc458ee4e573eba9c1c8ee59
+- run: #243, conclusion: success
+- artifact ID: 11086816355
+- APK SHA-256: 943342bff105557089f48ebd51c5e7a542a2bced9619795dafd65ef3edc7605a
+- artifact expires: 14 октября 2026
+
+Реализация harness закрыта. Внешний device acceptance на vivo X100 Ultra / OriginOS 6 ещё не выполнен.
