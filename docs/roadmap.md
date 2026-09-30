@@ -34,6 +34,8 @@
 ## Android Alpha — 0.x
 
 ### A0. Skeleton
+
+Подробный план: `docs/android-a0-plan.md`.
 - [ ] Android module
 - [ ] Kotlin/Compose
 - [ ] Chaquopy/Python 3.13
