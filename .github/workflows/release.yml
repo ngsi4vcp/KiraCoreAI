@@ -41,6 +41,17 @@ jobs:
         run: |
           python -m PyInstaller --clean --noconfirm --onefile --name START START.py
 
+      - name: Проверить запуск бинарника
+        shell: bash
+        run: |
+          if [ "${{ matrix.platform }}" = "windows" ]; then
+            output=$(dist/START.exe --version)
+          else
+            output=$(./dist/START --version)
+          fi
+          echo "$output"
+          test "$output" = "Кира:Ядро | версия 0.1.0-alpha.1"
+
       - name: Собрать release-архив
         shell: bash
         run: |
