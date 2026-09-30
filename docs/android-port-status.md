@@ -552,3 +552,11 @@ A2.0 Persistence Foundation реализован и проверен. A2.1 Store
 Последняя полная CI-проверка кода: run `#450`, commit `219c641a6b74526e0774346b35b3dbe912e96246`, результат `success`. Все изменения после этого commit на текущей точке — только Markdown-документация; отдельного green run для docs-only HEAD не было.
 
 Текущий этап: **A2.1 Store Integration — implementation + CI acceptance**. Физическая device-проверка нового persistence runtime ещё не выполнена. Она остаётся обязательным acceptance-критерием физического Android-контура; до неё следующий значимый persistence-предел не открывается. Исторические A0/A1 checkpoint выше сохраняются как история и не являются текущим статусом.
+
+### Debug evidence harness — lifecycle QA
+
+После device-проверки A2.1 уточнены два lifecycle-дефекта debug-only harness:
+- переход в обычный A0 экран теперь не удаляет evidence Activity из back stack; системный Back возвращает к evidence menu;
+- последнее завершённое evidence восстанавливается при новом запуске Activity, поэтому run/export state не возвращается ошибочно к «НЕ ЗАПУЩЕНО»;
+- фоновые checks отменяются при уничтожении Activity;
+- ожидание READY больше не остаётся немым на STOPPED/FAILED: runner показывает фазу и выполняет одну контролируемую повторную инициализацию.
