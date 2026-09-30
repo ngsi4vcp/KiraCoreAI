@@ -175,18 +175,29 @@ SyncProvider → CryptoProvider → encrypted envelopes → private GitHub.
 
 ### Android documentation
 
-- docs/android-port-status.md
-- docs/android-development-plan.md
-- docs/android-alpha-implementation-plan.md
-- docs/android-readiness-audit.md
-- docs/kira-sync-contract.md
-- docs/identity-and-user-memory-contract.md
-- docs/persistence-contract.md
-- docs/android-readiness-audit.md
+- `AGENTS.md`
+- `docs/android-port-status.md`
+- `docs/android-readiness-audit.md`
+- `docs/android-a0-plan.md`
+- `docs/android-device-evidence-plan.md`
+- `docs/android-a1-plan.md`
+- `docs/android-development-checklist.md`
+- `docs/android-development-plan.md`
+- `docs/android-alpha-implementation-plan.md`
+- `docs/kira-sync-contract.md`
+- `docs/identity-and-user-memory-contract.md`
+- `docs/persistence-contract.md`
 
-### Cross-platform rule
+### Current Android status
 
-Android, Windows и Linux могут иметь разные UI и physical storage, но обязаны сохранять одну семантику GENOME, Memory, History, State, Conversation, Runtime, Identity, Pulse и KiraSync.
+A0 code foundation и CI verification завершены. Фактический build baseline использует AGP 9.2.1, Gradle 9.4.1, Kotlin/Compose plugin 2.3.10, Compose BOM 2026.09.00, JDK 17, Python 3.13, Chaquopy 17.0.0, compileSdk/targetSdk 37, minSdk 28, arm64-v8a.
+
+GitHub Actions run #190 подтвердил Android unit tests, debug APK build, APK existence check и security smoke. Внешний device acceptance ещё не выполнен.
+
+Текущий этап: `A0.D1 — Device Evidence / Device Acceptance`.
+После его прохождения открывается `A1 — Core Parity`.
+
+Временный debug-only Device Evidence Harness допускается именно для получения фактического evidence и не является production UI.
 
 ## Безопасность и переносимость
 
