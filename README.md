@@ -188,9 +188,9 @@ SyncProvider → CryptoProvider → encrypted envelopes → private GitHub.
 - `docs/identity-and-user-memory-contract.md`
 - `docs/persistence-contract.md`
 
-### Current Android status
+### Текущий статус Android
 
-A0 code foundation и CI verification завершены. Фактический build baseline использует AGP 9.2.1, Gradle 9.4.1, Kotlin/Compose plugin 2.3.10, Compose BOM 2026.09.00, JDK 17, Python 3.13, Chaquopy 17.0.0, compileSdk/targetSdk 37, minSdk 28, arm64-v8a.
+Кодовый фундамент A0 и CI verification завершены. Фактический build baseline использует AGP 9.2.1, Gradle 9.4.1, Kotlin/Compose plugin 2.3.10, Compose BOM 2026.09.00, JDK 17, Python 3.13, Chaquopy 17.0.0, compileSdk/targetSdk 37, minSdk 28, arm64-v8a.
 
 GitHub Actions run #190 подтвердил Android unit tests, debug APK build, APK existence check и security smoke. Внешний device acceptance ещё не выполнен.
 
