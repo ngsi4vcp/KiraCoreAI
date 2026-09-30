@@ -8,7 +8,6 @@ import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
-import javax.crypto.spec.SecretKeySpec
 
 class AndroidSecureStore(
     context: Context,
@@ -22,7 +21,9 @@ class AndroidSecureStore(
     }
 
     override fun put(name: String, value: ByteArray) {
-        require(name.isNotBlank()) { "Имя записи защищённого хранилища не может быть пустым." }
+        require(name.isNotBlank()) {
+            "Имя записи защищённого хранилища не может быть пустым."
+        }
         val cipher = newCipher(Cipher.ENCRYPT_MODE, name)
         val encrypted = cipher.doFinal(value)
         val packed = ByteArray(cipher.iv.size + encrypted.size)
@@ -79,10 +80,7 @@ class AndroidSecureStore(
             return existing as SecretKey
         }
 
-        val generator = KeyGenerator.getInstance(
-            AES_ALGORITHM,
-            ANDROID_KEYSTORE,
-        )
+        val generator = KeyGenerator.getInstance(AES_ALGORITHM, ANDROID_KEYSTORE)
         generator.init(
             android.security.keystore.KeyGenParameterSpec.Builder(
                 KEY_ALIAS,
@@ -106,8 +104,5 @@ class AndroidSecureStore(
         private const val TAG_LENGTH_BITS = 128
         private const val IV_LENGTH_BYTES = 12
         private const val PREFS_NAME = "kira_secure_store"
-
-        @Suppress("unused")
-        private fun unusedSecretKeyType(): SecretKeySpec? = null
     }
 }
