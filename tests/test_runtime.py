@@ -87,6 +87,8 @@ class RuntimeTests(unittest.TestCase):
             self.assertEqual(operation["recovery_state"], RecoveryState.UNKNOWN)
             self.assertEqual(operation["checkpoint"], "model_call_unknown")
             self.assertIn("unknown", operation["error"])
+            self.assertEqual(runtime.core_state["turn"], 1)
+            self.assertTrue(runtime.core_state["authorized_alek"])
 
             restored = KiraRuntime.start(runtime_root)
             self.assertEqual(
