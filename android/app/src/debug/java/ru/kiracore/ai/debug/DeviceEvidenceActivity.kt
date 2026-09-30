@@ -102,7 +102,9 @@ class DeviceEvidenceActivity : ComponentActivity() {
                                     Intent(
                                         this@DeviceEvidenceActivity,
                                         MainActivity::class.java,
-                                    ).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
+                                    )
+                                        .putExtra("skip_debug_harness", true)
+                                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
                                 )
                             },
                             modifier = Modifier.fillMaxWidth(),
