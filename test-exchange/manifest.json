@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "evidence_type": "android-a0-device",
+  "evidence_type": "android-a1-device",
   "status": "RECOVERY_OK",
   "run_id": "20260930-144146",
   "application_id": "ru.kiracore.ai",
