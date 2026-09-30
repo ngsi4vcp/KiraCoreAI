@@ -43,10 +43,10 @@
 - [x] compileSdk/targetSdk 37
 - [x] diagnostics skeleton
 - [x] RuntimeService boundary
-- [x] GENOME revision/SHA validation
-- [x] Android Keystore/AES-GCM foundation
+- [x] проверка ревизии/SHA GENOME
+- [x] основа Android Keystore/AES-GCM
 - [x] Android unit tests
-- [x] CI debug APK + security smoke
+- [x] отладочный APK в CI + проверка безопасности
 
 ### A0.D1. Диагностика устройства / приёмка устройства
 - [x] модуль диагностики устройства
@@ -62,12 +62,12 @@
 
 ### A1. Соответствие Core
 - [ ] расширенный typed Kotlin ↔ Python bridge
-- [ ] startup/resume/session lifecycle
-- [ ] session/conversation/state/memory/history semantic parity
+- [ ] запуск/восстановление/жизненный цикл сессии
+- [ ] семантическое соответствие сессии/разговора/состояния/памяти/истории
 - [ ] authorization `~1` semantic compatibility
-- [ ] deterministic test provider end-to-end path
+- [ ] сквозной путь детерминированного тестового провайдера
 - [ ] Pulse parity
-- [ ] runtime operation checkpoints and explicit UNKNOWN boundary
+- [ ] checkpoints операций рантайма и явная граница UNKNOWN
 - [ ] runtime events / diagnostics
 - [ ] A1 regression tests
 
@@ -77,12 +77,12 @@ A1.6 — граница операции и восстановления — р�
 ### A2. Персистентность
 - [ ] Persistence Contract implementation
 - [ ] Room/SQLite backend
-- [ ] encrypted sensitive payload fields
+- [ ] шифрование чувствительных полей payload
 - [ ] atomic transactions
 - [ ] recovery checkpoints
 - [ ] migrations
 - [ ] duplicate prevention / idempotency
-- [ ] conversation != retained memory semantics
+- [ ] разговор != сохранённая память
 
 ### A3. Идентичность и защищённые полномочия
 - [ ] identity_id/device_id
@@ -91,12 +91,12 @@ A1.6 — граница операции и восстановления — р�
 - [ ] MergeIdentity transaction
 - [ ] tombstones
 - [ ] runtime instance registration
-- [ ] Alek authority verifier/KDF
+- [ ] verifier/KDF полномочий Алека
 - [ ] sealed authority payload
 - [ ] transient capability grants
 
 ### A4. Кира:Сбор
-- [ ] GitHub App / user authorization
+- [ ] GitHub App / авторизация пользователя
 - [ ] encrypted envelopes
 - [ ] signing/verification
 - [ ] private sync
@@ -106,20 +106,20 @@ A1.6 — граница операции и восстановления — р�
 - [ ] shared snapshot consumption
 
 ### A5. Восстановление рантайма
-- [x] operation state machine foundation (A1.6)
+- [x] основа автомата операций (A1.6)
 - [x] UNKNOWN boundary semantics (A1.6)
 - [ ] production checkpoint/reconcile
-- [ ] no silent repeat of uncertain model-call
+- [ ] отсутствие молчаливого повтора неопределённого вызова модели
 - [ ] deterministic recovery tests
 
 ### A6. Фоновый рантайм
-- [ ] foreground service design selected from actual Android constraints
+- [ ] выбор конструкции фонового сервиса из фактических ограничений Android
 - [ ] Android 13 notifications
-- [ ] Android 14+ FGS type/permission compliance
-- [ ] Android 15 timeout/restriction handling
+- [ ] соответствие типу/разрешениям FGS на Android 14+
+- [ ] обработка тайм-аутов/ограничений Android 15
 - [ ] Android 16 quota interactions
-- [ ] Android 17/OEM behavior verification
-- [ ] boot/recovery path where permitted
+- [ ] проверка поведения Android 17/OEM
+- [ ] путь запуска/восстановления после загрузки там, где это разрешено
 - [ ] battery/OEM diagnostics
 - [ ] Кира:Сон
 - [ ] no “immortal process” assumption
@@ -139,9 +139,9 @@ A1.6 — граница операции и восстановления — р�
 
 ### A8. Провайдеры
 - [ ] OpenRouter credentials/storage
-- [ ] OpenRouter catalog + ModelRequest/Response
+- [ ] каталог OpenRouter + ModelRequest/Response
 - [ ] Gemini credentials/storage
-- [ ] Gemini catalog + ModelRequest/Response
+- [ ] каталог Gemini + ModelRequest/Response
 - [ ] provider error handling
 - [ ] no secrets in UI/logs/APK
 
@@ -156,7 +156,7 @@ A1.6 — граница операции и восстановления — р�
 - [ ] no direct UI write to GenomeStore
 
 ### A10. КираЧек
-- [ ] app/core/GENOME identity
+- [ ] идентичность приложения/Core/GENOME
 - [ ] provider/model
 - [ ] persistence
 - [ ] runtime/background
@@ -164,7 +164,7 @@ A1.6 — граница операции и восстановления — р�
 - [ ] permissions/restrictions
 - [ ] recent critical errors
 - [ ] recovery readiness
-- [ ] concise overall health state
+- [ ] краткое общее состояние здоровья
 
 ### A11. Матрица реальных устройств и тестов
 - [ ] Android 13
@@ -183,23 +183,23 @@ A1.6 — граница операции и восстановления — р�
 - [ ] sync interruption
 
 ### A12. APK Alpha / релиз
-- [ ] classic APK release packaging
-- [ ] debug signing only for development
+- [ ] упаковка классического APK для релиза
+- [ ] отладочная подпись только для разработки
 - [ ] release signing architecture
-- [ ] packaged security/leakage audit
+- [ ] аудит безопасности/утечек упакованного приложения
 - [ ] release artifact verification
 
 ### Сквозной контур A3b. Защита полномочий
 - [ ] PlatformSecureStore
 - [ ] password verifier
 - [ ] no hardcoded secrets
-- [ ] Pre-Generation Reflection Gate
+- [ ] предгенерационный контур рефлексии
 - [ ] Response Disclosure Guard
-- [ ] authority/model-context isolation
-- [ ] reverse-engineering threat-model tests
+- [ ] изоляция полномочий и модельного контекста
+- [ ] тесты модели угроз обратной инженерии
 
 ### Не входит в первую Android Alpha
-- [ ] offline local Qwen / local inference backend
+- [ ] локальная Qwen/локальный механизм вывода без сети
 - [ ] полноценная server aggregation
 - [ ] сложная глобальная фильтрация/обезличивание на Android
 - [ ] token streaming
