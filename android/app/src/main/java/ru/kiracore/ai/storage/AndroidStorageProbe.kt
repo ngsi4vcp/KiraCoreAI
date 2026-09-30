@@ -6,7 +6,7 @@ import java.io.File
 class AndroidStorageProbe(
     private val context: Context,
 ) : PersistenceProvider {
-    override fun rootPath(): String = File(context.filesDir, "kira").absolutePath
+    override fun rootPath(): String = File(context.filesDir, "DATA").absolutePath
 
     override fun isWritable(): Boolean {
         val root = File(rootPath())
