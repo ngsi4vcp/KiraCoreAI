@@ -61,3 +61,12 @@ Cross-platform migration должна сохранять:
 Persistence должна уметь сохранять состояние незавершённой операции.
 
 Критические состояния runtime не должны зависеть от того, была ли Activity жива в момент записи.
+
+
+## Защищённые данные
+
+Секреты и authority material не относятся к обычному JSON/JSONL persistence.
+
+Они хранятся через PlatformSecureStore и CryptoProvider.
+
+Обычное состояние содержит только статус авторизации, capability metadata и технические ссылки; секреты и plaintext protected payload в core_state не сохраняются.
