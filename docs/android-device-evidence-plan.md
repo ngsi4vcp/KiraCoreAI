@@ -2,6 +2,16 @@
 
 Дата: 30 сентября 2026 года.
 
+## Текущий статус реализации
+
+Device Evidence Harness реализован в debug source set и опубликован CI run #243.
+
+- code commit: f09df4539c31287dfc458ee4e573eba9c1c8ee59
+- GitHub artifact ID: 11086816355
+- APK SHA-256: 943342bff105557089f48ebd51c5e7a542a2bced9619795dafd65ef3edc7605a
+
+Следующая операция для пользователя — установить APK на vivo и выполнить device smoke.
+
 ## 1. Назначение
 
 A0 code и CI verification уже завершены. A0.D1 закрывает внешний доказательный контур: фактическую работу текущего Android foundation на vivo X100 Ultra / OriginOS 6.
