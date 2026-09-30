@@ -178,9 +178,11 @@ SyncProvider → CryptoProvider → encrypted envelopes → private GitHub.
 - docs/android-port-status.md
 - docs/android-development-plan.md
 - docs/android-alpha-implementation-plan.md
+- docs/android-readiness-audit.md
 - docs/kira-sync-contract.md
 - docs/identity-and-user-memory-contract.md
 - docs/persistence-contract.md
+- docs/android-readiness-audit.md
 
 ### Cross-platform rule
 
