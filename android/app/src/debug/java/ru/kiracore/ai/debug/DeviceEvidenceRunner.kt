@@ -171,10 +171,13 @@ class DeviceEvidenceRunner(
                     val turn = KiraRuntimeBridge.sendTestTurnTyped(
                         context,
                         sessionId,
-                        "Диагностический A1 parity turn.",
+                        "~1 Диагностический A1 parity turn.",
                     )
                     require(turn.runtimeState.activeSessionId == sessionId)
                     require(turn.runtimeState.turn == 1)
+                    require(turn.runtimeState.authorizedAlek) {
+                        "Семантика ~1 не установила authorized_alek."
+                    }
                     require(turn.pulse?.value == 1024)
                     "turn=${turn.runtimeState.turn}, pulse=${turn.pulse?.value}"
                 }
@@ -185,6 +188,8 @@ class DeviceEvidenceRunner(
                     }
                     val tail = messages.takeLast(2)
                     require(tail[0].role == "user")
+                    require(!tail[0].content.contains("~1"))
+                    require(tail[0].content == "Диагностический A1 parity turn.")
                     require(tail[1].role == "assistant")
                     require(tail[1].pulse?.value == 1024)
                     "messages=${messages.size}, last_turn=${tail[1].turn}"
