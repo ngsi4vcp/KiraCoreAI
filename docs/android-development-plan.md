@@ -824,7 +824,7 @@ check manifest
 5. Точная архитектура Android persistence.
 6. Тип foreground service для длительного KiraRuntime.
 7. Recovery policy после процесса kill.
-8. Способ boot/start recovery на OriginOS и AOSP.
+8. Способ запуска/восстановления после загрузки на OriginOS и AOSP.
 9. Финальная дизайн-система.
 10. Релизная подпись APK.
 
@@ -1015,7 +1015,7 @@ Foreground runtime строится как service + persistence + recovery. Д�
 Авторизация Алека имеет два слоя:
 
 1. криптографический unlock authority plane;
-2. runtime Pre-Generation Reflection Gate.
+2. предгенерационный контур рефлексии рантайма.
 
 Модель получает только безопасную семантическую проекцию конституции и capabilities текущей сессии.
 
