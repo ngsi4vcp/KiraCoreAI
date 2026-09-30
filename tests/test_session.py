@@ -4,6 +4,7 @@ from pathlib import Path
 
 from kiracore.genome import GenomeLoader
 from kiracore.models import OperationalContext
+from kiracore.errors import KiraCoreError
 from kiracore.persistence import JsonPersistence
 from kiracore.pulse import pulse_for_turn
 from kiracore.session import SessionManager
@@ -56,6 +57,12 @@ class SessionTests(unittest.TestCase):
             self.assertEqual(snapshot["turn"], 1)
             self.assertTrue(snapshot["authorized_alek"])
             self.assertEqual(snapshot["runtime_status"], "waiting")
+
+    def test_persistence_rejects_path_like_session_ids(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            persistence = JsonPersistence(tmp)
+            with self.assertRaises(KiraCoreError):
+                persistence.load("../чужой-файл")
 
     def test_running_state_is_persisted_before_model_call(self) -> None:
         root = Path(__file__).parents[1]
