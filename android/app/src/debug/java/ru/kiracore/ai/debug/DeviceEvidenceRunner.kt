@@ -371,7 +371,7 @@ class DeviceEvidenceRunner(
                     val plaintext = readable.any { file ->
                         val data = file.readBytes()
                         markers.any { marker ->
-                            data.indexOf(marker.toByteArray(Charsets.UTF_8)) >= 0
+                            containsBytes(data, marker.toByteArray(Charsets.UTF_8))
                         }
                     }
                     require(!plaintext) {
@@ -633,6 +633,7 @@ class DeviceEvidenceRunner(
                 "RECOVERY_OK" -> "Последняя проверка: RECOVERY_OK"
                 "COMPLETED" -> "Последняя проверка: завершена"
                 "FAILED" -> "Последняя проверка: завершилась с ошибкой"
+                "A2_1_PERSISTENCE_OK" -> "Последняя проверка: A2.1 persistence подтверждена"
                 else -> "Последняя проверка: $status"
             }
             _state.value = DeviceEvidenceUiState(
@@ -821,6 +822,22 @@ class DeviceEvidenceRunner(
             "Диагностический evidence A0.D1. Bundle не содержит секретов.\n",
             Charsets.UTF_8,
         )
+    }
+
+    private fun containsBytes(haystack: ByteArray, needle: ByteArray): Boolean {
+        if (needle.isEmpty()) return true
+        if (needle.size > haystack.size) return false
+        for (start in 0..haystack.size - needle.size) {
+            var matches = true
+            for (index in needle.indices) {
+                if (haystack[start + index] != needle[index]) {
+                    matches = false
+                    break
+                }
+            }
+            if (matches) return true
+        }
+        return false
     }
 
     private fun appendEvent(
