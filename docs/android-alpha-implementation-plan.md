@@ -2,9 +2,9 @@
 
 ## Цель
 
-Получить первый реально запускаемый Android-вариант Кира:Ядра, который работает на Android 9+, проверяется на Android 13–17, использует ARM64, Kotlin, Jetpack Compose, Python 3.13 и Chaquopy, сохраняет смысловую совместимость desktop runtime, имеет разговорный UI, локальную персистентность, восстановление после смерти процесса и базовый Кира:Сбор через private GitHub.
+Получить первый реально запускаемый Android-вариант Кира:Ядра, который работает на Android 9+, проверяется на Android 13–17, использует ARM64, Kotlin, Jetpack Compose, Python 3.13 и Chaquopy, сохраняет смысловую совместимость настольным рантаймом, имеет разговорный UI, локальную персистентность, восстановление после смерти процесса и базовый Кира:Сбор через закрытый GitHub.
 
-## Toolchain на 30.09.2026
+## Инструментарий на 30.09.2026
 
 - compileSdk/targetSdk: 37;
 - minSdk: 28;
@@ -20,18 +20,18 @@
 
 AGP 9.2 поддерживает API 37 и Gradle 9.4.1. Chaquopy 17.0 поддерживает AGP до 9.2 и Python 3.10–3.14. Поэтому Alpha намеренно не использует AGP 9.4.x до появления совместимой версии Chaquopy.
 
-## A0 — Android Skeleton
+## A0 — Каркас Android
 
-Создать один application module, одну Activity, Compose, Navigation, theme, notification channel, foreground-service каркас, health/diagnostic framework и Python bridge skeleton.
+Создать один application module, одну Activity, Compose, Navigation, theme, notification channel, foreground-service каркас, контур состояния/диагностики и базовый мост Python.
 Проверки: APK собирается, устанавливается, Python 3.13 стартует, runtime возвращает status, APK содержит только arm64-v8a.
 
-## A0.D1 — Device Evidence / Device Acceptance
+## A0.D1 — Диагностика устройства / приёмка устройства
 
-A0 code and CI verification are already complete. Before A1, the project performs an external device acceptance cycle on vivo X100 Ultra / OriginOS 6.
+Код A0 и проверка CI уже завершены. Перед A1 выполняется внешняя приёмка на устройстве vivo X100 Ultra / OriginOS 6.
 
-A0.D1 uses the same APK/applicationId as the A0 code baseline and may include a temporary debug-only Device Evidence Harness.
+A0.D1 использует тот же APK/applicationId, что и кодовый baseline A0, и может включать временный отладочный модуль диагностики устройства.
 
-Required evidence:
+Требуемые диагностические материалы:
 - device/build identity;
 - Android version and OEM/runtime information;
 - Python 3.13 / Chaquopy startup;
@@ -46,9 +46,9 @@ Required evidence:
 - controlled process restart and recovery checkpoint;
 - secret-free evidence export.
 
-Evidence is exported through a user-mediated system file API; full filesystem access is not a requirement.
+Диагностические материалы экспортируются через системный API выбора файла с участием пользователя; полный доступ к файловой системе не требуется.
 
-The A0 → A1 gate is defined in `docs/android-development-checklist.md`.
+Переход A0 → A1 определяется в `docs/android-development-checklist.md`.
 
 > Текущий срез: A0.D1 уже принят на фактическом устройстве; разработка находится на A1.6 Operation / Recovery boundary. Этот документ остаётся нормативной последовательностью этапов, а оперативный статус ведётся в `docs/android-port-status.md`.
 
@@ -57,7 +57,7 @@ The A0 → A1 gate is defined in `docs/android-development-checklist.md`.
 Подключить текущий Python runtime без логической переписи.
 Путь: GENOME → Loader → Parser → Validator → GenomeStore → State/Memory/History/Conversation → ContextCompiler → PromptRenderer → ModelAdapter.
 Bridge: startRuntime, stopRuntime, getStatus, getGenomeInfo, createSession, listSessions, resumeSession, sendTurn, getMemory, getMemoryCandidates, checkHealth, sleep.
-Smoke: launch → load genome → validate → new session → authorization → one user turn → response → Pulse → persistence → process kill → restart → resume.
+Проверка: запуск → загрузка GENOME → валидация → новая сессия → авторизация → один пользовательский ход → ответ → ПУЛЬС → сохранение → завершение процесса → перезапуск → восстановление.
 
 ## A2 — Persistence
 
@@ -81,7 +81,7 @@ GitHub является transport/storage, а не доменной базой �
 
 ## A5 — Runtime Recovery
 
-State machine: CREATED → PREPARING → CONTEXT_READY → MODEL_CALL_STARTED → MODEL_CALL_FINISHED или UNKNOWN → VALIDATING → PERSISTING → COMPLETED или FAILED.
+Конечный автомат: CREATED → PREPARING → CONTEXT_READY → MODEL_CALL_STARTED → MODEL_CALL_FINISHED или UNKNOWN → VALIDATING → PERSISTING → COMPLETED или FAILED.
 UNKNOWN — полноценное состояние.
 После process death восстановить checkpoint, не повторять неизвестный model-call молча, провести reconcile и продолжать только после определённого runtime решения.
 
@@ -117,7 +117,7 @@ GenomeStore не может быть записан MemoryStore, StateStore ил
 Показывает приложение, KiraCore, GENOME, SHA-256, runtime, provider/model, persistence, background service, permissions, sync, последние критические ошибки и recovery readiness.
 Итог: Кира работает / Есть предупреждения / Требуется вмешательство.
 
-## A11 — Test Matrix
+## A11 — Тестовая матрица
 
 Обязательная матрица: Android 13, 14, 15, 16, 17.
 Первое устройство: vivo X100 Ultra / OriginOS 6.
@@ -125,15 +125,15 @@ GenomeStore не может быть записан MemoryStore, StateStore ил
 
 ## A12 — APK Alpha
 
-Classic APK.
+Классический APK.
 Debug signing на ранней разработке.
 Release signing architecture оформить отдельно до первой распространяемой сборки.
 
 ## Не входит в первую Alpha
 
-Offline local Qwen, локальный inference backend, полноценная server aggregation, сложная глобальная фильтрация памяти, token streaming и полноценное автономное агентное планирование.
+локальная модель Qwen без сети, локальный inference backend, полноценная серверная агрегация, сложная глобальная фильтрация памяти, потоковая передача токенов и полноценное автономное агентное планирование.
 
-## Definition of Done
+## Критерий завершения
 
 1. G22/GENOME загружается и валидируется.
 2. Один разговорный цикл работает.
@@ -149,7 +149,7 @@ Offline local Qwen, локальный inference backend, полноценная
 
 ## A3b — Authority Security
 
-До включения полноценного privileged Android UI реализовать:
+До включения полноценного привилегированный интерфейс Android реализовать:
 
 - PlatformSecureStore;
 - password verifier;
@@ -159,6 +159,6 @@ Offline local Qwen, локальный inference backend, полноценная
 - Response Disclosure Guard;
 - отсутствие protected genome text в ModelRequest;
 - отсутствие secrets в APK/resources/Python bytecode;
-- тесты reverse-engineering threat model на packaged APK.
+- тесты модель угроз обратной инженерии на packaged APK.
 
 Важно: публичная семантическая проекция может быть извлечена из приложения. Секретными остаются только защищённые материалы и полномочия.
