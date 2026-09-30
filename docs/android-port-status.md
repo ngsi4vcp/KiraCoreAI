@@ -420,3 +420,28 @@ Android-ветка перешла от предварительных альте
 Полноценный sealed authority payload в packaged Android APK ещё предстоит реализовать на этапе security hardening.
 
 До его завершения нельзя утверждать, что установленное приложение полностью защищает все содержимое текущего GENOME от reverse engineering.
+
+
+## A0.D1 acceptance result — 30.09.2026
+
+Реальный device evidence принят после повторного прогона исправленного APK.
+
+- applicationId: ru.kiracore.ai;
+- versionName: 0.1.0-alpha.1;
+- device: vivo V2366HA;
+- Android API: 36;
+- GENOME revision: 22;
+- GENOME SHA-256: dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e;
+- environment, GENOME, diagnostics, session, deterministic turn, Pulse/state, Keystore и storage: PASS;
+- checkpoint/recovery: PASS;
+- lifecycle stop/start: OBSERVED;
+- evidence manifest status: RECOVERY_OK;
+- evidence run: 20260930-131718.
+
+Этот результат закрывает внешний A0.D1 gate для текущего Android-цикла. Android 13–17 матрица остаётся отдельным A11 acceptance-контуром.
+
+## A1 текущая точка
+
+A0.D1 gate закрыт. В работе A1.0/A1.1: контракт Android bridge и typed facade. Первый parity slice включает genome info, session create/list/resume, conversation read, approved/candidate memory read, structured health и deterministic test turn. Room, реальные providers, authority plane и production foreground hardening пока не включаются.
+
+Последняя разработческая точка перед этим этапом: c7708073f271f3cfd4e97ccc22ac75a31b05459c. После неё в branch добавлены только device evidence и A1 bridge work.
