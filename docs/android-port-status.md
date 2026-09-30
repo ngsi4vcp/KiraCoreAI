@@ -405,3 +405,12 @@ Android-ветка перешла от предварительных альте
 - docs/android-alpha-implementation-plan.md
 
 Следующий практический шаг — A0: создание Android-модуля и первого сквозного bridge smoke-test без усложнения UI.
+
+
+## Security status
+
+Текущий Python Core уже содержит предгенерационный policy gate и Response Disclosure Guard, которые запрещают передавать полный текст защищённых секций GENOME в ModelRequest.
+
+Полноценный sealed authority payload в packaged Android APK ещё предстоит реализовать на этапе security hardening.
+
+До его завершения нельзя утверждать, что установленное приложение полностью защищает все содержимое текущего GENOME от reverse engineering.
