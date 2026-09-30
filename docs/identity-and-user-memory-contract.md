@@ -78,3 +78,11 @@ Provenance уже созданной долговременной записи �
 
 Перевыпуск ключа не должен автоматически менять identity_id.
 При компрометации identity secret в будущей версии требуется rotation и revocation.
+
+## Граница между памятью и полномочиями
+
+Пользовательская identity не является ключом privileged authority.
+
+Identity merge не переносит authorization state автоматически.
+
+Private memory может быть перенесена, но privileged capabilities выдаются новой установке только после отдельной локальной авторизации.
