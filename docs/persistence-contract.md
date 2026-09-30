@@ -105,3 +105,15 @@ Authority material:
 - runtime integration, atomic turn transactions, migration и duplicate/reconcile semantics остаются A2.1–A2.4.
 
 Это намеренное промежуточное состояние: Room не является зеркалом канонического JSON и не участвует одновременно с ним в одном runtime turn.
+## Android A2.1 — фактический integration checkpoint
+
+На ветке `android/alpha-parity` Room backend подключён к доменным persistence surfaces:
+
+- единый `PersistenceBackend` contract между Python Core и физическим Android backend;
+- `StateStore`, `MemoryStore`, `HistoryStore`, `ConversationStore` и `CoreStatePersistence` используют один выбранный canonical backend;
+- runtime operation state получает отдельный persistence surface;
+- Chaquopy передаёт Room gateway из Android host в Python runtime;
+- при включённом Room backend canonical JSON store directories не создаются и не используются;
+- restart read-back, memory approval, operation state и разделение conversation/memory покрыты A2.1 integration tests.
+
+CI run `#450` для текущего HEAD прошёл полностью. Atomic turn, migration/compatibility и recovery/duplicate prevention остаются A2.2–A2.4; physical device gate остаётся A2.5.
