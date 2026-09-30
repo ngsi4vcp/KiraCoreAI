@@ -23,7 +23,7 @@ class _A0TestModel:
 
     def generate(self, request):
         return ModelResponse(
-            text="Тестовый ход Кира:Ядро успешно выполнен.",
+            text="Тестовый ход A0 успешно выполнен.",
             provider=request.provider,
             model=request.model,
         )
