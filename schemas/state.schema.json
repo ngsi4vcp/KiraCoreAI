@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ngsi4vcp/KiraCoreAI/schemas/state.schema.json",
+  "title": "Состояние сессии Кира:Ядра",
+  "type": "object",
+  "required": ["session_id", "turn", "authorized_alek", "environment", "state", "runtime_status"],
+  "properties": {
+    "session_id": {"type": "string"},
+    "turn": {"type": "integer", "minimum": 0},
+    "authorized_alek": {"type": "boolean"},
+    "authorization_marker": {"type": ["string", "null"]},
+    "environment": {"type": "object"},
+    "runtime_status": {"type": "string"},
+    "created_at": {"type": "string"},
+    "updated_at": {"type": "string"},
+    "state": {
+      "type": "object",
+      "required": ["active_goals", "projects", "unfinished_tasks", "open_questions", "working_hypotheses", "priorities", "next_steps"],
+      "properties": {
+        "active_goals": {"type": "array", "items": {"type": "string"}},
+        "projects": {"type": "array", "items": {"type": "string"}},
+        "unfinished_tasks": {"type": "array", "items": {"type": "string"}},
+        "open_questions": {"type": "array", "items": {"type": "string"}},
+        "working_hypotheses": {"type": "array", "items": {"type": "string"}},
+        "priorities": {"type": "array", "items": {"type": "string"}},
+        "next_steps": {"type": "array", "items": {"type": "string"}},
+        "updated_at": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
