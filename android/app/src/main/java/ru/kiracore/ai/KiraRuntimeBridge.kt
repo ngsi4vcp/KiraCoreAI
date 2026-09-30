@@ -71,9 +71,15 @@ object KiraRuntimeBridge {
         executor.execute {
             try {
                 stageGenome(appContext)
+                val roomPersistence =
+                    ru.kiracore.ai.storage.room.AndroidRoomPersistenceGateway(appContext)
                 val result = JSONObject(
                     module(appContext)
-                        .callAttr("initialize", appContext.filesDir.absolutePath)
+                        .callAttr(
+                            "initialize",
+                            appContext.filesDir.absolutePath,
+                            roomPersistence,
+                        )
                         .toString(),
                 )
                 val runtimeState = JSONObject(
