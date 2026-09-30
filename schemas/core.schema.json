@@ -3,7 +3,7 @@
   "$id": "https://github.com/ngsi4vcp/KiraCoreAI/schemas/core.schema.json",
   "title": "Контракт Кира:Ядра",
   "type": "object",
-  "required": ["genome", "state", "memory", "history", "context", "environment"],
+  "required": ["genome", "state", "memory", "history", "conversation", "context", "environment"],
   "properties": {
     "genome": {
       "type": "object",
@@ -17,6 +17,10 @@
     "state": {"$ref": "state.schema.json"},
     "memory": {"type": "array", "items": {"$ref": "memory-record.schema.json"}},
     "history": {"type": "array", "items": {"type": "object"}},
+    "conversation": {
+      "type": "array",
+      "items": {"$ref": "conversation-message.schema.json"}
+    },
     "context": {
       "type": "object",
       "description": "Скомпилированное оперативное представление, а не новый нормативный слой."

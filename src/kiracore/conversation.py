@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import deque
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 import json
@@ -44,7 +45,7 @@ class StoredMessage:
 
 
 class ConversationStore:
-    """Отдельное долговременное хранилище диалогов; каждое сообщение — отдельная JSONL-запись."""
+    """Отдельное долговременное хранилище разговоров; сообщения записываются как JSONL."""
 
     def __init__(self, root: str | Path) -> None:
         self.root = Path(root)
@@ -156,16 +157,31 @@ class ConversationStore:
         self._save_manifests()
         return item
 
+    @staticmethod
+    def _tail_lines(path: Path, limit: int, chunk_size: int = 8192) -> list[str]:
+        if limit <= 0:
+            return []
+        with path.open("rb") as handle:
+            handle.seek(0, 2)
+            position = handle.tell()
+            buffer = b""
+            while position > 0 and buffer.count(b"\n") <= limit:
+                size = min(chunk_size, position)
+                position -= size
+                handle.seek(position)
+                buffer = handle.read(size) + buffer
+        lines = buffer.splitlines()
+        return [line.decode("utf-8") for line in lines[-limit:]]
+
     def recent(self, session_id: str, limit: int = 20) -> list[StoredMessage]:
         if limit < 0:
             raise ValueError("Лимит диалога не может быть отрицательным.")
         path = self._messages_path(session_id)
         if not path.exists() or limit == 0:
             return []
-        lines = path.read_text(encoding="utf-8").splitlines()
-        selected = lines[-limit:]
+
         result: list[StoredMessage] = []
-        for line in selected:
+        for line in self._tail_lines(path, limit):
             item = json.loads(line)
             pulse = (
                 PulseStamp(**item["pulse"])
