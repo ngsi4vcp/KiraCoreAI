@@ -111,8 +111,7 @@ class DeviceEvidenceActivity : ComponentActivity() {
                                         this@DeviceEvidenceActivity,
                                         MainActivity::class.java,
                                     )
-                                        .putExtra("skip_debug_harness", true)
-                                        .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP),
+                                        .putExtra("skip_debug_harness", true),
                                 )
                             },
                             modifier = Modifier.fillMaxWidth(),
@@ -150,5 +149,10 @@ class DeviceEvidenceActivity : ComponentActivity() {
     override fun onStop() {
         if (::runner.isInitialized) runner.observeLifecycle("stop")
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        if (::runner.isInitialized) runner.close()
+        super.onDestroy()
     }
 }
