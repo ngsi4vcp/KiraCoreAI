@@ -49,6 +49,7 @@ class AndroidBridgeContractTest(unittest.TestCase):
             first["session_id"],
         )
         self.assertEqual(resumed["runtime_state"]["turn"], 0)
+        self.assertFalse(resumed["runtime_state"]["authorized_alek"])
 
         latest = json.loads(android_bridge.resume_session())
         self.assertEqual(latest["status"], "resumed")
@@ -78,6 +79,7 @@ class AndroidBridgeContractTest(unittest.TestCase):
         self.assertEqual(turn["response"]["provider"], "a0-test")
         self.assertIn("pulse", turn["response"]["raw_metadata"])
         self.assertEqual(turn["runtime_state"]["turn"], 1)
+        self.assertTrue(turn["runtime_state"]["authorized_alek"])
 
         conversation = json.loads(
             android_bridge.get_conversation(first["session_id"], 20)
@@ -87,6 +89,7 @@ class AndroidBridgeContractTest(unittest.TestCase):
             ["user", "assistant"],
         )
         self.assertEqual(conversation[0]["content"], "A1 bridge deterministic test")
+        self.assertNotIn("~1", conversation[0]["content"])
         self.assertEqual(conversation[1]["turn"], 1)
         self.assertEqual(conversation[1]["pulse"]["value"], 1024)
 
