@@ -67,3 +67,14 @@ PulseStamp формируется runtime и добавляется к соот�
 Пароль, verifier, protected payload и криптографические ключи не входят в ModelRequest.
 
 Runtime является единственным авторитетным слоем, решающим вопрос о privileged capability.
+
+## Фильтрация памяти по identity
+
+Перед включением утверждённой памяти в ModelRequest ContextCompiler проверяет:
+
+- статус approved;
+- owner_identity_id;
+- privacy_scope;
+- текущий identity_id сессии.
+
+Private-память другого identity не попадает в контекст модели.
