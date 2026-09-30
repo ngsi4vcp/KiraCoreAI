@@ -2,7 +2,27 @@
 
 ## Состояние
 
-Реализационный A0-контур: **кодовый quality pass и CI verification завершены; device evidence ещё не получено**.
+Реализационный A0-контур: **кодовый quality pass и CI verification завершены; внешний device acceptance ещё не выполнен**.
+
+## Фактический build baseline
+
+- контрольный A0 code commit: `398586db03f096318faf2fd275a2db86905b5aa5`;
+- последняя A0 audit/documentation point: `4d834996f1510df355ccd8b779b20cd751ed75c4`;
+- CI run: #190, успешно;
+- AGP 9.2.1;
+- Gradle 9.4.1;
+- Kotlin/Compose plugin 2.3.10;
+- Compose BOM 2026.09.00;
+- JDK 17;
+- Python 3.13;
+- Chaquopy 17.0.0;
+- compileSdk/targetSdk 37;
+- minSdk 28;
+- arm64-v8a;
+- applicationId `ru.kiracore.ai`;
+- versionName `0.1.0-alpha.1`.
+
+Это фактическая реализационная конфигурация, а не только целевой план.
 
 ## Архитектурно зафиксировано
 
@@ -73,17 +93,28 @@
 - [x] Android CI: Android job собирает debug APK, запускает Android unit tests и security smoke.
 - [!] GitHub App Кира:Сбор: кодовый контракт готов, но private repository/App/минимальные permissions должны быть настроены при реализации sync.
 - [!] Release signing: финальная схема хранения release key ещё не зафиксирована; debug остаётся текущим режимом.
-- [!] Реальный тест на устройстве: vivo X100 Ultra / OriginOS 6 ещё не пройден.
+- [!] A0.D1: реальный тест на vivo X100 Ultra / OriginOS 6 ещё не пройден.
 - [!] Реальный Android 13–17 matrix ещё не пройден.
+- [!] Device instrumentation/evidence harness ещё не добавлен.
 - [!] Локальная сборка и устройство из текущей среды не подтверждены; источником факта сборки должен быть реальный CI run, а device evidence — отдельный smoke на vivo X100 Ultra.
 - [!] Сложная фильтрация, обезличивание и обобщение глобального опыта сознательно оставлены на поздний PC-контур.
 
 ## Следующий этап
 
-**A1 — Core Parity**, но только после закрытия внешнего device-контура A0:
-1. базовый device smoke на vivo X100 Ultra / OriginOS 6;
-2. подтверждение реальной Android 13–17 matrix;
-3. затем согласование перехода в A1.
+### A0.D1 — Device Evidence / Device Acceptance
+
+До A1 необходимо:
+1. собрать debug APK с временным Device Evidence Harness;
+2. установить на vivo X100 Ultra / OriginOS 6;
+3. выполнить startup → GENOME → diagnostics → session → deterministic turn → Pulse → Keystore → storage → lifecycle/recovery;
+4. экспортировать secret-free evidence bundle;
+5. разобрать результаты и при необходимости исправить A0 defects.
+
+Android 13–17 полная matrix остаётся отдельным A11 acceptance-контуром и не требуется для первого device acceptance на vivo.
+
+### A1 — Core Parity
+
+A1 открывается только после успешного A0.D1 gate. Подробный план: `docs/android-a1-plan.md`.
 
 ## Граница согласования
 
@@ -106,7 +137,7 @@
 - A0-01: bridge contract доведён до initialize/health/load_genome/create_session/get_runtime_state/run_test_turn/shutdown;
 - A0-02: устранена гонка Activity/Service; UI подписывается на RuntimeSnapshot, Service инициализирует runtime асинхронно;
 - A0-03: diagnostics расширен до app/core/GENOME/Python/providers/storage/secure-store/runtime;
-- A0-04: добавлен Python сквозной bridge smoke; фактический GitHub CI run должен подтвердить сборку и тесты;
+- A0-04: добавлен Python сквозной bridge smoke; фактический GitHub CI run #190 подтвердил сборку и тесты;
 - A0-05: добавлен автоматический security smoke без передачи секретов в bridge/UI;
 - A0-07: добавлена Android Keystore + AES/GCM реализация PlatformSecureStore;
 - A0-08: удалён неполный Gradle Wrapper artifact, CI фиксирует Gradle 9.4.1;
@@ -148,7 +179,7 @@
 
 ## Финальная ревизия A0 — 30.09.2026
 
-Коррекции после успешного run #161 и итоговая проверка run #190:
+Итоговая проверка после A0 quality pass и run #190:
 - UTF-8 enforcement: PYTHONUTF8/PYTHONIOENCODING в CI + tests/utf8_smoke.py без BOM;
 - RuntimeSnapshot теперь отражает active_session_id, turn и Pulse из core_state после startup/session/state/test-turn;
 - readiness-аудит разделяет архитектурно утверждённые контракты и реально реализованный A0.
