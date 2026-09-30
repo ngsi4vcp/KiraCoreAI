@@ -11,8 +11,12 @@ class KiraRuntimeService : Service() {
         KiraRuntimeBridge.initializeAsync(this)
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int =
-        START_STICKY
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (KiraRuntimeBridge.snapshot().phase != RuntimePhase.READY) {
+            KiraRuntimeBridge.initializeAsync(this)
+        }
+        return START_STICKY
+    }
 
     override fun onBind(intent: Intent?): IBinder? = null
 }
