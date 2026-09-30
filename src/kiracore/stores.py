@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+from dataclasses import asdict
 import json
 from pathlib import Path
 import tempfile
@@ -9,15 +10,30 @@ import os
 from .errors import AuthorizationError, KiraCoreError
 from .models import HistoryEntry, MemoryRecord, SessionState
 from .persistence import JsonPersistence
+from .persistence_backend import PersistenceBackend
 
 
 class StateStore:
     """Изменяемое состояние сессий с восстановлением после перезапуска."""
 
-    def __init__(self, persistence: JsonPersistence | None = None) -> None:
+    def __init__(
+        self,
+        persistence: JsonPersistence | None = None,
+        backend: PersistenceBackend | None = None,
+    ) -> None:
+        if persistence is not None and backend is not None:
+            raise ValueError("StateStore не допускает два канонических backend.")
         self._items: dict[str, SessionState] = {}
         self.persistence = persistence
-        if persistence and persistence.directory.exists():
+        self.backend = backend
+        if backend is not None:
+            for item in backend.list_sessions():
+                try:
+                    state = self._from_dict(item)
+                except (ValueError, KeyError, TypeError):
+                    continue
+                self._items[state.session_id] = state
+        elif persistence and persistence.directory.exists():
             for path in persistence.directory.glob("*.json"):
                 try:
                     session_id = path.stem
@@ -29,7 +45,9 @@ class StateStore:
 
     def put(self, state: SessionState) -> None:
         self._items[state.session_id] = deepcopy(state)
-        if self.persistence:
+        if self.backend is not None:
+            self.backend.save_session(asdict(state))
+        elif self.persistence:
             self.persistence.save(state)
 
     def get(self, session_id: str) -> SessionState:
@@ -65,12 +83,24 @@ class StateStore:
 class MemoryStore:
     """Постоянное хранилище памяти; автоматическая активация не разрешена."""
 
-    def __init__(self, path: str | Path | None = None) -> None:
+    def __init__(
+        self,
+        path: str | Path | None = None,
+        backend: PersistenceBackend | None = None,
+    ) -> None:
+        if path is not None and backend is not None:
+            raise ValueError("MemoryStore не допускает два канонических backend.")
         self._items: dict[str, MemoryRecord] = {}
         self.path = Path(path) if path else None
+        self.backend = backend
         self._load()
 
     def _load(self) -> None:
+        if self.backend is not None:
+            for item in self.backend.list_memory():
+                record = MemoryRecord(**item)
+                self._items[record.id] = record
+            return
         if not self.path or not self.path.exists():
             return
         data = json.loads(self.path.read_text(encoding="utf-8"))
@@ -78,7 +108,10 @@ class MemoryStore:
             record = MemoryRecord(**item)
             self._items[record.id] = record
 
-    def _persist(self) -> None:
+    def _persist_record(self, record: MemoryRecord) -> None:
+        if self.backend is not None:
+            self.backend.save_memory(asdict(record))
+            return
         if not self.path:
             return
         payload = {
@@ -129,7 +162,7 @@ class MemoryStore:
         item = deepcopy(record)
         item.status = "candidate"
         self._items[item.id] = item
-        self._persist()
+        self._persist_record(item)
 
     def approve(self, record_id: str, authorized_alek: bool) -> MemoryRecord:
         if not authorized_alek:
@@ -137,7 +170,7 @@ class MemoryStore:
         item = self._get(record_id)
         item.status = "approved"
         self._items[record_id] = item
-        self._persist()
+        self._persist_record(item)
         return deepcopy(item)
 
     def cancel(self, record_id: str, authorized_alek: bool) -> MemoryRecord:
@@ -146,7 +179,7 @@ class MemoryStore:
         item = self._get(record_id)
         item.status = "cancelled"
         self._items[record_id] = item
-        self._persist()
+        self._persist_record(item)
         return deepcopy(item)
 
     def _get(self, record_id: str) -> MemoryRecord:
@@ -176,12 +209,25 @@ class MemoryStore:
 class HistoryStore:
     """Постоянная причинная история; запись только добавлением."""
 
-    def __init__(self, path: str | Path | None = None) -> None:
+    def __init__(
+        self,
+        path: str | Path | None = None,
+        backend: PersistenceBackend | None = None,
+    ) -> None:
+        if path is not None and backend is not None:
+            raise ValueError("HistoryStore не допускает два канонических backend.")
         self._items: list[HistoryEntry] = []
         self.path = Path(path) if path else None
+        self.backend = backend
         self._load()
 
     def _load(self) -> None:
+        if self.backend is not None:
+            self._items = [
+                HistoryEntry(**item)
+                for item in self.backend.list_history()
+            ]
+            return
         if not self.path or not self.path.exists():
             return
         for line in self.path.read_text(encoding="utf-8").splitlines():
@@ -189,21 +235,25 @@ class HistoryStore:
                 self._items.append(HistoryEntry(**json.loads(line)))
 
     def append(self, entry: HistoryEntry) -> None:
-        self._items.append(deepcopy(entry))
+        item = deepcopy(entry)
+        self._items.append(item)
+        if self.backend is not None:
+            self.backend.save_history(asdict(item))
+            return
         if self.path:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             with self.path.open("a", encoding="utf-8") as handle:
                 handle.write(
                     json.dumps(
                         {
-                            "id": entry.id,
-                            "date": entry.date,
-                            "event": entry.event,
-                            "change": entry.change,
-                            "cause": entry.cause,
-                            "significance": entry.significance,
-                            "consequence": entry.consequence,
-                            "revision": entry.revision,
+                            "id": item.id,
+                            "date": item.date,
+                            "event": item.event,
+                            "change": item.change,
+                            "cause": item.cause,
+                            "significance": item.significance,
+                            "consequence": item.consequence,
+                            "revision": item.revision,
                         },
                         ensure_ascii=False,
                     )
@@ -216,3 +266,34 @@ class HistoryStore:
         if not limit:
             return []
         return [deepcopy(x) for x in self._items[-limit:]]
+
+
+class OperationStore:
+    """Постоянный журнал runtime-операций для Android persistence backend."""
+
+    def __init__(self, backend: PersistenceBackend | None = None) -> None:
+        self.backend = backend
+
+    def save(self, operation) -> None:
+        if self.backend is not None:
+            self.backend.save_operation(asdict(operation))
+
+    def latest(self):
+        if self.backend is None:
+            return None
+        from .operation import OperationState
+
+        items = self.backend.list_operations()
+        if not items:
+            return None
+        payload = items[0]
+        return OperationState(
+            operation_id=str(payload["operation_id"]),
+            session_id=str(payload["session_id"]),
+            phase=str(payload["phase"]),
+            checkpoint=str(payload["checkpoint"]),
+            provider=str(payload["provider"]),
+            model=str(payload["model"]),
+            recovery_state=str(payload["recovery_state"]),
+            error=payload.get("error"),
+        )
