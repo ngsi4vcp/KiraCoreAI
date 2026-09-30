@@ -78,7 +78,7 @@ UI можно уничтожить и восстановить без потер
 Критерий:
 последующие A2-реализации не потребуют переделывать RuntimeBridge.
 
-Android private/internal storage выбран как базовая область для чувствительных app-specific данных; Room используется как базовый механизм private structured storage.
+Android private/internal storage выбран как базовая область для чувствительных app-specific данных. Room/SQLite является целевым физическим backend следующего persistence-этапа; A0 не создаёт вторую доменную БД и реализует только persistence boundary/probe.
 
 ## A0.5 — GENOME startup
 
@@ -182,6 +182,42 @@ A0 завершён, когда:
 10. самоаудит и финальный quality pass завершены;
 11. пользователь получает итог на утверждение до перехода в A1.
 
+## A0 post-code acceptance — A0.D1
+
+После завершения кодового A0 и CI verification остаётся внешний acceptance-контур.
+
+### Цель
+
+Проверить на реальном vivo X100 Ultra / OriginOS 6:
+- установку и запуск debug APK;
+- embedded Python 3.13 / Chaquopy;
+- загрузку и SHA-256 verification GENOME revision 22;
+- runtime health и diagnostics;
+- создание тестовой session;
+- deterministic test turn;
+- PulseStamp и синхронизацию с core_state;
+- Android Keystore round-trip;
+- внутреннее storage write/read;
+- поведение RuntimeService при background/return;
+- controlled process restart и восстановление checkpoint/state;
+- экспорт диагностического evidence bundle.
+
+### Экспорт evidence
+
+Диагностический bundle не требует полного доступа к общей файловой системе. Приоритетный механизм — системный Storage Access Framework (ACTION_CREATE_DOCUMENT); допустим также экспорт собственного файла приложения в MediaStore.Downloads на поддерживаемых версиях Android. Wide-storage permission / MANAGE_EXTERNAL_STORAGE для A0.D1 не используется.
+
+### Definition of Done A0.D1
+
+1. Device Evidence Harness работает на vivo.
+2. Все критические A0 checks получили SUCCESS либо имеют оформленный blocker.
+3. Evidence bundle получен и проанализирован.
+4. Секреты отсутствуют в bundle.
+5. Результат зафиксирован в GitHub-документации.
+6. Только после этого A0 может быть переведён в статус device-accepted и открывается A1.
+
+Подробный протокол: `docs/android-device-evidence-plan.md`.
+Чеклист перехода: `docs/android-development-checklist.md`.
+
 ## Фактическое состояние реализации
 
 На текущем цикле A0 реализован полный skeleton-контур A0.1–A0.6 и bridge smoke-контур A0.7/A0.8:
@@ -210,11 +246,11 @@ A0 завершён, когда:
 - полноценный Chat UI/avatar/Pulse chip;
 - OpenRouter/Gemini credentials и реальные model calls.
 
-Неподтверждённое в текущей среде:
+Не закрыто в A0.D1 / внешнем acceptance:
 
-- локальная сборка APK;
-- запуск на устройстве;
-- Android instrumentation tests;
-- Android 13–17 matrix.
+- реальный запуск на vivo X100 Ultra / OriginOS 6;
+- device instrumentation/evidence harness;
+- Android 13–17 реальная matrix;
+- lifecycle/recovery evidence на физическом устройстве.
 
-Причина локальной недоступности: рабочая среда не разрешает сетевое разрешение GitHub, поэтому результат сборки не имитируется и не объявляется успешным без фактического CI/device evidence.
+CI #190 подтверждает кодовую сборку, unit tests, APK existence и security smoke, но не заменяет device evidence.
