@@ -25,32 +25,49 @@ class FakeModel:
         )
 
 
-class InMemoryRoomGateway:
-    """Контрактный stand-in для Android Room gateway."""
+class DurableRoomGateway:
+    """Тестовый stand-in для Room gateway с повторным открытием."""
 
-    def __init__(self) -> None:
-        self.core_state = None
-        self.sessions = {}
-        self.manifests = {}
-        self.messages = []
-        self.memory = {}
-        self.history = []
-        self.operations = {}
+    def __init__(self, path: Path) -> None:
+        self.path = path
+        self.state = self._load()
+
+    def _load(self) -> dict:
+        if not self.path.exists():
+            return {
+                "core_state": None,
+                "sessions": {},
+                "manifests": {},
+                "messages": [],
+                "memory": {},
+                "history": [],
+                "operations": {},
+            }
+        return json.loads(self.path.read_text(encoding="utf-8"))
+
+    def _flush(self) -> None:
+        self.path.write_text(
+            json.dumps(self.state, ensure_ascii=False),
+            encoding="utf-8",
+        )
 
     def saveCoreState(self, payload):
-        self.core_state = json.loads(payload)
+        self.state["core_state"] = json.loads(payload)
+        self._flush()
 
     def loadCoreState(self):
-        return None if self.core_state is None else json.dumps(self.core_state)
+        value = self.state["core_state"]
+        return None if value is None else json.dumps(value)
 
     def saveSession(self, payload):
         value = json.loads(payload)
-        self.sessions[value["session_id"]] = value
+        self.state["sessions"][value["session_id"]] = value
+        self._flush()
 
     def listSessions(self):
         return json.dumps(
             sorted(
-                self.sessions.values(),
+                self.state["sessions"].values(),
                 key=lambda item: item["updated_at"],
                 reverse=True,
             )
@@ -58,12 +75,13 @@ class InMemoryRoomGateway:
 
     def saveConversationManifest(self, payload):
         value = json.loads(payload)
-        self.manifests[value["session_id"]] = value
+        self.state["manifests"][value["session_id"]] = value
+        self._flush()
 
     def listConversationManifests(self):
         return json.dumps(
             sorted(
-                self.manifests.values(),
+                self.state["manifests"].values(),
                 key=lambda item: item["updated_at"],
                 reverse=True,
             )
@@ -71,17 +89,18 @@ class InMemoryRoomGateway:
 
     def appendConversationMessage(self, payload):
         value = json.loads(payload)
-        self.messages = [
-            item for item in self.messages if item["id"] != value["id"]
+        self.state["messages"] = [
+            item for item in self.state["messages"] if item["id"] != value["id"]
         ]
-        self.messages.append(value)
+        self.state["messages"].append(value)
+        self._flush()
 
     def recentConversation(self, session_id, limit):
         if limit <= 0:
             return "[]"
         values = [
             item
-            for item in self.messages
+            for item in self.state["messages"]
             if item["session_id"] == session_id
         ]
         values.sort(key=lambda item: item["timestamp"], reverse=True)
@@ -89,35 +108,43 @@ class InMemoryRoomGateway:
         return json.dumps(values)
 
     def deleteConversation(self, session_id):
-        self.messages = [
-            item for item in self.messages if item["session_id"] != session_id
+        self.state["messages"] = [
+            item
+            for item in self.state["messages"]
+            if item["session_id"] != session_id
         ]
-        self.manifests.pop(session_id, None)
+        self.state["manifests"].pop(session_id, None)
+        self._flush()
 
     def saveMemory(self, payload):
         value = json.loads(payload)
-        self.memory[value["id"]] = value
+        self.state["memory"][value["id"]] = value
+        self._flush()
 
     def listMemory(self):
-        return json.dumps(list(self.memory.values()))
+        return json.dumps(list(self.state["memory"].values()))
 
     def appendHistory(self, payload):
         value = json.loads(payload)
-        self.history.append(value)
+        self.state["history"].append(value)
+        self._flush()
 
     def listHistory(self):
-        return json.dumps(self.history)
+        return json.dumps(self.state["history"])
 
     def saveOperation(self, payload):
         value = json.loads(payload)
-        self.operations[value["operation_id"]] = value
+        self.state["operations"][value["operation_id"]] = value
+        self._flush()
 
     def loadOperation(self, operation_id):
-        value = self.operations.get(operation_id)
+        value = self.state["operations"].get(operation_id)
         return None if value is None else json.dumps(value)
 
     def listOperations(self):
-        return json.dumps(list(reversed(list(self.operations.values()))))
+        return json.dumps(
+            list(reversed(list(self.state["operations"].values())))
+        )
 
     def close(self):
         return None
@@ -135,7 +162,8 @@ class AndroidPersistenceBackendTests(unittest.TestCase):
             ),
             encoding="utf-8",
         )
-        self.gateway = InMemoryRoomGateway()
+        self.gateway_path = self.root / "room-gateway-fixture.json"
+        self.gateway = DurableRoomGateway(self.gateway_path)
         self.backend = RoomPersistenceBackend(self.gateway)
 
     def tearDown(self) -> None:
@@ -185,7 +213,10 @@ class AndroidPersistenceBackendTests(unittest.TestCase):
         self.assertFalse(any((self.root / "DATA").rglob("*.json")))
         self.assertFalse(any((self.root / "DATA").rglob("*.jsonl")))
 
-        restarted = KiraRuntime.start(self.root, backend=self.backend)
+        self.gateway.close()
+        reopened_gateway = DurableRoomGateway(self.gateway_path)
+        reopened_backend = RoomPersistenceBackend(reopened_gateway)
+        restarted = KiraRuntime.start(self.root, backend=reopened_backend)
         resumed = restarted.resume_session(manifest.session_id)
         self.assertIsNotNone(resumed)
         self.assertEqual(
