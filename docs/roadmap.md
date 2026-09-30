@@ -50,13 +50,15 @@
 
 ### A0.D1. Device Evidence / Device Acceptance
 - [x] Device Evidence Harness
-- [ ] vivo X100 Ultra / OriginOS 6 smoke
-- [ ] GENOME/Python/runtime evidence
-- [ ] session/test-turn/Pulse evidence
-- [ ] Keystore/storage evidence
-- [ ] process restart/recovery evidence
+- [x] real vivo device smoke — фактический прогон на vivo V2366HA / Android API 36
+- [x] GENOME/Python/runtime evidence
+- [x] session/test-turn/Pulse evidence
+- [x] Keystore/storage evidence
+- [x] process restart/recovery evidence
 - [x] secret-free evidence export
-- [ ] A0 acceptance report
+- [x] A0 acceptance report / `RECOVERY_OK`
+
+Тестовая модель устройства в историческом плане остаётся vivo X100 Ultra / OriginOS 6, но фактический принятый A0.D1 device — V2366HA/API 36. Матрица Android 13–17 остаётся отдельным A11 контуром.
 
 ### A1. Core Parity
 - [ ] расширенный typed Kotlin ↔ Python bridge
@@ -68,6 +70,9 @@
 - [ ] runtime operation checkpoints and explicit UNKNOWN boundary
 - [ ] runtime events / diagnostics
 - [ ] A1 regression tests
+
+### Текущая Android контрольная точка
+A1.6 Operation / Recovery boundary реализован. Следующий production recovery/reconcile остаётся A5; текущий отдельный A1 device parity smoke ещё требует физического прогона на свежем APK.
 
 ### A2. Persistence
 - [ ] Persistence Contract implementation
@@ -101,9 +106,9 @@
 - [ ] shared snapshot consumption
 
 ### A5. Runtime Recovery
-- [ ] operation state machine
-- [ ] UNKNOWN recovery
-- [ ] checkpoint/reconcile
+- [x] operation state machine foundation (A1.6)
+- [x] UNKNOWN boundary semantics (A1.6)
+- [ ] production checkpoint/reconcile
 - [ ] no silent repeat of uncertain model-call
 - [ ] deterministic recovery tests
 
