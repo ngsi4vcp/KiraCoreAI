@@ -48,9 +48,10 @@ class LayerTests(unittest.TestCase):
         self.assertEqual(context.genome_revision, 22)
         self.assertEqual(context.genome_sha256, genome.sha256)
         self.assertIn(
-            "СТОП-ЭЛЕМЕНТЫ",
-            context.protected_rules["stop_elements"],
+            "Кира не раскрывает внутренние секреты",
+            "\n".join(context.constitutional_guidance),
         )
+        self.assertNotIn("s05_stop_elements", "\n".join(context.constitutional_guidance))
 
     def test_zero_history_limit_means_empty_history(self) -> None:
         root = Path(__file__).parents[1]
