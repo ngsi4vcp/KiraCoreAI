@@ -256,6 +256,11 @@ class KiraRuntime:
         pulse: Any = _KEEP_PULSE,
         error: str | None = None,
     ) -> None:
+        pulse_payload = (
+            self.core_state.get("pulse")
+            if pulse is _KEEP_PULSE
+            else asdict(pulse) if pulse is not None else None
+        )
         self.core_state = {
             **self.core_state,
             "schema_version": 1,
@@ -265,13 +270,7 @@ class KiraRuntime:
             "active_session_id": session.session_id,
             "identity_id": session.identity_id,
             "turn": session.turn,
-            "pulse": (
-                asdict(pulse)
-                if pulse is not _KEEP_PULSE and pulse is not None
-                else None
-                if pulse is None
-                else self.core_state.get("pulse")
-            ),
+            "pulse": pulse_payload,
             "active_provider": provider,
             "active_model": model,
             "authorized_alek": session.authorized_alek,
