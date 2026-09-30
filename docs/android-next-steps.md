@@ -30,8 +30,8 @@ Android продолжает реализовываться как host над �
 - CryptoProvider/Keystore boundary для чувствительных payloads;
 - backend/gateway interface, который может вызываться из Python через Chaquopy;
 - migration test boundary;
-- запрет plaintext secret material в persistence/UI;
-- self-check: build, unit tests, security smoke, UTF-8, APK content.
+- запрет открытого хранения секретных материалов в persistence/UI;
+- самопроверка: сборка, модульные тесты, проверка безопасности, UTF-8, содержимое APK.
 
 Фактически уже реализовано в текущем срезе:
 
@@ -47,9 +47,9 @@ Android продолжает реализовываться как host над �
 
 Критерии:
 
-- create/list/resume session;
+- создание/список/восстановление сессии;
 - conversation append/recent;
-- memory candidate/approved separation;
+- разделение candidate/approved памяти;
 - history append/recent;
 - core state;
 - operation state;
@@ -70,7 +70,7 @@ Android продолжает реализовываться как host над �
 - checksum;
 - rollback;
 - импорт старого JSON только через явный migration path;
-- delete conversation ≠ delete retained memory.
+- удаление разговора ≠ удаление сохранённой памяти.
 
 ### A2.4 Recovery / Duplicate Prevention
 
@@ -82,13 +82,13 @@ Android продолжает реализовываться как host над �
 
 ### A2.5 A2 Device Gate
 
-На реальном устройстве повторить startup, session create/resume, conversation, memory separation, core state, process restart, storage recovery, migration test и secret-scan evidence.
+На реальном устройстве повторить запуск, создание/восстановление сессии, разговор, разделение памяти, core state, перезапуск процесса, восстановление хранилища, миграционный тест и проверку отсутствия секретов.
 
 A2 принимается только после CI + device evidence + self-audit.
 
 ## После A2
 
-A3 Identity / Authority → A4 Кира:Сбор → A5 Runtime Recovery / Reconcile → A6 Background / FGS hardening → A7 Main UX → A8 OpenRouter + Gemini → A9 Genome Guard → A10 КираЧек → A11 Android 13–17/OEM matrix → A12 distributable APK Alpha.
+A3 Идентичность/полномочия → A4 Кира:Сбор → A5 Восстановление рантайма/сверка → A6 Фоновый режим/FGS → A7 Основной интерфейс → A8 OpenRouter + Gemini → A9 Защита GENOME → A10 КираЧек → A11 матрица Android 13–17/OEM → A12 распространяемый APK Alpha.
 
 Эта последовательность сохраняет общую дорожную карту проекта. Desktop track идёт отдельно: незакрытая внешняя Windows/Linux smoke-проверка не заменяется Android acceptance.
 
