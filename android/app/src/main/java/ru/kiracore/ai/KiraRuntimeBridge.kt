@@ -127,10 +127,12 @@ object KiraRuntimeBridge {
             pyModule.callAttr("create_session", provider, model, identityId)
         }
         val result = JSONObject(raw.toString())
-        currentSnapshot = currentSnapshot.copy(
-            activeSessionId = result.optString("session_id").takeIf { it.isNotBlank() },
-            turn = 0,
-            pulse = null,
+        publish(
+            currentSnapshot.copy(
+                activeSessionId = result.optString("session_id").takeIf { it.isNotBlank() },
+                turn = 0,
+                pulse = null,
+            ),
         )
         return result
     }
