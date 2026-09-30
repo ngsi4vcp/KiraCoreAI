@@ -118,8 +118,6 @@ class A1BridgeContractTest {
         val empty = JSONArray("[]")
         assertFalse(empty.length() > 0)
     }
-}
-
 
     @Test
     fun healthMapsOperationRecoveryState() {
