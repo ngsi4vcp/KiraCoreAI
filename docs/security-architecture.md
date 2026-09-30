@@ -247,3 +247,33 @@ Android: Android Keystore, platform sandbox и официальные реком
 Windows: DPAPI/CNG DPAPI.
 
 Другие ОС должны подключаться через PlatformSecureStore без изменения доменного Security Contract.
+
+## Жизненный цикл секрета авторизации Алека
+
+Пароль появляется в проектном процессе только тогда, когда authority plane уже нельзя реализовать без него.
+
+Порядок:
+1. До получения пароля в репозитории нет самого пароля и нет производного секрета, позволяющего его восстановить.
+2. Пароль запрашивается у Алека однократно через защищённый интерактивный ввод на критическом этапе.
+3. Пароль используется только в локальном или одноразовом build/provisioning-контуре.
+4. Из пароля через Argon2id с уникальной солью выводится ключевой материал KDF.
+5. Случайный authority key шифрует protected authority payload через AES-256-GCM.
+6. В репозитории допускается хранить только зашифрованный authority payload и публичные KDF/verifier parameters.
+7. Plaintext-пароль не записывается в Git, исходники, Gradle properties, Python-код, resources, APK assets, логи, telemetry, snapshots или отчёты.
+8. После формирования пакета plaintext-пароль и промежуточные значения KDF удаляются из рабочей среды.
+9. Перед фиксацией выполняется secret scan по рабочему дереву и build outputs.
+10. Runtime получает пароль только от пользователя во время авторизации; пароль не сохраняется после завершения проверки.
+11. Privileged operations получают transient capability grant с минимальным временем жизни.
+12. После завершения privileged operation transient key material очищается из доступного runtime state насколько позволяет платформа.
+
+Пароль не компилируется внутрь приложения. Поставляться может только encrypted authority payload и открытые параметры KDF/verifier.
+
+Стойкость определяется не сокрытием алгоритма, а силой пароля, Argon2id и корректным шифрованием. Поэтому пароль должен быть достаточно длинным и не встречаться в стандартных словарях.
+
+### Android-specific boundary
+
+- protected payload хранится во внутреннем app-specific storage;
+- platform key material хранится в Android Keystore;
+- Keystore key не экспортируется в plaintext;
+- Compose UI и UI state не получают key material;
+- Service/Bridge работает с типизированными SecureStore/CryptoProvider операциями.
