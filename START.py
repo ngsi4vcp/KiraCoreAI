@@ -10,7 +10,16 @@ def application_root() -> Path:
     return Path(__file__).resolve().parent
 
 
+def _configure_stdio() -> None:
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        try:
+            stream.reconfigure(encoding="utf-8", errors="replace")
+        except (AttributeError, ValueError):
+            pass
+
+
 def main() -> int:
+    _configure_stdio()
     root = application_root()
     source_root = root / "src"
     if source_root.exists():
