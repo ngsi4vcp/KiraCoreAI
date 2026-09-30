@@ -11,7 +11,7 @@ from kiracore.runtime import KiraRuntime
 _RUNTIME: KiraRuntime | None = None
 
 EXPECTED_GENOME_REVISION = 22
-EXPECTED_GENOME_SHA256 = "05e2d7bd86047c34103c079fc0a3d9845d471de9"
+EXPECTED_GENOME_SHA256 = "dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e"
 CORE_VERSION = "0.1.0a1"
 
 
