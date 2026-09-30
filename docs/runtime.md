@@ -56,11 +56,13 @@ Activity → RuntimeService → PythonRuntime → Persistence.
 
 Activity не является владельцем причинного runtime-состояния.
 
-Текущее A0 состояние:
+Текущее Android состояние:
 - `RuntimeService` и bridge boundary реализованы;
+- A0.D1 device evidence принято на vivo V2366HA / API 36;
+- A1.6 operation boundary реализован, включая persisted operation state и explicit UNKNOWN;
 - production foreground-service hardening ещё не реализован;
 - текущий Android persistence contour — platform storage foundation, не Room/SQLite domain backend;
-- device lifecycle/recovery evidence ещё не получено.
+- production reconcile/recovery остаётся A5.
 
 Foreground service и production recovery не должны считаться реализованными только из-за наличия `Service` и `START_STICKY`.
 
