@@ -35,7 +35,7 @@
 
 ## Требует реализации — !
 
-- [!] Sealed authority packaging: текущий G22/GENOME остаётся plaintext-источником в репозитории; защищённая упаковка для packaged Android/PC ещё не реализована.
+- [!] Sealed authority packaging: текущий G22/GENOME остаётся plaintext-источником в репозитории; защищённая упаковка переносится на критический этап. Пароль будет запрошен только тогда.
 - [!] Криптографическая авторизация Алека на PC: текущая desktop-сессия ещё использует существующую семантику `~1`; password/KDF/verifier + transient privileged grant нужно довести до исполняемого authority plane.
 - [!] Android A0: Android-модуль ещё не создан; текущая ветка содержит архитектурный и security groundwork.
 - [!] Android CI: workflow запускается для ветки, но полноценный Android job появится вместе с Android module.
@@ -71,3 +71,6 @@
 - изменении KiraSync protocol;
 - изменении состава Alpha;
 - переходе к sealed packaging, если это потребует изменения канонического формата GENOME.
+## Алгоритм секрета Алека
+
+Пароль не попадает в GitHub и не компилируется в приложение. На критическом этапе он вводится однократно в provisioning-контур; результатом становится зашифрованный authority payload и публичные параметры KDF/verifier. После provisioning plaintext и промежуточные секреты удаляются, выполняется secret scan.
