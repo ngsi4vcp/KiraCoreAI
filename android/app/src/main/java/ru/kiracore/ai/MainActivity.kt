@@ -26,6 +26,10 @@ class MainActivity : ComponentActivity() {
 
         startService(Intent(this, KiraRuntimeService::class.java))
 
+        if (BuildConfig.DEBUG && savedInstanceState == null) {
+            startActivity(Intent(this, Class.forName("ru.kiracore.ai.debug.DeviceEvidenceActivity")))
+        }
+
         setContent {
             var snapshot by remember {
                 mutableStateOf(KiraRuntimeBridge.snapshot())
