@@ -10,6 +10,25 @@ from .security import build_authorization_context, constitutional_guidance
 class ContextCompiler:
     """Собирает оперативный контекст из отдельных канонических слоёв."""
 
+
+    @staticmethod
+    def _memory_visible(memory: MemoryRecord, session: SessionState) -> bool:
+        scope = memory.privacy_scope
+        owner = memory.owner_identity_id
+        current = session.identity_id
+        if scope in {"Public", "Shared-derived"}:
+            return True
+        if scope == "Shared-by-consent":
+            return owner is not None and current == owner
+        if scope == "Private":
+            # Legacy desktop records without identity remain visible only in
+            # legacy single-profile sessions, never in another identity.
+            if owner is None and current is None:
+                return True
+            return owner is not None and current == owner
+        return False
+
+
     def compile(
         self,
         genome: GenomeArtifact,
@@ -29,7 +48,10 @@ class ContextCompiler:
             raise ValueError("Лимиты контекста не могут быть отрицательными.")
 
         ranked = sorted(
-            [m for m in memories if m.status == "approved"],
+            [
+                m for m in memories
+                if m.status == "approved" and self._memory_visible(m, session)
+            ],
             key=lambda m: (m.importance, m.timestamp),
             reverse=True,
         )
