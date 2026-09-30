@@ -157,6 +157,13 @@ class AndroidRoomPersistenceGateway(
         }.toString()
     }
 
+    fun listHistory(): String =
+        JSONArray().also { array ->
+            dao.listHistory().forEach { item ->
+                array.put(JSONObject(open("history:${item.historyId}", item.encryptedPayload)))
+            }
+        }.toString()
+
     fun saveOperation(payloadJson: String) {
         val json = JSONObject(payloadJson)
         val operationId = required(json, "operation_id")
