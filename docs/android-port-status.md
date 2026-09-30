@@ -540,4 +540,15 @@ Acceptance A2.0 ещё не объявляется закрытым: требу�
 
 ## Финальная актуальная точка — 30.09.2026
 
-A1 Core Parity принят по device evidence run `20260930-144146` (`RECOVERY_OK`) на vivo V2366HA / Android API 36. Текущий инженерный этап — A2.0 Persistence Foundation. Исторические A0/A1 checkpoint выше сохраняются как история и не являются текущим статусом.
+A1 Core Parity принят по device evidence run `20260930-144146` (`RECOVERY_OK`) на vivo V2366HA / Android API 36.
+
+A2.0 Persistence Foundation реализован и проверен. A2.1 Store Integration реализован в android/alpha-parity:
+- единый persistence backend contract подключён к State/Memory/History/Conversation/Core State;
+- runtime operation state получает отдельный persistence surface;
+- Android Room gateway подключён к Python runtime через Chaquopy;
+- Android runtime не создаёт параллельный canonical JSON backend при включённом Room backend;
+- restart read-back и separation conversation/memory покрыты новым integration contract test.
+
+Последняя полная CI-проверка: run `#450`, HEAD `219c641a6b74526e0774346b35b3dbe912e96246`, результат `success`.
+
+Текущий этап: **A2.1 Store Integration — implementation + CI acceptance**. Физическая device-проверка нового persistence runtime ещё не выполнена; она остаётся обязательной частью A2.5. Исторические A0/A1 checkpoint выше сохраняются как история и не являются текущим статусом.
