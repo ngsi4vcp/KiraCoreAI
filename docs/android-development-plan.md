@@ -38,6 +38,52 @@ Application ID Android: ru.kiracore.ai
 
 Chaquopy 17 используется с Python 3.13. Текущий Android toolchain в ветке: AGP 9.2.1, Gradle 9.4.1, JDK 17, Compose plugin/Kotlin 2.3.10. Источник: официальная документация Chaquopy.
 
+## 2.1. Фактическое состояние реализации — 30.09.2026
+
+Кодовый A0 foundation завершён и проверен GitHub Actions run #190. Последняя A0 audit/documentation point перед этим документальным циклом: `4d834996f1510df355ccd8b779b20cd751ed75c4`. Контрольный A0 code baseline: `398586db03f096318faf2fd275a2db86905b5aa5`.
+
+Фактический Android build toolchain:
+- AGP 9.2.1;
+- Gradle 9.4.1;
+- Kotlin / Compose plugin 2.3.10;
+- Compose BOM 2026.09.00;
+- JDK 17;
+- Python 3.13;
+- Chaquopy 17.0.0;
+- compileSdk / targetSdk 37;
+- minSdk 28;
+- ABI arm64-v8a;
+- applicationId `ru.kiracore.ai`;
+- versionName `0.1.0-alpha.1`.
+
+Фактически завершено:
+- Android module + Compose host;
+- embedded Python bridge;
+- GENOME revision/SHA verification;
+- RuntimeService boundary;
+- RuntimeSnapshot;
+- diagnostics;
+- Android Keystore/AES-GCM foundation;
+- persistence/crypto interfaces;
+- A0 Python bridge smoke;
+- Android unit tests;
+- repository UTF-8 smoke;
+- CI debug APK build, APK existence check и security smoke.
+
+Фактически ещё не завершено:
+- A0 device acceptance;
+- Android instrumentation/device matrix;
+- Room/SQLite domain persistence;
+- production foreground-service/recovery hardening;
+- real OpenRouter/Gemini calls;
+- privileged authority plane;
+- Кира:Сбор;
+- full Android UX.
+
+Текущий этап: `A0.D1 — Device Evidence / Device Acceptance`.
+
+Переход в `A1 — Core Parity` допускается только после анализа device evidence и прохождения `docs/android-development-checklist.md`.
+
 ## 3. Подтверждённые требования Алека
 
 ### Платформа
@@ -946,7 +992,7 @@ Foreground runtime строится как service + persistence + recovery. Д�
 
 ### Политика платформенного toolchain
 
-Для Android 17/compileSdk 37 Alpha использует AGP 9.2.x, Gradle 9.4.1, JDK 17 и Kotlin 2.2.10, поскольку текущий Chaquopy 17.0 поддерживает AGP только до 9.2.
+Для Android 17/compileSdk 37 Alpha использует AGP 9.2.1, Gradle 9.4.1, JDK 17 и Kotlin 2.2.10, поскольку текущий Chaquopy 17.0 поддерживает AGP только до 9.2.
 
 ### Нормативная граница
 
