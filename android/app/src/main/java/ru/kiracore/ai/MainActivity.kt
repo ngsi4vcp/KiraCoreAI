@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
                     ) {
-                        Text(text = "Кира:Ядро — A0")
+                        Text(text = "Кира:Ядро — Android Alpha")
                         Text(text = snapshot.message)
                         snapshot.genomeRevision?.let {
                             Text(text = "Геном: G$it")
