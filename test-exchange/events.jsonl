@@ -1,5 +1,0 @@
-{"timestamp":"2026-09-30T12:45:04.403+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"Окружение"}}
-{"timestamp":"2026-09-30T12:45:04.405+03:00","event_id":"runtime.failed","status":"FAIL","safe_details":{"error":"ModuleNotFoundError: No module named 'android_bridge'"}}
-{"timestamp":"2026-09-30T12:45:04.405+03:00","event_id":"smoke.failed","status":"FAIL","safe_details":{"exception":"java.lang.IllegalStateException","message":"Runtime завершился с FAILED: ModuleNotFoundError: No module named 'android_bridge'"}}
-{"timestamp":"2026-09-30T12:45:18.724+03:00","event_id":"lifecycle.stop","status":"OBSERVED","safe_details":{"activity":"DeviceEvidenceActivity"}}
-{"timestamp":"2026-09-30T12:45:39.786+03:00","event_id":"lifecycle.start","status":"OBSERVED","safe_details":{"activity":"DeviceEvidenceActivity"}}
