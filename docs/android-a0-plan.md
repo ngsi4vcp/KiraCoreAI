@@ -181,3 +181,28 @@ A0 завершён, когда:
 9. тесты и документация актуальны;
 10. самоаудит и финальный quality pass завершены;
 11. пользователь получает итог на утверждение до перехода в A1.
+
+## Фактическое состояние реализации
+
+На текущем цикле A0 реализованы A0.1–A0.3 и базовая часть A0.4–A0.6:
+
+- Android Gradle project/module создан;
+- Compose Activity создана;
+- applicationId зафиксирован как ru.kiracore.ai;
+- ARM64-only зафиксирован через arm64-v8a;
+- Chaquopy 17.0.0 + Python 3.13 подключены;
+- Python source path направлен на существующий KiraCore `src`;
+- GENOME/genome.txt копируется в Android assets на этапе сборки;
+- при запуске GENOME переносится в private app storage;
+- RuntimeService создан и отделён от Activity;
+- минимальный diagnostic bridge создан;
+- базовый Android CI smoke добавлен.
+
+Неподтверждённое в текущей среде:
+
+- локальная сборка APK;
+- запуск на устройстве;
+- Android instrumentation tests;
+- Android 13–17 matrix.
+
+Причина локальной недоступности: рабочая среда не разрешает сетевое разрешение GitHub, поэтому результат сборки не имитируется и не объявляется успешным без фактического CI/device evidence.
