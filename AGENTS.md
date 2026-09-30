@@ -44,7 +44,7 @@
 
 ## Текущий инженерный срез Android — 30.09.2026
 
-Фактический текущий срез: A0.D1 принят; A1 Core Parity принят по device evidence `20260930-144146`; Android находится на A2.0 Persistence Foundation.
+Фактический текущий срез: A0.D1 принят; A1 Core Parity принят по device evidence `20260930-144146`; A2.0 foundation реализован; текущий этап A2.1 Store Integration реализован и CI-green.
 
 Контрольные факты:
 - ветка: `android/alpha-parity`;
@@ -57,7 +57,7 @@
 - принятые диагностические материалы A0.D1: run `20260930-131718`, vivo V2366HA, API 36, `RECOVERY_OK`;
 - принятые диагностические материалы A1: run `20260930-144146`, vivo V2366HA, API 36, `RECOVERY_OK`.
 
-A1.6 уже включает persisted operation lifecycle и явную границу UNKNOWN. Production reconcile/recovery остаётся A5. В A2.0 реализован foundation Room/SQLite, его приёмка ждёт green CI и самоаудит.
+A1.6 уже включает persisted operation lifecycle и явную границу UNKNOWN. Production reconcile/recovery остаётся A5. A2.0 foundation Room/SQLite реализован и проверен. A2.1 подключает этот backend к доменным store-контрактам; физическая device-приёмка остаётся A2.5.
 
 G22.txt и `GENOME/genome.txt` не изменяются в циклах контроля качества/аудита Android.
 
