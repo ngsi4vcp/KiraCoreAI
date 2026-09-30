@@ -114,16 +114,21 @@ jobs:
       - name: Подготовить Android SDK
         uses: android-actions/setup-android@v4
 
-      - name: Обновить command-line tools для preview SDK
+      - name: Подготовить command-line tools для preview SDK
         shell: bash
         run: |
           sdkmanager --channel=3 "cmdline-tools;latest"
-          echo "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+          CMDLINE_TOOLS_BIN="$(find "$ANDROID_SDK_ROOT/cmdline-tools" -mindepth 2 -maxdepth 2 -type f -name sdkmanager -printf '%T@ %h\\n' | sort -nr | head -1 | cut -d' ' -f2-)"
+          test -x "$CMDLINE_TOOLS_BIN/sdkmanager"
+          echo "$CMDLINE_TOOLS_BIN" >> "$GITHUB_PATH"
+          echo "Используется sdkmanager: $CMDLINE_TOOLS_BIN/sdkmanager"
 
       - name: Установить Android SDK 37
         shell: bash
         run: |
-          sdkmanager --channel=3 "platforms;android-37" "build-tools;36.0.0" "platform-tools"
+          CMDLINE_TOOLS_BIN="$(find "$ANDROID_SDK_ROOT/cmdline-tools" -mindepth 2 -maxdepth 2 -type f -name sdkmanager -printf '%T@ %h\\n' | sort -nr | head -1 | cut -d' ' -f2-)"
+          test -x "$CMDLINE_TOOLS_BIN/sdkmanager"
+          "$CMDLINE_TOOLS_BIN/sdkmanager" --channel=3 "platforms;android-37" "build-tools;36.0.0" "platform-tools"
 
       - name: Подготовить Gradle
         uses: gradle/actions/setup-gradle@v5
