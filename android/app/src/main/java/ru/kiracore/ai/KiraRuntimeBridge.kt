@@ -4,6 +4,7 @@ import android.content.Context
 import com.chaquo.python.Python
 import com.chaquo.python.android.AndroidPlatform
 import org.json.JSONObject
+import ru.kiracore.ai.storage.AndroidStorageProbe
 import java.io.File
 
 object KiraRuntimeBridge {
@@ -28,12 +29,15 @@ object KiraRuntimeBridge {
 
     fun initialize(context: Context): JSONObject {
         stageGenome(context)
-        return JSONObject(
+        val runtime = JSONObject(
             python(context)
                 .getModule(MODULE)
                 .callAttr("initialize", context.filesDir.absolutePath)
                 .toString()
         )
+        runtime.put("storage_writable", AndroidStorageProbe(context).isWritable())
+        runtime.put("storage_root", AndroidStorageProbe(context).rootPath())
+        return runtime
     }
 
     fun health(context: Context): String =
