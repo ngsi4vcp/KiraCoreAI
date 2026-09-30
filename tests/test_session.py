@@ -44,7 +44,7 @@ class SessionTests(unittest.TestCase):
                 genome=genome,
                 state_store=state_store,
                 memory_store=MemoryStore(),
-                history_store=HistoryStore(),
+                history_store=HistoryStore(f"{tmp}/history.jsonl"),
                 conversation_store=conversation,
             )
             response, pulse = manager.run_turn(
@@ -63,3 +63,7 @@ class SessionTests(unittest.TestCase):
             self.assertTrue(
                 state_store.get(manifest.session_id).authorized_alek
             )
+            history = HistoryStore(f"{tmp}/history.jsonl")
+            self.assertEqual(len(history.recent()), 1)
+            self.assertEqual(history.recent()[0].event, "Завершение хода сессии")
+            self.assertIn("проверка", history.recent()[0].cause)
