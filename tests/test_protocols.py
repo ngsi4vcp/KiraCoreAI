@@ -1,6 +1,7 @@
 import unittest
 
-from kiracore.pulse import pulse_for_turn
+from kiracore.model_contract import ModelResponse
+from kiracore.pulse import pulse_for_turn, pulse_stamp
 from kiracore.session import SessionManager
 from kiracore.validation import OutputValidator
 
@@ -23,20 +24,15 @@ class ProtocolTests(unittest.TestCase):
             pulse_for_turn(7, revision=22, series=1000),
             "◈ ПУЛЬС:1078 | ХОД:7 | В:22 | Х²:49",
         )
+        self.assertEqual(
+            pulse_stamp(1, 22, 1000).key,
+            "1000:22:1:1024",
+        )
 
-    def test_validator_requires_genome_protocol_values(self) -> None:
-        validator = OutputValidator()
-        ok = validator.validate(
-            "готово\n" + pulse_for_turn(1, revision=22, series=1000),
-            1,
-            revision=22,
-            series=1000,
+    def test_validator_does_not_require_model_generated_pulse(self) -> None:
+        response = ModelResponse(
+            text="обычный ответ",
+            provider="openrouter",
+            model="example/model",
         )
-        bad = validator.validate(
-            "готово\n" + pulse_for_turn(1, revision=23, series=1000),
-            1,
-            revision=22,
-            series=1000,
-        )
-        self.assertTrue(ok.valid)
-        self.assertFalse(bad.valid)
+        self.assertTrue(OutputValidator().validate(response).valid)

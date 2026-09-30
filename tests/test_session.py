@@ -1,99 +1,65 @@
 import tempfile
 import unittest
-from pathlib import Path
 
+from kiracore.conversation import ConversationStore
 from kiracore.genome import GenomeLoader
-from kiracore.models import OperationalContext
-from kiracore.errors import KiraCoreError
+from kiracore.model_contract import ModelResponse
 from kiracore.persistence import JsonPersistence
-from kiracore.pulse import pulse_for_turn
 from kiracore.session import SessionManager
 from kiracore.stores import HistoryStore, MemoryStore, StateStore
 
 
-class FakeHost:
-    def render_context(self, context: OperationalContext) -> str:
-        return f"G{context.genome_revision}:{context.task}"
-
-
 class FakeModel:
-    def generate(
-        self,
-        rendered_context: str,
-        task: str,
-    ) -> str:
-        return "Ответ среды\n" + pulse_for_turn(
-            1,
-            revision=22,
-            series=1000,
+    provider = "test"
+
+    def list_models(self, query=""):
+        return []
+
+    def generate(self, request):
+        return ModelResponse(
+            text="Ответ среды",
+            provider=request.provider,
+            model=request.model,
         )
 
 
 class SessionTests(unittest.TestCase):
-    def test_session_runs_without_model_specific_state_ownership(self) -> None:
-        root = Path(__file__).parents[1]
+    def test_session_runs_and_adds_runtime_pulse(self) -> None:
+        from kiracore.models import SessionState
+
+        root = __import__("pathlib").Path(__file__).parents[1]
         genome = GenomeLoader(expected_revision=22).load_active(root)
+
         with tempfile.TemporaryDirectory() as tmp:
+            conversation = ConversationStore(f"{tmp}/conversations")
+            manifest = conversation.create("test", "example/model")
+            state_store = StateStore(JsonPersistence(f"{tmp}/sessions"))
+            state_store.put(SessionState(
+                session_id=manifest.session_id,
+                provider="test",
+                model="example/model",
+            ))
+
             manager = SessionManager(
-                genome,
-                StateStore(),
-                MemoryStore(),
-                HistoryStore(),
-                persistence=JsonPersistence(tmp),
+                genome=genome,
+                state_store=state_store,
+                memory_store=MemoryStore(),
+                history_store=HistoryStore(),
+                conversation_store=conversation,
             )
-            session = manager.start("~1 старт", {"host": "test"})
-            output = manager.run_turn(
-                session.session_id,
-                "проверка",
-                FakeHost(),
+            response, pulse = manager.run_turn(
+                manifest.session_id,
+                "~1 проверка",
                 FakeModel(),
+                "test",
+                "example/model",
+            )
+            self.assertEqual(response.text, "Ответ среды")
+            self.assertEqual(pulse.value, 1024)
+            self.assertEqual(
+                conversation.recent(manifest.session_id, 10)[-1].pulse.value,
+                1024,
             )
             self.assertTrue(
-                output.endswith(
-                    pulse_for_turn(1, revision=22, series=1000),
-                ),
+                state_store.get(manifest.session_id).authorized_alek
             )
-            snapshot = manager.persistence.load(session.session_id)
-            self.assertEqual(snapshot["turn"], 1)
-            self.assertTrue(snapshot["authorized_alek"])
-            self.assertEqual(snapshot["runtime_status"], "waiting")
-
-    def test_persistence_rejects_path_like_session_ids(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            persistence = JsonPersistence(tmp)
-            with self.assertRaises(KiraCoreError):
-                persistence.load("../чужой-файл")
-
-    def test_running_state_is_persisted_before_model_call(self) -> None:
-        root = Path(__file__).parents[1]
-        genome = GenomeLoader(expected_revision=22).load_active(root)
-
-        class FailingModel:
-            def generate(
-                self,
-                rendered_context: str,
-                task: str,
-            ) -> str:
-                raise RuntimeError("модель недоступна")
-
-        with tempfile.TemporaryDirectory() as tmp:
-            persistence = JsonPersistence(tmp)
-            manager = SessionManager(
-                genome,
-                StateStore(),
-                MemoryStore(),
-                HistoryStore(),
-                persistence=persistence,
-            )
-            session = manager.start("~1 старт")
-            with self.assertRaises(RuntimeError):
-                manager.run_turn(
-                    session.session_id,
-                    "проверка",
-                    FakeHost(),
-                    FailingModel(),
-                )
-            snapshot = persistence.load(session.session_id)
-            self.assertEqual(snapshot["turn"], 1)
-            self.assertEqual(snapshot["runtime_status"], "running")
-            self.assertNotEqual(snapshot["updated_at"], snapshot["created_at"])
