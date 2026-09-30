@@ -5,7 +5,7 @@
 ## Файлы
 
 - core.schema.json — состав основных слоёв;
-- core-state.schema.json — агрегированный снимок текущего runtime-состояния;
+- core-state.schema.json — агрегированный снимок текущего состояния рантайма;
 - state.schema.json — состояние сессии;
 - memory-record.schema.json — единичная запись памяти;
 - conversation-message.schema.json — единичное сообщение разговора;
