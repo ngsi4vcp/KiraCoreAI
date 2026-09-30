@@ -34,7 +34,7 @@ class AndroidBridgeTests(unittest.TestCase):
         self.assertIn('"status": "ready"', initialized)
         self.assertIn('"genome_revision": 22', initialized)
         self.assertIn(
-            '"genome_sha256": "05e2d7bd86047c34103c079fc0a3d9845d471de9"',
+            '"genome_sha256": "dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e"',
             initialized,
         )
 
