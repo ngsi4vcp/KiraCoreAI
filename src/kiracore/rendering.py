@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from .context import OperationalContext
 from .model_contract import ChatMessage, ModelRequest
+from .security import AuthorizationContext, render_reflection_instruction
 
 
 class PlainTextPromptRenderer:
@@ -11,7 +12,6 @@ class PlainTextPromptRenderer:
         self.max_context_messages = max_context_messages
 
     def render(self, context: OperationalContext) -> ModelRequest:
-        protected = "\n\n".join(context.protected_rules.values())
         memory_lines = "\n".join(
             f"- {item.type}: {item.content}"
             for item in context.memory
@@ -22,12 +22,27 @@ class PlainTextPromptRenderer:
         ) or "- нет записей"
 
         state = context.state
+        auth = AuthorizationContext(
+            role=str(context.authorization_context["role"]),
+            authorized_alek=bool(context.authorization_context["authorized_alek"]),
+            capabilities=frozenset(context.authorization_context["capabilities"]),
+        )
+        guidance = "\n".join(
+            f"- {item}" for item in context.constitutional_guidance
+        )
         system = (
             "КОНТЕКСТ КИРА:ЯДРА\n\n"
             f"РЕВИЗИЯ ГЕНОМА: {context.genome_revision}\n"
             f"ТЕКУЩАЯ ЗАДАЧА: {context.task}\n\n"
-            "ЗАЩИЩЁННЫЕ ПРАВИЛА:\n"
-            f"{protected}\n\n"
+            "СЕМАНТИЧЕСКАЯ ПРОЕКЦИЯ КОНСТИТУЦИИ:\n"
+            f"{guidance}\n\n"
+            "ПРАВА ТЕКУЩЕЙ СЕССИИ:\n"
+            f"Роль: {auth.role}\n"
+            f"Привилегированная авторизация: {auth.authorized_alek}\n"
+            f"Доступные возможности runtime: "
+            f"{', '.join(sorted(auth.capabilities)) or 'нет'}\n\n"
+            "ПРЕДГЕНЕРАЦИОННАЯ ПРОВЕРКА:\n"
+            f"{render_reflection_instruction(auth)}\n\n"
             "АКТИВНОЕ СОСТОЯНИЕ:\n"
             f"ЦЕЛИ: {state.active_goals}\n"
             f"ПРОЕКТЫ: {state.projects}\n"
