@@ -8,7 +8,7 @@
 ## Рантайм
 
 GENOME/genome.txt
-→ State / Memory / History / Conversation
+→ Состояние / Память / История / Разговор
 → ContextCompiler
 → PromptRenderer
 → ModelAdapter
