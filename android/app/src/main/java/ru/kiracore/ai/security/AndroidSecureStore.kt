@@ -31,7 +31,7 @@ class AndroidSecureStore(
         System.arraycopy(encrypted, 0, packed, cipher.iv.size, encrypted.size)
         preferences.edit()
             .putString(name, Base64.encodeToString(packed, Base64.NO_WRAP))
-            .apply()
+            .commit()
     }
 
     override fun get(name: String): ByteArray? {
@@ -47,7 +47,7 @@ class AndroidSecureStore(
     }
 
     override fun delete(name: String) {
-        preferences.edit().remove(name).apply()
+        preferences.edit().remove(name).commit()
     }
 
     fun isAvailable(): Boolean {
