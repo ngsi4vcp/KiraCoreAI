@@ -70,6 +70,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Получить репозиторий
+        uses: actions/checkout@v7
+
       - name: Скачать release-артефакты
         uses: actions/download-artifact@v4
         with:
