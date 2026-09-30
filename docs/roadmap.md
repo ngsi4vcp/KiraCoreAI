@@ -1,23 +1,23 @@
 # Дорожная карта
 
-## Alpha 0.1.0-alpha.1
+## Альфа 0.1.0-alpha.1
 
 - [x] активный KIRA-GENOME
 - [x] раздельные слои
 - [x] локальная персистентность
 - [x] отдельное хранилище разговоров
 - [x] единый ModelAdapter
-- [x] OpenRouter connector
-- [x] Google Gemini connector
-- [x] LM Studio connector
+- [x] коннектор OpenRouter
+- [x] коннектор Google Gemini
+- [x] коннектор LM Studio
 - [x] терминальный интерфейс
 - [x] динамический выбор модели
 - [x] runtime-ПУЛЬС
 - [x] START для упаковки
-- [x] Windows/Linux release workflow
-- [ ] первый внешний Alpha smoke-test
+- [x] релизная сборка для Windows/Linux
+- [ ] первая внешняя проверка Альфы по сценарию smoke-test
 
-## После первого запуска Alpha
+## После первого запуска Альфы
 
 1. стандартизировать ConversationStore по фактической нагрузке;
 2. добавить структурированный extractor кандидатов памяти;
