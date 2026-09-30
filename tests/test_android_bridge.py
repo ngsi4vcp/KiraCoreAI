@@ -71,6 +71,12 @@ class AndroidBridgeTests(unittest.TestCase):
         self.assertEqual(android_bridge.shutdown(), "Кира:Ядро остановлено")
         self.assertEqual(android_bridge.health(), "Кира:Ядро не инициализировано")
 
+        restarted = json.loads(android_bridge.initialize(str(self.runtime_root)))
+        self.assertEqual(restarted["genome_revision"], 22)
+        restored_state = json.loads(android_bridge.get_runtime_state())
+        self.assertEqual(restored_state["turn"], 1)
+        self.assertEqual(restored_state["active_session_id"], session_id)
+
 
 if __name__ == "__main__":
     unittest.main()
