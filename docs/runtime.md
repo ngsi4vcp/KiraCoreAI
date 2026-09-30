@@ -9,7 +9,7 @@
 3. загружается GENOME/genome.txt;
 4. парсится и валидируется KIRA-GENOME;
 5. строится неизменяемый GenomeStore;
-6. восстанавливаются sessions, memory, history и conversations;
+6. восстанавливаются сессии, память, история и разговоры;
 7. читается SECRETS/credentials.ini;
 8. выбирается коннектор;
 9. получается актуальный каталог моделей;
@@ -22,7 +22,7 @@ G22.txt в корне проекта не участвует в runtime.
 
 ContextCompiler получает только необходимые фрагменты отдельных слоёв.
 
-PromptRenderer превращает их в ModelRequest.
+PromptRenderer превращает их в нормализованный ModelRequest.
 
 ModelAdapter выполняет внешний API-вызов.
 
