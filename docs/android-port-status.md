@@ -378,3 +378,30 @@ Android launch
 - `docs/roadmap.md`
 - `docs/genome-governance.md`
 - `GENOME/genome.txt`
+
+
+## Архитектурные решения 30.09.2026
+
+Android-ветка перешла от предварительных альтернатив к утверждённому архитектурному курсу:
+
+- Kotlin + Jetpack Compose;
+- embedded Python 3.13 + Chaquopy 17.0;
+- ARM64;
+- minSdk 28, compileSdk/targetSdk 37;
+- Room/SQLite + CryptoProvider + Android Keystore;
+- private GitHub как первый SyncProvider;
+- encrypted sync envelopes;
+- переносимая пользовательская identity через identity_id/device_id/identity_secret;
+- отдельная Alek authorization;
+- runtime instance registration;
+- service + persistence + recovery вместо «вечного» Activity/process;
+- единый KiraCore Contract при различии физических backend-реализаций ОС.
+
+Новые нормативные инженерные контракты:
+
+- docs/kira-sync-contract.md
+- docs/identity-and-user-memory-contract.md
+- docs/persistence-contract.md
+- docs/android-alpha-implementation-plan.md
+
+Следующий практический шаг — A0: создание Android-модуля и первого сквозного bridge smoke-test без усложнения UI.
