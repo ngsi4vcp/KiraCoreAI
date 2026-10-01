@@ -38,8 +38,8 @@
 
 ## CI
 
-- sync CI #546 выполнялся после merge-sync;
-- его результат необходимо подтвердить перед закрытием миграционного gate.
+- sync CI #560 — SUCCESS на Core/Android migration HEAD `879ca55b42e1972365731e5d5612770a63f8b61c`;
+- текущий следующий commit меняет только документационные metadata.
 
 ## Release
 

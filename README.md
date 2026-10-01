@@ -15,7 +15,11 @@
 
 ## Текущий test-release / сборка
 
-Публичного Android Release пока нет. После успешного CI текущий debug APK публикуется как artifact ветки `platform/android`.
+Публичного Android Release пока нет.
+
+**Текущий test-release:** debug APK из CI #560, HEAD `879ca55b42e1972365731e5d5612770a63f8b61c`.
+
+[Скачать текущий Android debug APK artifact](https://github.com/ngsi4vcp/KiraCoreAI/actions/artifacts/11163464055)
 
 [Открыть последние CI-сборки Android](https://github.com/ngsi4vcp/KiraCoreAI/actions/workflows/ci.yml?query=branch%3Aplatform%2Fandroid)
 
