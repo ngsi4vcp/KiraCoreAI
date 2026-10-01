@@ -2,18 +2,14 @@
 
 Общая нормативная карта проекта находится в ветке `main`.
 
-Перед платформенной работой использовать:
-1. `main/G22.txt`;
-2. `main/AGENTS.md`;
-3. `main/DOCUMENTATION.md`;
-4. `main/PROJECT-RULES.md`;
-5. `main/PROJECT-ARCHITECTURE.md`;
-6. `main/PROJECT-PLAN.md`;
-7. `main/PROJECT-BEHAVIOR.md`;
-8. `main/PROJECT-CHECKLIST.md`;
-9. `main/MAIN-STATUS.md`;
-10. `main/REPOSITORY-STRUCTURE.md`.
-
-Платформенные документы этой ветки добавляются после общей карты.
+Перед платформенной работой:
+1. открыть ветку `main`;
+2. прочитать `G22.txt`;
+3. прочитать `AGENTS.md`;
+4. пройти нормативную карту `DOCUMENTATION.md`;
+5. определить актуальный Core и его контрольную точку;
+6. вернуться в эту платформенную ветку;
+7. прочитать локальные `AGENTS.md`, `STATUS.md`, `ROADMAP.md`, `CHECKLIST.md`;
+8. читать только связанные технические документы.
 
 Этот файл — навигационный указатель, а не второй источник глобальных правил.
