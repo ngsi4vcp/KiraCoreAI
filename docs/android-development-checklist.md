@@ -91,3 +91,27 @@
 - [ ] Physical A2.1 persistence acceptance на актуальном APK.
 - [ ] A2.1 подтверждён на устройстве целиком.
 - [ ] A2.2 Atomic Turn.
+
+## A2.1 — acceptance closure 01.10.2026
+
+- [x] Core integration test с reopen нового persistence backend.
+- [x] Android Room backend подключён как canonical physical backend.
+- [x] Payload encryption через Android Keystore/AES-GCM.
+- [x] Debug probe проверяет write → shutdown/restart → read-back.
+- [x] Device evidence: `20261001-125458`, vivo V2366HA / API 36.
+- [x] Manifest явно идентифицирует `android-a2.1-device / A2_1_PERSISTENCE_OK`.
+- [x] Canonical JSON/JSONL guard.
+- [x] Payload encryption at rest.
+- [x] G22 и активный GENOME не изменены.
+- [x] A2.1 acceptance закрыта.
+
+## A2.2 — входной self-check
+
+- [x] A2.2 ветка создана от принятого A2.1 code head.
+- [x] Проверен текущий operation state machine.
+- [x] Установлено, что финальная последовательность ещё не атомарна физически.
+- [x] Определена граница: checkpoint до model-call + atomic finalization после validation/Pulse.
+- [ ] Atomic backend commit реализован.
+- [ ] Failure injection/atomicity tests реализованы.
+- [ ] Android/Kotlin transaction boundary проверен.
+- [ ] Документация и architecture snapshot синхронизированы с фактическим контрактом.
