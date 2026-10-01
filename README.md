@@ -1,39 +1,22 @@
-# KiraCoreAI
+# KiraCoreAI — Windows 11
 
-KiraCoreAI — переносимое ядро Кира:Ядро с единым семантическим Core и отдельными платформенными реализациями.
+Основная Windows 11 x64 ветка: `platform/windows-11`.
+
+## Последний публичный релиз
+
+**Версия:** `v0.1.0-alpha.1`  
+**Артефакт:** Windows x64 ZIP
+
+[Скачать KiraCoreAI-0.1.0-alpha.1-windows-x64.zip](https://github.com/ngsi4vcp/KiraCoreAI/releases/download/v0.1.0-alpha.1/KiraCoreAI-0.1.0-alpha.1-windows-x64.zip)
+
+Это исторический релиз до текущей реорганизации. Текущий development HEAD может быть новее и не является опубликованным релизом.
 
 ## Архитектура
 
-- `main` — общий Core и архитектурная база;
-- `platform/android` — Android;
-- `platform/windows-11` — Windows 11;
-- `platform/linux` — Linux;
-- `archive/history` — архив.
+`main` → общий Core  
+`platform/windows-11` → TerminalHost / packaging / Windows CI
 
-Начинать работу с `G22.txt`, затем читать `AGENTS.md` и `DOCUMENTATION.md`.
+## Документы
 
-## Core
+`AGENTS.md`, `STATUS.md`, `ROADMAP.md`, `CHECKLIST.md`.
 
-Общий Python Core, схемы, контракты и Core tests живут в `main`.
-Платформа получает принятую версию Core и тестирует связку Core+Platform отдельно.
-
-## Геном
-
-Активный runtime-источник: `GENOME/genome.txt`.
-`G22.txt` — конституционный/разработческий документ по правилам проекта.
-Текущая ревизия генома: 22.
-
-## Документация
-
-Главная карта: `DOCUMENTATION.md`.
-Цель и план: `PROJECT-PLAN.md`.
-Целевая архитектура: `PROJECT-ARCHITECTURE.md`.
-Целевое поведение: `PROJECT-BEHAVIOR.md`.
-Проверки: `PROJECT-CHECKLIST.md`.
-Текущее состояние Core: `MAIN-STATUS.md`.
-
-Не используйте архив как источник текущего состояния.
-
-## Статус
-
-В момент реорганизации Android A2.2 имеет реализованный, но ещё не принятый срез. Открыты Room/SQLite rollback proof и отдельная device acceptance.
