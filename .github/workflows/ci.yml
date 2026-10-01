@@ -1,4 +1,4 @@
-name: Проверка KiraCoreAI
+name: Проверка KiraCoreAI — Android
 
 env:
   PYTHONUTF8: "1"
@@ -6,17 +6,17 @@ env:
 
 on:
   push:
-    branches: ["main", "android/alpha-parity", "android/a2.1-hardening-wip", "android/a2.2-atomic-turn-wip"]
+    branches: ["platform/android"]
   pull_request:
     branches: ["main"]
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: android-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  android-a2:
-    name: Android A2.1 CI
+  android:
+    name: Core + Android
     runs-on: ubuntu-latest
     steps:
       - name: Получить репозиторий
@@ -47,41 +47,32 @@ jobs:
           gradle-version: "9.4.1"
 
       - name: Проверить UTF-8
-        shell: bash
-        run: |
-          python tests/utf8_smoke.py
+        run: python tests/utf8_smoke.py
 
-      - name: Проверить общий Core-контракт, используемый Android
-        shell: bash
+      - name: Установить Core
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e .
-          python -m unittest discover -s tests -v
 
-      - name: Запустить Android unit tests и собрать debug APK
-        shell: bash
-        run: |
-          gradle --no-daemon :android:app:testDebugUnitTest :android:app:assembleDebug
+      - name: Core tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Android unit tests и debug APK
+        run: gradle --no-daemon :android:app:testDebugUnitTest :android:app:assembleDebug
 
       - name: Проверить APK
-        shell: bash
-        run: |
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
+        run: test -f android/app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Проверить содержимое Chaquopy APK
-        shell: bash
-        run: |
-          python tests/android_apk_packaging_smoke.py android/app/build/outputs/apk/debug/app-debug.apk
+      - name: Chaquopy packaging smoke
+        run: python tests/android_apk_packaging_smoke.py android/app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Повторить security smoke по исходникам и build output
-        shell: bash
-        run: |
-          python tests/security_smoke.py
+      - name: Security smoke
+        run: python tests/security_smoke.py
 
-      - name: Публиковать диагностический APK A2.1
+      - name: Публиковать debug APK
         uses: actions/upload-artifact@v4
         with:
-          name: kira-android-a2.1-debug-${{ github.sha }}
+          name: kira-android-debug-${{ github.sha }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
