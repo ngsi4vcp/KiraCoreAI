@@ -1038,7 +1038,7 @@ A1 device acceptance закрыт. A2.0 foundation реализован и пр�
 
 ## Актуальная контрольная точка — 01.10.2026
 
-A2.1 Store Integration реализован и имеет зелёный CI checkpoint на run `#485`, попытка 2, commit `582a7d286bd83b0ac2895d1c50c0cf23b13a2167`.
+A2.1 Store Integration реализован и имеет зелёный CI checkpoint на run `#495`, commit `b52d2be10a0f31a6cb41f1c17d6b973821298502`.
 
 Физический device run `20261001-114931` на vivo V2366HA / API 36 подтвердил recovery после process death, но остановился на первой проверке A2.1: Kotlin diagnostics не возвращал `persistence_backend`.
 

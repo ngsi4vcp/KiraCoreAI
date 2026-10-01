@@ -210,6 +210,6 @@ A1 Core Parity принят на устройстве `20260930-144146` со с�
 
 ### Актуальный A2.1 checkpoint — 01.10.2026
 
-Зелёный Android-only CI: run `#485`, попытка 2, commit `582a7d286bd83b0ac2895d1c50c0cf23b13a2167`.
+Зелёный Android-only CI: run `#495`, commit `b52d2be10a0f31a6cb41f1c17d6b973821298502`.
 Физический run `20261001-114931` подтвердил recovery, но обнаружил дефект границы diagnostics: `persistence_backend` не возвращался Kotlin bridge.
 Исправление: `d79ab7d418d0ba41286d69ebd3ec903982affe42`. Новый APK и повторная device acceptance обязательны.

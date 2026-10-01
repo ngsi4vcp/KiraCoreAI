@@ -129,3 +129,13 @@ Run `20261001-114931` на vivo V2366HA / Android API 36 показал:
 Причина: Python diagnostics формировал `persistence_backend`, но Kotlin bridge не переносил это поле во внешний diagnostics object.
 
 Исправление внесено в `d79ab7d418d0ba41286d69ebd3ec903982affe42`. Оно требует нового green CI и нового APK; A2.1 device acceptance пока не закрыта. A2.2 остаётся закрытым.
+
+
+## Финальный кодовый checkpoint — 01.10.2026
+
+- code head: `b52d2be10a0f31a6cb41f1c17d6b973821298502`;
+- CI: run `#495`, полный Android-only PASS;
+- artifact: `kira-android-a2.1-debug-b52d2be10a0f31a6cb41f1c17d6b973821298502`;
+- artifact SHA-256: `eb5825dd5b5ee6f420c083212d2b9e9aef4b9b784ca9e601ba8e751100eb1974`;
+- APK SHA-256: `e9e26ab01086f2c05d7cd5f04ec77f8b3baf8ef85d34af4a3553f8cd92c83f11`;
+- physical A2.1 acceptance: не закрыта; требуется повторный прогон на vivo V2366HA / Android API 36.

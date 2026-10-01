@@ -8,7 +8,7 @@
 - device evidence run: `20260930-144146`
 - device: vivo V2366HA / Android API 36
 - A1 Core Parity: **ACCEPTED** для текущего среза
-- текущий этап: **A2.1 Store Integration** — реализация завершена; последний полностью зелёный Android-only CI — run `#485`, попытка 2, commit `582a7d286bd83b0ac2895d1c50c0cf23b13a2167`. Физический A2.1 прогон `20261001-114931` остановился на `backend identity`; исправление внесено в `d79ab7d418d0ba41286d69ebd3ec903982affe42`. Новая device-приёмка ещё не выполнена.
+- текущий этап: **A2.1 Store Integration** — реализация завершена; последний полностью зелёный Android-only CI — run `#495`, commit `b52d2be10a0f31a6cb41f1c17d6b973821298502`. Физический A2.1 прогон `20261001-114931` остановился на `backend identity`; исправление внесено в `d79ab7d418d0ba41286d69ebd3ec903982affe42`. Новая device-приёмка ещё не выполнена.
 - активный GENOME: revision 22
 - GENOME SHA-256: `dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e`
 
