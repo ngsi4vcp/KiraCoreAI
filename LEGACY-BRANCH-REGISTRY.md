@@ -1,15 +1,15 @@
 # Реестр веток и контрольных точек реорганизации
 
-Контрольная точка: 2026-10-01.
+Контрольная точка: 2026-10-01 — финальный аудит реорганизации.
 
 ## Новая постоянная структура
 
 | Ветка | Текущий HEAD | Роль |
 |---|---|---|
-| `main` | `87161ad9d38703aa943d831e7bb8628abaf18a78` | общий Core и архитектура |
-| `platform/android` | `39487c4a3ba38e827d3d596f06a056f6b1877af8` | Android |
-| `platform/windows-11` | `81485a0de7a4d288d17c29cc1b1f756c01407e6b` | Windows 11 |
-| `platform/linux` | `e115e77f4655e773f1af616c006ba41e3f351db5` | Linux |
+| `main` | `9729ebaeb9d609de4e14129d7e03a95b8f4392ed` | общий Core и архитектура |
+| `platform/android` | `c90835286e9f03581941b692d2241c9be9977556` | Android |
+| `platform/windows-11` | `aeaef8044c30013342fcbcd30ce080847a5279bb` | Windows 11 |
+| `platform/linux` | `17dce0ca4cac0fdb0d995f2f17f6743fb6f7fbf4` | Linux |
 | `archive/history` | `f4af8af34ed3ace944406c6b5b94f1d2559d49ee` | история |
 
 ## Старые ветки
