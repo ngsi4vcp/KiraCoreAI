@@ -1,0 +1,15 @@
+{"timestamp":"2026-10-01T13:34:19.529+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"A2.1: backend identity"}}
+{"timestamp":"2026-10-01T13:34:19.932+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"A2.1: запись session\/conversation"}}
+{"timestamp":"2026-10-01T13:34:19.968+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"A2.1: перед restart"}}
+{"timestamp":"2026-10-01T13:34:19.972+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"A2.1: закрытие runtime и новый backend"}}
+{"timestamp":"2026-10-01T13:34:19.972+03:00","event_id":"runtime.reinitialize_requested","status":"PASS","safe_details":{"reason":"STOPPED"}}
+{"timestamp":"2026-10-01T13:34:20.771+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"A2.1: read-back session\/state\/operation"}}
+{"timestamp":"2026-10-01T13:34:20.807+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"A2.1: read-back conversation"}}
+{"timestamp":"2026-10-01T13:34:20.810+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"A2.1: backend identity после restart"}}
+{"timestamp":"2026-10-01T13:34:20.812+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"A2.1: canonical JSON guard"}}
+{"timestamp":"2026-10-01T13:34:20.854+03:00","event_id":"check.completed","status":"PASS","safe_details":{"check":"A2.1: payload encryption at rest"}}
+{"timestamp":"2026-10-01T13:34:20.854+03:00","event_id":"a2.1.device.persistence.completed","status":"PASS","safe_details":{"session_id":"50de101ad0bb4e94bd0bc6b02e50fe80","backend":"android-room"}}
+{"timestamp":"2026-10-01T13:34:22.046+03:00","event_id":"lifecycle.stop","status":"OBSERVED","safe_details":{"activity":"DeviceEvidenceActivity"}}
+{"timestamp":"2026-10-01T13:34:22.807+03:00","event_id":"lifecycle.start","status":"OBSERVED","safe_details":{"activity":"DeviceEvidenceActivity"}}
+{"timestamp":"2026-10-01T13:34:26.520+03:00","event_id":"lifecycle.stop","status":"OBSERVED","safe_details":{"activity":"DeviceEvidenceActivity"}}
+{"timestamp":"2026-10-01T13:34:31.495+03:00","event_id":"lifecycle.start","status":"OBSERVED","safe_details":{"activity":"DeviceEvidenceActivity"}}

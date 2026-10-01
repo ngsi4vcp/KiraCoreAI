@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "evidence_type": "android-a2.1-device",
+  "status": "A2_1_PERSISTENCE_OK",
+  "run_id": "20261001-133419",
+  "application_id": "ru.kiracore.ai",
+  "app_version": "0.1.0-alpha.1",
+  "genome_revision": 22,
+  "genome_sha256": "dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e",
+  "android_api": 36,
+  "manufacturer": "vivo",
+  "model": "V2366HA"
+}
