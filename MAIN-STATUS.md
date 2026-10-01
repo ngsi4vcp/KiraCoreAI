@@ -14,10 +14,10 @@
 `archive/history` → история
 
 Текущие HEAD:
-- `main`: `7012a67708722a576fb9b9576510d1ad174e4cd5`
-- `platform/android`: `39487c4a3ba38e827d3d596f06a056f6b1877af8`
-- `platform/windows-11`: `81485a0de7a4d288d17c29cc1b1f756c01407e6b`
-- `platform/linux`: `e115e77f4655e773f1af616c006ba41e3f351db5`
+- `main`: `a109d937e5cb203bd13a4433b7db5d287870f899`
+- `platform/android`: `c90835286e9f03581941b692d2241c9be9977556`
+- `platform/windows-11`: `aeaef8044c30013342fcbcd30ce080847a5279bb`
+- `platform/linux`: `17dce0ca4cac0fdb0d995f2f17f6743fb6f7fbf4`
 
 Платформенные ветки имеют `main` как второго родителя последнего merge-sync-коммита. Их Core-срез синхронизирован с `main` на контрольной точке `20372923bb06a3a0f7e6e31419f81233ebd3dde1`; последующие изменения `main` пока относятся к переходной документации и не изменяют Core.
 
@@ -26,7 +26,7 @@
 ## Core
 
 Канонический общий Core находится в `main`.
-Проверочное доказательство Core: CI #567 — SUCCESS. Последующие изменения main после этого run являются только документационными.
+Проверочное доказательство Core: CI #568 — SUCCESS на эквивалентном Core-срезе; последующие изменения main относятся к документации и контрольной фиксации.
 
 Платформенные ветки содержат материализованный срез Core для сборки и тестирования. Перед платформенной разработкой Core-срез должен быть синхронизирован с `main`; это проверяется сравнением Core-файлов и платформенным CI.
 
@@ -44,16 +44,20 @@ G22/GENOME:
 
 ## CI
 
-- `main`: CI #545 — SUCCESS;
-- `platform/android`: CI #533 — SUCCESS;
-- `platform/windows-11`: CI #543 — SUCCESS;
-- `platform/linux`: CI #544 — SUCCESS.
+- `main`: CI #568 — SUCCESS на Core-срезе;
+- `platform/android`: CI #560 — SUCCESS на кодовом migration HEAD; последующие изменения Android — документационные;
+- `platform/windows-11`: CI #565 — SUCCESS;
+- `platform/linux`: CI #566 — SUCCESS.
 
 Эти результаты относятся к указанным HEAD до/на контрольной точке и не заменяют следующий CI после новых изменений.
 
 ## Контрольные точки
 
 Внутренние вехи фиксируются в `MILESTONES.md` по commit SHA. Публичные релизы продолжают использовать GitHub Releases.
+
+## Контрольная модель
+
+Внутренние вехи фиксируются в `MILESTONES.md` по commit SHA. Старые branch refs удалены после аудита; их исторические материалы сохранены в `archive/history`.
 
 ## Ограничения
 
