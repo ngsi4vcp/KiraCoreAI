@@ -1036,7 +1036,7 @@ UI/host не являются источником privileged authority.
 A1 device acceptance закрыт. A2.0 foundation реализован и проверен. A2.1 Store Integration реализован на ветке `android/alpha-parity`; CI `#450` green. Физическая device-проверка нового persistence runtime остаётся частью A2.5. Следующий подпредел — A2.2 Atomic Turn.
 
 
-## Актуальная контрольная точка — 01.10.2026
+## Заменённый checkpoint 01.10.2026 — до повторной A2.1 device acceptance
 
 A2.1 Store Integration реализован и имеет зелёный CI checkpoint на run `#495`, commit `b52d2be10a0f31a6cb41f1c17d6b973821298502`.
 
