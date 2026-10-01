@@ -237,6 +237,9 @@ class ConversationStore:
             result.append(self._message_from_dict(json.loads(line)))
         return result
 
+    def record_persisted_manifest(self, manifest: ConversationManifest) -> None:
+        self._manifests[manifest.session_id] = manifest
+
     def delete(self, session_id: str) -> None:
         self.get_manifest(session_id)
         if self.backend is not None:
