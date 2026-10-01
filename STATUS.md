@@ -5,7 +5,8 @@
 ## Текущая база
 
 - ветка: `platform/android`;
-- исходный code slice: `android/a2.2-atomic-turn-wip`;
+- текущий HEAD: `749cb3fccc415e60e62f25b3360b8bb6d08de570`;
+- Core-срез синхронизирован с `main` на merge-контрольной точке `20372923bb06a3a0f7e6e31419f81233ebd3dde1`;
 - принят A2.1;
 - A2.2 implementation slice реализован;
 - A2.2 acceptance открыта.
@@ -35,14 +36,19 @@
 - физическая rollback-проверка Room/SQLite;
 - отдельная A2.2 device acceptance.
 
+## CI
+
+- sync CI #546 выполнялся после merge-sync;
+- его результат необходимо подтвердить перед закрытием миграционного gate.
+
+## Release
+
+- `0.1.0-alpha.1` — исторический desktop pre-release;
+- Android public release отсутствует;
+- текущий Android test-release публикуется как CI artifact.
+
 ## Invariants
 
 G22/GENOME не меняются.
 State/Memory/History/Conversation остаются раздельными.
 Kotlin не становится отдельным domain layer.
-
-## Release
-
-- `0.1.0-alpha.1` — исторический desktop release;
-- Android public release отсутствует;
-- актуальный Android test-release — CI artifact текущей ветки.
