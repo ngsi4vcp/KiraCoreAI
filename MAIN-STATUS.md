@@ -14,14 +14,14 @@
 `archive/history` → история
 
 Текущие HEAD:
-- `main`: `0eb841ff4d2e1b3f4a734803950ffd346f6dea10`
-- `platform/android`: `749cb3fccc415e60e62f25b3360b8bb6d08de570`
-- `platform/windows-11`: `417fc854626c53fb06bbb760cd7cc98f7eab08c6`
-- `platform/linux`: `0342265fcfad8ed9978e5d5efa3c4670c04aebaf`
+- `main`: `7012a67708722a576fb9b9576510d1ad174e4cd5`
+- `platform/android`: `39487c4a3ba38e827d3d596f06a056f6b1877af8`
+- `platform/windows-11`: `81485a0de7a4d288d17c29cc1b1f756c01407e6b`
+- `platform/linux`: `e115e77f4655e773f1af616c006ba41e3f351db5`
 
 Платформенные ветки имеют `main` как второго родителя последнего merge-sync-коммита. Их Core-срез синхронизирован с `main` на контрольной точке `20372923bb06a3a0f7e6e31419f81233ebd3dde1`; последующие изменения `main` пока относятся к переходной документации и не изменяют Core.
 
-Старые ветки пока сохраняются до финального audit.
+Старые branch refs после финального audit удалены; их содержимое и причинность сохранены в `archive/history` и Git history.
 
 ## Core
 
@@ -50,6 +50,10 @@ G22/GENOME:
 - `platform/linux`: CI #544 — SUCCESS.
 
 Эти результаты относятся к указанным HEAD до/на контрольной точке и не заменяют следующий CI после новых изменений.
+
+## Контрольные точки
+
+Внутренние вехи фиксируются в `MILESTONES.md` по commit SHA. Публичные релизы продолжают использовать GitHub Releases.
 
 ## Ограничения
 
