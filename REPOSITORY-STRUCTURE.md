@@ -50,7 +50,9 @@ archive/history
 Канонические документы:
 `AGENTS.md`, `DOCUMENTATION.md`, `PROJECT-RULES.md`, `PROJECT-PLAN.md`, `PROJECT-ARCHITECTURE.md`, `PROJECT-BEHAVIOR.md`, `PROJECT-CHECKLIST.md`, `MAIN-STATUS.md`, `REPOSITORY-STRUCTURE.md`.
 
-`паспорт.мд` — временный переходный паспорт текущей реорганизации, не постоянный источник проектной истины.
+`MILESTONES.md` — канонический реестр контрольных точек по commit SHA.
+
+`паспорт.мд` — временный переходный паспорт; после закрытия миграции хранится только в `archive/history`.
 
 ## Правило каталогов
 
@@ -62,4 +64,4 @@ archive/history
 ## История
 
 Исторические commit-цепочки не переписываются.
-Удаление branch ref не удаляет уже сохранённую причинность в `archive/history`, tags и Git history.
+Удаление branch ref не удаляет уже сохранённую причинность в `archive/history`, `MILESTONES.md` и Git history.
