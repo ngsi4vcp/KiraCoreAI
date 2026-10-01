@@ -50,6 +50,9 @@ class StateStore:
         elif self.persistence:
             self.persistence.save(state)
 
+    def record_persisted(self, state: SessionState) -> None:
+        self._items[state.session_id] = deepcopy(state)
+
     def get(self, session_id: str) -> SessionState:
         try:
             return deepcopy(self._items[session_id])
@@ -259,6 +262,9 @@ class HistoryStore:
                     )
                     + "\n"
                 )
+
+    def record_persisted(self, entry: HistoryEntry) -> None:
+        self._items.append(deepcopy(entry))
 
     def recent(self, limit: int = 10) -> list[HistoryEntry]:
         if limit < 0:
