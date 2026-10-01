@@ -660,7 +660,7 @@ A2.1 больше не является открытым acceptance gate. Сле
 Внешний model-call не включается в длительную SQL-транзакцию. До вызова модели сохраняется операционный checkpoint; финальная согласованная запись assistant/history/state/operation/core-state должна фиксироваться одним физическим transactional commit на canonical backend.
 
 A2.2 не считается закрытым до code self-check, тестов и отдельного acceptance gate.
-## A2.2 implementation / quality checkpoint — 01.10.2026
+## Контрольная точка реализации и качества A2.2 — 01.10.2026
 
 A2.2 Atomic Turn реализован на ветке `android/a2.2-atomic-turn-wip` от принятого A2.1 code head `21fe369ba2281fb56b88fde7996c5801eb5af2f9`.
 
@@ -672,13 +672,13 @@ A2.2 Atomic Turn реализован на ветке `android/a2.2-atomic-turn-
 - контрактные tests успешной atomic finalization и failure boundary;
 - сохранённую семантику `UNKNOWN` без silent retry и без перехода в `COMPLETED`.
 
-Quality result: сборка и тестовый прогон A2.2 выполнены в CI #506. Физическая Room rollback-проверка и отдельный A2.2 device acceptance ещё не выполнялись и не считаются закрытыми.
+Результат качества: сборка и тестовый прогон A2.2 выполнены в CI #506. Физическая Room rollback-проверка и отдельный A2.2 device acceptance ещё не выполнялись и не считаются закрытыми.
 
-### Последний фактический device run
+### Последний фактический прогон на устройстве
 
 На `android/alpha-parity` commit `7aff9d700e3c67fea7f8e6f2258546d45f94e658` загружен `test-exchange` с результатами запуска `20261001-133419` на vivo V2366HA / Android API 36. Manifest имеет статус `A2_1_PERSISTENCE_OK`; events подтверждают backend identity, write/read-back, restart, canonical JSON guard, payload encryption at rest и lifecycle stop/start.
 
-Этот evidence относится к существующему A2.1 persistence harness, а не к отдельному A2.2 rollback/atomicity acceptance. Сам commit с evidence не используется как доказательство закрытия A2.2.
+Эти диагностические материалы относятся к существующему A2.1 persistence harness, а не к отдельной A2.2 приёмке атомарности и отката. Сам коммит с диагностическими материалами не используется как доказательство закрытия A2.2.
 
 ### Аудит A2.2
 
