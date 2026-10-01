@@ -6,10 +6,10 @@
 
 | Ветка | Текущий HEAD | Роль |
 |---|---|---|
-| `main` | `9a81230778b76479416d915cb02d76d3ae6da875` | общий Core и архитектура |
-| `platform/android` | `328b0eb823e67263156ec6cfd46ac7666f548b8b` | Android |
-| `platform/windows-11` | `d2210d69f6fce8c44f2b256340e41803c9ee00a4` | Windows 11 |
-| `platform/linux` | `503e0cf2fd31099c4152b8ca20297a67c22bab0c` | Linux |
+| `main` | `43cdaf3a6af216f2802602d88a142577473aa3b4` | общий Core и архитектура |
+| `platform/android` | `879ca55b42e1972365731e5d5612770a63f8b61c` | Android |
+| `platform/windows-11` | `81485a0de7a4d288d17c29cc1b1f756c01407e6b` | Windows 11 |
+| `platform/linux` | `e115e77f4655e773f1af616c006ba41e3f351db5` | Linux |
 | `archive/history` | `f4af8af34ed3ace944406c6b5b94f1d2559d49ee` | история |
 
 ## Старые ветки
@@ -42,7 +42,8 @@
 - Android CI #533 проходил успешно до merge-sync; новый sync run #546 ожидает/проходит проверку;
 - Windows CI #543 проходил успешно до merge-sync; новый sync run #547 ожидает/проходит проверку;
 - Linux sync CI #548 прошёл успешно;
-- текущие platform STATUS/README обновлены под новую структуру.
+- текущие platform STATUS/README обновлены под новую структуру;
+- старые main-файлы, отсутствовавшие в архивном дереве, сохранены в `legacy-main/`.
 
 ## Теги
 
