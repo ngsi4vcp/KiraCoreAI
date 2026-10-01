@@ -107,7 +107,7 @@ Authority material:
 Это намеренное промежуточное состояние: Room не является зеркалом канонического JSON и не участвует одновременно с ним в одном runtime turn.
 ## Android A2.1 — фактический integration checkpoint
 
-На ветке `android/alpha-parity` Room backend подключён к доменным persistence surfaces:
+На Android-ветке Room backend подключён к доменным persistence surfaces:
 
 - единый `PersistenceBackend` contract между Python Core и физическим Android backend;
 - `StateStore`, `MemoryStore`, `HistoryStore`, `ConversationStore` и `CoreStatePersistence` используют один выбранный canonical backend;
@@ -116,7 +116,7 @@ Authority material:
 - при включённом Room backend canonical JSON store directories не создаются и не используются;
 - restart read-back, memory approval, operation state и разделение conversation/memory покрыты A2.1 integration tests.
 
-CI run `#450` полностью подтвердил кодовый срез A2.1 на commit `219c641a6b74526e0774346b35b3dbe912e96246`. После него менялась только документация; отдельного green run для docs-only HEAD не было. Atomic turn, migration/compatibility и recovery/duplicate prevention остаются A2.2–A2.4; физическая device-проверка нового persistence runtime остаётся незакрытой.
+A2.1 физически принят run `20261001-125458`. Следующая актуальная граница — A2.2 Atomic Turn.
 
 ## Android A2.1 — acceptance closure — 01.10.2026
 
