@@ -1207,3 +1207,51 @@ STATUS.md
 - Linux #548 — SUCCESS после merge-sync.
 
 Это записи контрольной точки, а не обещание будущего результата. После новых изменений значения должны обновляться по фактическим run.
+
+---
+
+# 34. Контрольная сверка после восстановления процесса — 2026-10-01
+
+## Фактически подтверждено
+
+1. main является Core-only веткой: Android и desktop host отсутствуют.
+2. platform/android содержит Android host и не содержит desktop host.
+3. platform/windows-11 и platform/linux содержат desktop host и не содержат Android.
+4. Все три платформенные ветки имеют Git merge ancestry от main на контрольной Core-точке 20372923bb06a3a0f7e6e31419f81233ebd3dde1.
+5. Все 39 файлов Core-контрольного набора (G22, GENOME, schemas, src/kiracore, capsule и pyproject.toml) совпадают с main во всех трёх платформах.
+6. Android-специфический tests/security_smoke.py намеренно отличается от Core-версии, поскольку дополнительно сканирует Android tree/APK; это не расхождение Core.
+7. Старые Android/desktop/Core branch-срезы полностью достижимы из archive/history; для старого main отсутствовавшие в archive корневые документы сохранены в archive/history/legacy-main/.
+8. archive/history имеет отдельный запретительный AGENTS.md и не используется как рабочая ветка.
+9. G22.txt и GENOME/genome.txt имеют неизменённый SHA 05e2d7bd86047c34103c079fc0a3d9845d471de9.
+10. README_FIRST.txt и desktop-specific описание удалены из Core-only main.
+11. pyproject.toml main теперь описывает общий Core, а не терминальный desktop host.
+12. DOCUMENTATION.md маршрутизирует временный паспорт как переходный документ, не как постоянный источник истины.
+13. Windows/Linux README содержат фактический публичный pre-release v0.1.0-alpha.1, дату публикации и target commit.
+14. Android README описывает отсутствие public release и наличие CI test-release.
+15. Core CI main проходил успешно; Linux platform CI прошёл успешно; Windows и Android после последних изменений ещё выполняют длительные проверки.
+
+## Текущие HEAD
+
+- main: 43cdaf3a6af216f2802602d88a142577473aa3b4;
+- platform/android: 879ca55b42e1972365731e5d5612770a63f8b61c;
+- platform/windows-11: 81485a0de7a4d288d17c29cc1b1f756c01407e6b;
+- platform/linux: e115e77f4655e773f1af616c006ba41e3f351db5;
+- archive/history: 2e7635823ae18b2763b389a6ee718e60e92668ca.
+
+## Открытые операции
+
+- Android CI run #560 на момент записи остаётся in_progress; Core tests уже прошли, активный шаг — Android unit tests/debug APK.
+- Windows CI run #565 на момент записи остаётся in_progress; активный шаг — Core + host tests.
+- Linux CI run #562 — SUCCESS.
+- Контрольные tags новых миграционных вех не созданы из-за отсутствия соответствующей операции в доступном GitHub-коннекторе.
+- Старые branch refs не удалены из-за отсутствия операции удаления branch refs в доступном GitHub-коннекторе.
+- Финальная A2.2 acceptance не выполнена: физический Room/SQLite rollback proof и отдельная A2.2 device acceptance остаются открытыми независимо от CI реорганизации.
+
+## Следующая точка
+
+После завершения Android/Windows CI:
+1. повторно проверить HEAD/CI;
+2. синхронизировать только фактические status fields;
+3. провести последний tree/core/archive audit;
+4. если всё чисто — считать архитектурную миграцию содержательно завершённой, оставив удаление старых refs и создание tags как отдельные технические операции, когда появится соответствующий инструмент;
+5. после этого перенести паспорт в archive/history и удалить его из нормативного main, если пользователь подтвердит закрытие переходного цикла.
