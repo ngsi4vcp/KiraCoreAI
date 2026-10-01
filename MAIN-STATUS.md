@@ -14,7 +14,7 @@
 `archive/history` → история
 
 Текущие HEAD:
-- `main`: `a109d937e5cb203bd13a4433b7db5d287870f899`
+- `main`: `9b8e41e9d6e27b633443db76a1197124a77f92b6`
 - `platform/android`: `c90835286e9f03581941b692d2241c9be9977556`
 - `platform/windows-11`: `aeaef8044c30013342fcbcd30ce080847a5279bb`
 - `platform/linux`: `17dce0ca4cac0fdb0d995f2f17f6743fb6f7fbf4`
