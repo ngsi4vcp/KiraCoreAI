@@ -1,23 +1,23 @@
 # CHECKLIST — platform/windows-11
 
-## Migration
+## Миграция
 
 - [x] ветка создана от нового main;
 - [x] desktop host присутствует;
-- [x] release tooling присутствует;
+- [x] инструменты выпуска присутствует;
 - [x] документационный каркас создан;
 - [x] Windows CI на новом HEAD;
 
-- [ ] Windows 11 external smoke;
+- [ ] внешняя smoke-проверка Windows 11;
 - [ ] следующий release artifact.
 
 ## Каждый релиз
 
 - [ ] Core reference проверен;
-- [ ] unit tests;
-- [ ] host tests;
+- [ ] модульные тесты;
+- [ ] тесты host;
 - [ ] `START --version`;
-- [ ] PyInstaller build;
-- [ ] package checksum;
-- [ ] release artifact link;
+- [ ] сборка PyInstaller;
+- [ ] контрольная сумма пакета;
+- [ ] ссылка на артефакт выпуска;
 - [ ] README/STATUS sync.
