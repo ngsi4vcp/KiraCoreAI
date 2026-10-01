@@ -5,7 +5,8 @@
 ## Текущая база
 
 - ветка: `platform/android`;
-- текущий HEAD: `749cb3fccc415e60e62f25b3360b8bb6d08de570`;
+- текущий кодовый migration HEAD: `879ca55b42e1972365731e5d5612770a63f8b61c`;
+- текущий документационный HEAD: `39487c4a3ba38e827d3d596f06a056f6b1877af8`;
 - Core-срез синхронизирован с `main` на merge-контрольной точке `20372923bb06a3a0f7e6e31419f81233ebd3dde1`;
 - принят A2.1;
 - A2.2 implementation slice реализован;
@@ -38,8 +39,8 @@
 
 ## CI
 
-- sync CI #560 — SUCCESS на Core/Android migration HEAD `879ca55b42e1972365731e5d5612770a63f8b61c`;
-- текущий следующий commit меняет только документационные metadata.
+- sync CI #560 — SUCCESS на кодовом migration HEAD `879ca55b42e1972365731e5d5612770a63f8b61c`;
+- после него выполнен только документационный commit `39487c4a3ba38e827d3d596f06a056f6b1877af8`.
 
 ## Release
 
