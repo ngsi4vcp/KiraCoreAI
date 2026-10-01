@@ -132,3 +132,14 @@ A2.1 физически принят: Room является единственн
 Внешний вызов модели не удерживается внутри SQL-транзакции. При ошибке/UNKNOWN финальный commit не выполняется; operation остаётся `FAILED`/нуждается в reconcile с соответствующим состоянием и без silent retry.
 
 Ключевой инвариант: невозможно получить физически зафиксированный assistant result при operation `UNKNOWN` или частично сохранённом final state.
+## Android A2.2 — фактическая реализация
+
+На ветке `android/a2.2-atomic-turn-wip` реализована физическая граница A2.2:
+
+- `PersistenceBackend.commit_atomic_turn` добавлен в общий adapter contract;
+- `KiraRuntime` формирует единый final payload только после успешной валидации и создания ПУЛЬСА;
+- `AndroidRoomPersistenceGateway.commitAtomicTurn()` преобразует payload в Room entities;
+- все шесть final-records записываются внутри одного `runInTransaction`.
+
+Контрактные failure-injection тесты подтверждают, что при отказе atomic commit тестовый backend не получает final assistant/history/COMPLETED records. Это пока не заменяет отдельную физическую проверку rollback именно Room/SQLite.
+
