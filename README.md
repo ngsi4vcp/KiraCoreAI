@@ -31,6 +31,7 @@ KiraCoreAI — переносимое Кира:Ядро с единым сема
 Целевое поведение: `PROJECT-BEHAVIOR.md`.
 Проверки: `PROJECT-CHECKLIST.md`.
 Текущее состояние Core: `MAIN-STATUS.md`.
+Контрольные точки: `MILESTONES.md`.
 
 Исторический `паспорт.мд` хранится в `archive/history/passport-reorg-2026-10-01.md` и не является нормативным источником.
 
