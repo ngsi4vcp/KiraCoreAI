@@ -629,3 +629,34 @@ CI больше не запускает Windows/Linux desktop matrix и package-
 Run `20261001-114931` на vivo V2366HA / API 36 подтвердил process-death recovery (`RECOVERY_OK`), но A2.1 persistence smoke остановился на `backend identity`: Kotlin bridge не возвращал `persistence_backend`.
 
 Исправление Android bridge: `d79ab7d418d0ba41286d69ebd3ec903982affe42`. Следующий gate: green CI → новый APK → повторная физическая A2.1 acceptance. A2.2 не открыт.
+
+## A2.1 acceptance closure — 01.10.2026
+
+A2.1 Store Integration физически принят и закрыт.
+
+- принятый device evidence commit: `a03bc0e95a0e95bddce0506f991cbe08740ba889` в `android/alpha-parity`;
+- evidence run: `20261001-125458`;
+- устройство: vivo V2366HA / Android API 36;
+- manifest: `evidence_type=android-a2.1-device`, `status=A2_1_PERSISTENCE_OK`;
+- backend identity: `android-room` до и после restart;
+- write → shutdown → новый gateway/runtime → read-back: PASS;
+- session/state/operation/conversation read-back: PASS;
+- canonical JSON/JSONL guard: PASS;
+- payload encryption at rest: PASS;
+- conversation deletion не затрагивает approved memory: подтверждено Core integration test;
+- CI #501 на code head `21fe369ba2281fb56b88fde7996c5801eb5af2f9`: SUCCESS;
+- G22.txt и `GENOME/genome.txt`: без изменений, blob SHA `05e2d7bd86047c34103c079fc0a3d9845d471de9`.
+
+A2.1 больше не является открытым acceptance gate. Следующая инженерная граница — A2.2 Atomic Turn.
+
+## A2.2 engineering baseline — 01.10.2026
+
+Для A2.2 создана отдельная ветка `android/a2.2-atomic-turn-wip` от принятого A2.1 code head `21fe369ba2281fb56b88fde7996c5801eb5af2f9`.
+
+Планируемая граница хода:
+
+`user message → durable checkpoint → model result → validation → Pulse → assistant message → state update → operation COMPLETED`.
+
+Внешний model-call не включается в длительную SQL-транзакцию. До вызова модели сохраняется операционный checkpoint; финальная согласованная запись assistant/history/state/operation/core-state должна фиксироваться одним физическим transactional commit на canonical backend.
+
+A2.2 не считается закрытым до code self-check, тестов и отдельного acceptance gate.
