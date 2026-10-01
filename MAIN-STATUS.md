@@ -204,7 +204,7 @@ A1.0–A1.6 реализованы и покрыты CI-контрактами:
 ### Что пока не считается закрытым
 
 - A2.0 Persistence Foundation реализован в Android-ветке;
-- A2.1 Store Integration получил green Android-only CI: run `#484`, commit `a97a6c38d2944b1891d357859f7221127f618b40`; physical device acceptance ещё не выполнена;
+- A2.1 Store Integration получил green Android-only CI: run `#485` (attempt 2), текущий WIP head `582a7d286bd83b0ac2895d1c50c0cf23b13a2167`; physical device acceptance ещё не выполнена;
 - A2.2 и следующие persistence/runtime этапы остаются закрыты до фактической A2.1 device acceptance;
 - identity/authority hardening — A3;
 - Кира:Сбор — A4;
@@ -278,10 +278,10 @@ A0 → A0.D1 → A1 Core Parity → A2 Persistence → A3 Identity/Authority →
 
 A2.1 Store Integration на изолированной ветке `android/a2.1-hardening-wip` достиг кодового acceptance gate:
 
-- head после документального sync: `582a7d286bd83b0ac2895d1c50c0cf23b13a2167`;
-- предшествующий code head с полностью зелёным CI: `a97a6c38d2944b1891d357859f7221127f618b40`;
-- CI #484: PASS по Core, Android unit tests, debug APK, APK checks, Chaquopy packaging и security smoke;
-- artifact SHA-256: `9d1541fd0d9ee57693c28487f958798d5c016f8dc1f06fb6154d1a8609487167`;
+- актуальный WIP head: `582a7d286bd83b0ac2895d1c50c0cf23b13a2167`;
+- CI #485, attempt 2: PASS по Core, Android unit tests, debug APK, APK checks, Chaquopy packaging и security smoke;
+- attempt 1 того же run завершился после HTTP 500 при скачивании `kotlin-compiler-embeddable:2.3.10`; повтор только failed job завершился PASS;
+- актуальный artifact SHA-256: `b7ece62e41e06c6a92883458dfcbc44c96c429a7ff54987a5332db064740b080`;
 - Windows/Linux desktop matrix и package-smoke в текущем режиме отключены;
 - физическая A2.1 device acceptance остаётся обязательной и является следующим gate;
 - A2.2 не открывается до завершения этого device gate.
