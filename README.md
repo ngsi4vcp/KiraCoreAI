@@ -4,12 +4,12 @@
 
 ## Текущий срез
 
-**Версия приложения:** `0.1.0-alpha.1`  
+**Базовая версия разработки:** `0.1.0-alpha.1`  
 **Статус:** A2.2 Atomic Turn — реализовано, приёмка открыта.  
 **База:** принятие A2.1.  
 **Активный GENOME:** revision 22.
 
-Открытые gate:
+Открытые контрольные условия:
 - физическое доказательство rollback именно на Room/SQLite;
 - отдельная A2.2 device acceptance.
 
@@ -17,7 +17,7 @@
 
 Публичного Android Release пока нет.
 
-**Текущий test-release:** debug APK из CI #560, HEAD `879ca55b42e1972365731e5d5612770a63f8b61c`.
+**Текущий тестовый выпуск:** debug APK из CI #560, HEAD `879ca55b42e1972365731e5d5612770a63f8b61c`.
 
 [Скачать текущий Android debug APK artifact](https://github.com/ngsi4vcp/KiraCoreAI/actions/artifacts/11163464055)
 
