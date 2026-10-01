@@ -191,19 +191,21 @@ A1.0–A1.6 реализованы и покрыты CI-контрактами:
 - explicit `UNKNOWN` boundary;
 - отсутствие automatic retry при неопределённом model-call.
 
-Последний green CI для текущего Android-среза:
+Исторический green CI A1 остаётся зафиксирован отдельно. Текущий green CI A2.1 WIP:
 
-- run `#379`;
-- commit `186ec1671fd424ea3ebbabcad83d230085bc885c`;
+- run `#484`;
+- commit `a97a6c38d2944b1891d357859f7221127f618b40`;
+- общий Core-контракт на Python 3.13: PASS;
 - Android unit tests + debug APK: PASS;
 - Chaquopy APK content check: PASS;
 - security smoke: PASS;
-- Python Windows/Linux matrix: PASS;
-- package smoke Windows/Linux: PASS.
+- Android debug artifact опубликован.
 
 ### Что пока не считается закрытым
 
-- A2.0 Persistence Foundation реализован в Android-ветке; его acceptance ожидает green CI и самоаудит. A2.1–A2.5 — далее по маршруту;
+- A2.0 Persistence Foundation реализован в Android-ветке;
+- A2.1 Store Integration получил green Android-only CI: run `#484`, commit `a97a6c38d2944b1891d357859f7221127f618b40`; physical device acceptance ещё не выполнена;
+- A2.2 и следующие persistence/runtime этапы остаются закрыты до фактической A2.1 device acceptance;
 - identity/authority hardening — A3;
 - Кира:Сбор — A4;
 - production recovery/reconcile после UNKNOWN — A5;
@@ -271,3 +273,17 @@ A0 → A0.D1 → A1 Core Parity → A2 Persistence → A3 Identity/Authority →
 - документация отражает факты, а исторические точки явно помечены;
 - известные ограничения записаны;
 - пользователь понимает, какой именно этап закрыт, а какой ещё требует фактического acceptance.
+
+## 7. Актуальная контрольная точка Android — 01.10.2026
+
+A2.1 Store Integration на изолированной ветке `android/a2.1-hardening-wip` достиг кодового acceptance gate:
+
+- head после документального sync: `582a7d286bd83b0ac2895d1c50c0cf23b13a2167`;
+- предшествующий code head с полностью зелёным CI: `a97a6c38d2944b1891d357859f7221127f618b40`;
+- CI #484: PASS по Core, Android unit tests, debug APK, APK checks, Chaquopy packaging и security smoke;
+- artifact SHA-256: `9d1541fd0d9ee57693c28487f958798d5c016f8dc1f06fb6154d1a8609487167`;
+- Windows/Linux desktop matrix и package-smoke в текущем режиме отключены;
+- физическая A2.1 device acceptance остаётся обязательной и является следующим gate;
+- A2.2 не открывается до завершения этого device gate.
+
+Документальный режим проекта: до прямого указания Алека активна только Android-разработка; общий Python Core остаётся единым контрактным слоем и изменяется только в интересах Android-паритета/проверки.
