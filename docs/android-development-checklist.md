@@ -104,7 +104,7 @@ A2.1 закрыт. Актуальный gate заменён на acceptance clos
 - [x] Проверен текущий operation state machine.
 - [x] Зафиксирована граница: checkpoint до model-call + atomic finalization после validation/Pulse.
 - [x] `PersistenceBackend.commit_atomic_turn` реализован.
-- [x] Contract/failure-injection tests реализованы.
+- [x] Контрактные тесты и тесты отказа реализованы.
 - [x] Android/Kotlin transaction boundary проверен по исходному коду: один `RoomDatabase.runInTransaction` на финальный набор записей.
 - [x] Документация и architecture snapshot синхронизированы.
 - [ ] Физический rollback именно Room/SQLite доказан тестом.
