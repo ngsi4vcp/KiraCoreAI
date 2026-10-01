@@ -114,3 +114,18 @@ Artifact: `kira-android-a2.1-debug-a97a6c38d2944b1891d357859f7221127f618b40`, SH
 Исправление теста намеренно использует только публичный `PersistenceBackend`/adapter-контракт и не расширяет production semantics ради тестовой фикстуры.
 
 Следующая обязательная граница A2.1 — физическая device acceptance на актуальном APK: Room backend identity, write → shutdown/restart → read-back, разделение Conversation/Memory и отсутствие canonical JSON/JSONL/plaintext persistence. A2.2 до этой проверки не открывается.
+
+
+## Фактическая проверка устройства — 01.10.2026
+
+Пользовательский прогон debug APK зафиксирован в коммите `e5d173acf14b90632a23393075723ec06e656c72` ветки `android/alpha-parity`.
+
+Run `20261001-114931` на vivo V2366HA / Android API 36 показал:
+- process-death recovery завершился `RECOVERY_OK`;
+- GENOME, session/state и ПУЛЬС восстановлены;
+- A2.1 persistence smoke остановился на `backend identity`;
+- `persistence_backend` не вернулся из Kotlin diagnostics.
+
+Причина: Python diagnostics формировал `persistence_backend`, но Kotlin bridge не переносил это поле во внешний diagnostics object.
+
+Исправление внесено в `d79ab7d418d0ba41286d69ebd3ec903982affe42`. Оно требует нового green CI и нового APK; A2.1 device acceptance пока не закрыта. A2.2 остаётся закрытым.

@@ -61,7 +61,7 @@ Activity не является владельцем причинного runtime
 - A0.D1 device evidence принято на vivo V2366HA / API 36;
 - A1.6 operation boundary реализован, включая persisted operation state и explicit UNKNOWN;
 - production foreground-service hardening ещё не реализован;
-- текущий Android persistence contour — platform storage foundation, не Room/SQLite domain backend;
+- текущий Android persistence contour — Room/SQLite как canonical physical backend через Android bridge;
 - production reconcile/recovery остаётся A5.
 
 Foreground service и production recovery не должны считаться реализованными только из-за наличия `Service` и `START_STICKY`.
@@ -86,3 +86,10 @@ UI не может напрямую изменять GENOME или выполн�
 После ModelAdapter выполняется Response Disclosure Guard.
 
 Model output не может самостоятельно активировать privileged операции.
+
+
+### Актуальная точка персистентности — 01.10.2026
+
+A2.1 подключает Room/SQLite как физический canonical backend через `PersistenceBackend`. Core остаётся доменным authority, Kotlin не дублирует domain semantics.
+
+Device run `20261001-114931` подтвердил process-death recovery, но остановился на diagnostics backend identity. Исправление bridge внесено в `d79ab7d418d0ba41286d69ebd3ec903982affe42`; повторная физическая acceptance обязательна.

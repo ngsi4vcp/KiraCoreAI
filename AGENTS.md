@@ -2,7 +2,7 @@
 
 ## Область текущего Android-чата
 
-Эта ветка и этот чат ведутся прежде всего для Android-проекта `android/alpha-parity`.
+Этот чат ведётся для Android-контура проекта. Текущая hardening-разработка может выполняться в `android/a2.1-hardening-wip`, а фактическое device evidence фиксируется в `android/alpha-parity`.
 
 Правило:
 - изменять прежде всего Android host, Android bridge, Android security/storage boundaries, Android tests и Android-документацию;
@@ -12,11 +12,11 @@
 - G22.txt и GENOME/genome.txt не изменять в Android quality/audit cycles.
 
 ## Текущий режим разработки с 01.10.2026
-Общий архитектурный ledger: docs/core-architecture-snapshots.md. Добавлять запись только при изменении общей Core architecture/logic; Git остаётся источником полного кода.
+Общий архитектурный ledger: `docs/core-architecture-snapshots.md`. Добавлять запись только при изменении общей архитектуры или логического контракта Core; Git остаётся источником полного кода.
 
 
 До прямого явного указания Алека активный контур проекта — только Android.
-Windows/Linux desktop development и их обычные matrix/package-smoke CI-прогоны не запускаются автоматически. Общий Python Core изменяется только при необходимости для Android-паритета или проверки Android-контракта. Ubuntu в Android CI является средой сборки Android, а не отдельным Linux desktop quality-контуром.
+Разработка desktop для Windows/Linux и их обычные matrix/package-smoke CI-прогоны не запускаются автоматически. Общий Python Core изменяется только при необходимости для Android-паритета или проверки Android-контракта. Ubuntu в Android CI является средой сборки Android, а не отдельным Linux desktop quality-контуром.
 
 
 ## Общий старт проекта
@@ -39,7 +39,8 @@ Windows/Linux desktop development и их обычные matrix/package-smoke CI
 
 - Репозиторий: `ngsi4vcp/KiraCoreAI`
 - Основная ветка: `main`
-- Ветка Android: `android/alpha-parity`
+- Основная Android-ветка: `android/alpha-parity`;
+- Android A2.1 hardening-ветка: `android/a2.1-hardening-wip`;
 - База ветки на момент создания: `5ce56923b6b5d1907a6686391305ea55a83d80fd`
 - Текущая версия приложения: `0.1.0-alpha.1`
 - Выпущенный тег: `v0.1.0-alpha.1`

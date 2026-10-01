@@ -61,28 +61,28 @@
 Тестовая модель устройства в историческом плане остаётся vivo X100 Ultra / OriginOS 6, но фактический принятый A0.D1 device — V2366HA/API 36. Матрица Android 13–17 остаётся отдельным A11 контуром.
 
 ### A1. Соответствие Core
-- [ ] расширенный typed Kotlin ↔ Python bridge
-- [ ] запуск/восстановление/жизненный цикл сессии
-- [ ] семантическое соответствие сессии/разговора/состояния/памяти/истории
-- [ ] authorization `~1` semantic compatibility
-- [ ] сквозной путь детерминированного тестового провайдера
-- [ ] Pulse parity
-- [ ] checkpoints операций рантайма и явная граница UNKNOWN
-- [ ] runtime events / diagnostics
-- [ ] A1 regression tests
+- [x] расширенный typed Kotlin ↔ Python bridge
+- [x] запуск/восстановление/жизненный цикл сессии
+- [x] семантическое соответствие сессии/разговора/состояния/памяти/истории
+- [x] authorization `~1` semantic compatibility
+- [x] сквозной путь детерминированного тестового провайдера
+- [x] Pulse parity
+- [x] checkpoints операций рантайма и явная граница UNKNOWN
+- [x] runtime events / diagnostics
+- [x] A1 regression tests
 
 ### Текущая контрольная точка Android
-A1.6 — граница операции и восстановления — реализован. Свежая проверка соответствия A1 на устройстве `20260930-144146` принята со статусом `RECOVERY_OK`. A2.0 Persistence Foundation реализован; текущий этап — A2.1 Store Integration. Production recovery/reconcile остаётся A5.
+A1 Core Parity принят на устройстве `20260930-144146` со статусом `RECOVERY_OK`. A2.0 Persistence Foundation реализован. A2.1 Store Integration реализован; device acceptance после нового исправления ещё не закрыт. Production recovery/reconcile остаётся A5.
 
 ### A2. Персистентность
-- [ ] Persistence Contract implementation
-- [ ] Room/SQLite backend
-- [ ] шифрование чувствительных полей payload
+- [x] Persistence Contract implementation
+- [x] Room/SQLite backend
+- [x] шифрование чувствительных полей payload
 - [ ] atomic transactions
-- [ ] recovery checkpoints
+- [x] recovery checkpoints
 - [ ] migrations
 - [ ] duplicate prevention / idempotency
-- [ ] разговор != сохранённая память
+- [x] разговор != сохранённая память
 
 ### A3. Идентичность и защищённые полномочия
 - [ ] identity_id/device_id
@@ -206,3 +206,10 @@ A1.6 — граница операции и восстановления — р�
 - [ ] полноценное автономное агентное планирование
 
 Пока A0.D1 и последующие acceptance gates не закрыты, Android Alpha не считается функционально эквивалентной desktop Alpha.
+
+
+### Актуальный A2.1 checkpoint — 01.10.2026
+
+Зелёный Android-only CI: run `#485`, попытка 2, commit `582a7d286bd83b0ac2895d1c50c0cf23b13a2167`.
+Физический run `20261001-114931` подтвердил recovery, но обнаружил дефект границы diagnostics: `persistence_backend` не возвращался Kotlin bridge.
+Исправление: `d79ab7d418d0ba41286d69ebd3ec903982affe42`. Новый APK и повторная device acceptance обязательны.

@@ -620,3 +620,12 @@ CI больше не запускает Windows/Linux desktop matrix и package-
 Исправление A2.1 integration test переведено на публичный `PersistenceBackend`/adapter-контракт; production semantics не расширялись ради тестовой фикстуры.
 
 Физическая A2.1 device acceptance ещё не выполнена. До неё A2.2 остаётся закрытым.
+
+
+## Актуальная точка — 01.10.2026
+
+Свежий device evidence commit: `e5d173acf14b90632a23393075723ec06e656c72` в `android/alpha-parity`.
+
+Run `20261001-114931` на vivo V2366HA / API 36 подтвердил process-death recovery (`RECOVERY_OK`), но A2.1 persistence smoke остановился на `backend identity`: Kotlin bridge не возвращал `persistence_backend`.
+
+Исправление Android bridge: `d79ab7d418d0ba41286d69ebd3ec903982affe42`. Следующий gate: green CI → новый APK → повторная физическая A2.1 acceptance. A2.2 не открыт.
