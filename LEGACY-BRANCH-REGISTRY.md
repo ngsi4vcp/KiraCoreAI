@@ -6,10 +6,10 @@
 
 | Ветка | Текущий HEAD | Роль |
 |---|---|---|
-| `main` | `efb2e3677064d68c303b6910d0cf4cb2ae6a36cb` | общий Core и архитектура |
+| `main` | `5d720bc769dca481c3cb4e208e8717c74e48b0b3` | общий Core и архитектура |
 | `platform/android` | `a6a41f2515a2b8ec7aea9e596d3cb75bf2cf81c7` | Android |
-| `platform/windows-11` | `8de9207ab1633e3094118ec7e846e298a4b435b8` | Windows 11 |
-| `platform/linux` | `169e4526e6da340e6d3fc59540574c4ae3de1095` | Linux |
+| `platform/windows-11` | `d8c02b5fad0720239042eadebbaeece7c3b9b1d0` | Windows 11 |
+| `platform/linux` | `e32fdbe65e7b35f7d2997ae40f47fe1c9e0031f6` | Linux |
 | `archive/history` | обновляется самим архивом | история |
 
 ## Старые ветки
@@ -33,20 +33,28 @@
 ## Аудит переноса
 
 Проверено:
-- G22/GENOME SHA совпадают между рабочими ветками;
-- Android branch больше не содержит desktop host/release tooling;
-- Windows/Linux содержат desktop host/release tooling;
-- main не содержит Android или desktop host;
-- Core тесты проходят в main;
-- Windows/Linux platform CI проходят;
-- Android актуальный CI остаётся открытым до завершения run #533.
+- G22/GENOME SHA совпадают во всех новых рабочих ветках и архиве;
+- `main` не содержит Android или desktop host;
+- `platform/android` содержит Android host и не содержит desktop host;
+- `platform/windows-11` и `platform/linux` содержат desktop host и не содержат Android;
+- глобальные `PROJECT-*`, `DOCUMENTATION.md`, `MAIN-STATUS.md`, `REPOSITORY-STRUCTURE.md` не дублируются в платформенных корнях;
+- Core CI в `main` проходит;
+- Linux platform CI проходит;
+- Windows platform CI после последней очистки ожидает завершения;
+- Android current CI ожидает завершения на run #533.
 
-## GitHub connector limitation
+## Теги
 
-Текущий GitHub-коннектор предоставляет создание/перемещение веток, но не предоставляет операции удаления branch refs или создания новых tag refs. Поэтому старые ветки пока **не удалены**, а новые reorg/A2.2 control tags не созданы этим инструментом. Это техническое ограничение инструментария, а не изменение принятой архитектуры.
+Существующий публичный release tag `v0.1.0-alpha.1` сохранён.
 
-Существующий публичный релизный тег `v0.1.0-alpha.1` сохраняется.
+Запланированные контрольные теги реорганизации и A2.2 implementation slice не созданы: доступный GitHub-коннектор не предоставляет операцию создания tag refs.
 
-## Правило
+## Старые branch refs
 
-Удаление старых refs и финальная очистка архива не являются обязательными до отдельной доступной операции удаления и финального audit. История уже защищена архивной много-родительской точкой.
+Старые ветки пока не удалены. Доступный GitHub-коннектор не предоставляет операцию удаления branch refs; попытка удаления через нулевой SHA возвращает `422 Object does not exist`.
+
+Это не отменяет принятую архитектуру. Старые refs намеренно сохранены до появления доступной операции удаления; их содержимое уже каталогизировано в этом архиве, а причинность дополнительно защищена много-родительской точкой.
+
+## Архив
+
+Сам архив не очищается. Финальная очистка требует отдельного решения.
