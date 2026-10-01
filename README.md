@@ -11,17 +11,17 @@
 
 [Скачать KiraCoreAI-0.1.0-alpha.1-windows-x64.zip](https://github.com/ngsi4vcp/KiraCoreAI/releases/download/v0.1.0-alpha.1/KiraCoreAI-0.1.0-alpha.1-windows-x64.zip)
 
-Текущий development HEAD новее этого pre-release и не является новым публичным релизом.
+Текущий рабочий HEAD новее этого pre-release и не является новым публичным релизом.
 
 ## Архитектура
 
 `main` → общий Core  
-`platform/windows-11` → TerminalHost / packaging / Windows CI
+`platform/windows-11` → TerminalHost / пакетирование / Windows CI
 
-## Текущий development status
+## Текущий рабочий статус
 
 - Core-срез синхронизирован с актуальной Core-линией на контрольной точке;
-- текущая миграционная CI-проверка: #547;
+- миграционная CI-проверка #565 — SUCCESS;
 - внешний Windows 11 smoke ещё не закрыт.
 
 ## Документы
