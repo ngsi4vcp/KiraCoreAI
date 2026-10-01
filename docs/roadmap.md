@@ -208,7 +208,7 @@ A1 Core Parity принят на устройстве `20260930-144146` со с�
 Пока A0.D1 и последующие acceptance gates не закрыты, Android Alpha не считается функционально эквивалентной desktop Alpha.
 
 
-### Актуальный A2.1 checkpoint — 01.10.2026
+### Исторический A2.1 checkpoint — 01.10.2026
 
 Зелёный Android-only CI: run `#495`, commit `b52d2be10a0f31a6cb41f1c17d6b973821298502`.
 Физический run `20261001-114931` подтвердил recovery, но обнаружил дефект границы diagnostics: `persistence_backend` не возвращался Kotlin bridge.
