@@ -6,7 +6,7 @@
 
 | Ветка | Текущий HEAD | Роль |
 |---|---|---|
-| `main` | `0068beccdb98743a193fa79ffb493558f0848329` | общий Core и архитектура |
+| `main` | `fa188e5db10a5c3887a3301d7d1496d08a0082cf` | общий Core и архитектура |
 | `platform/android` | `879ca55b42e1972365731e5d5612770a63f8b61c` | Android |
 | `platform/windows-11` | `81485a0de7a4d288d17c29cc1b1f756c01407e6b` | Windows 11 |
 | `platform/linux` | `e115e77f4655e773f1af616c006ba41e3f351db5` | Linux |
