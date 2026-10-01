@@ -32,6 +32,7 @@ class PersistenceBackend(Protocol):
     def save_operation(self, payload: dict[str, Any]) -> None: ...
     def load_operation(self, operation_id: str) -> dict[str, Any] | None: ...
     def list_operations(self) -> list[dict[str, Any]]: ...
+    def commit_atomic_turn(self, payload: dict[str, Any]) -> None: ...
 
 
 class RoomPersistenceBackend:
@@ -112,3 +113,6 @@ class RoomPersistenceBackend:
 
     def list_operations(self) -> list[dict[str, Any]]:
         return self._decode_array(self.gateway.listOperations())
+
+    def commit_atomic_turn(self, payload: dict[str, Any]) -> None:
+        self.gateway.commitAtomicTurn(self._encode(payload))
