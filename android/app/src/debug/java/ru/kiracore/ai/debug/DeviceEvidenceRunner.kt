@@ -841,10 +841,11 @@ class DeviceEvidenceRunner(
             JSONObject(manifestFile.readText(Charsets.UTF_8))
         }.getOrNull()
 
-        return if (
-            manifest?.optString("evidence_type") == "android-a2.1-device" &&
-            manifest.optString("status") == "A2_1_PERSISTENCE_OK"
-        ) {
+        val isA21 = manifest?.let {
+            it.optString("evidence_type") == "android-a2.1-device" &&
+                it.optString("status") == "A2_1_PERSISTENCE_OK"
+        } == true
+        return if (isA21) {
             "A2.1: физическая персистентность и восстановление подтверждены"
         } else {
             "A0.D1 recovery после process death подтверждён"
