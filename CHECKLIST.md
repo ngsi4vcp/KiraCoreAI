@@ -1,22 +1,22 @@
 # CHECKLIST — platform/linux
 
-## Migration
+## Миграция
 
 - [x] ветка создана от нового main;
 - [x] desktop host присутствует;
-- [x] release tooling присутствует;
+- [x] инструменты выпуска присутствует;
 - [x] документационный каркас создан;
 - [x] Linux CI на новом HEAD;
-- [ ] Linux external smoke;
+- [ ] внешняя smoke-проверка Linux;
 - [ ] следующий release artifact.
 
 ## Каждый релиз
 
 - [ ] Core reference проверен;
-- [ ] unit tests;
-- [ ] host tests;
+- [ ] модульные тесты;
+- [ ] тесты host;
 - [ ] `START --version`;
-- [ ] PyInstaller build;
-- [ ] package checksum;
-- [ ] release artifact link;
+- [ ] сборка PyInstaller;
+- [ ] контрольная сумма пакета;
+- [ ] ссылка на артефакт выпуска;
 - [ ] README/STATUS sync.
