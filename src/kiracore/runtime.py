@@ -36,6 +36,7 @@ class KiraRuntime:
         core_persistence: CoreStatePersistence,
         session_manager: SessionManager,
         operation_store: OperationStore,
+        backend: PersistenceBackend | None = None,
     ) -> None:
         self.root = root
         self.genome = genome
@@ -47,6 +48,7 @@ class KiraRuntime:
         self.core_persistence = core_persistence
         self.session_manager = session_manager
         self.operation_store = operation_store
+        self.persistence_backend = backend
         self.core_state = core_persistence.load() or self._default_core_state()
         self.last_model_response: ModelResponse | None = None
         self.last_operation: OperationState | None = (
@@ -122,6 +124,7 @@ class KiraRuntime:
             core_persistence=core_persistence,
             session_manager=session_manager,
             operation_store=OperationStore(backend),
+            backend=backend,
         )
 
     @staticmethod
@@ -208,6 +211,65 @@ class KiraRuntime:
             )
 
         try:
+            turn_finalizer = None
+            if self.persistence_backend is not None:
+
+                def finalize_turn(
+                    final_session,
+                    assistant_message,
+                    conversation_manifest,
+                    history_entry,
+                    pulse,
+                ):
+                    previous_operation = self.last_operation
+                    if (
+                        previous_operation is None
+                        or previous_operation.operation_id != operation_id
+                    ):
+                        raise RuntimeError(
+                            "Не удалось завершить текущую операцию атомарно."
+                        )
+
+                    final_operation = OperationState(
+                        operation_id=operation_id,
+                        session_id=session_id,
+                        phase=OperationPhase.COMPLETED,
+                        checkpoint="completed",
+                        provider=provider,
+                        model=model_id,
+                        recovery_state=RecoveryState.COMPLETED,
+                    )
+                    final_core_state = self._build_core_state(
+                        final_session,
+                        provider,
+                        model_id,
+                        "waiting",
+                        pulse=pulse,
+                    )
+                    final_core_state["operation"] = asdict(final_operation)
+
+                    self.persistence_backend.commit_atomic_turn(
+                        {
+                            "core_state": final_core_state,
+                            "session": asdict(final_session),
+                            "conversation_manifest": asdict(conversation_manifest),
+                            "assistant_message": {
+                                **asdict(assistant_message),
+                                "pulse": (
+                                    asdict(pulse)
+                                    if pulse is not None
+                                    else None
+                                ),
+                            },
+                            "history": asdict(history_entry),
+                            "operation": asdict(final_operation),
+                        }
+                    )
+                    self.last_operation = final_operation
+                    self.core_state = final_core_state
+
+                turn_finalizer = finalize_turn
+
             response, pulse = self.session_manager.run_turn(
                 session_id=session_id,
                 task=task,
@@ -215,6 +277,7 @@ class KiraRuntime:
                 provider=provider,
                 model_id=model_id,
                 operation_update=operation_update,
+                turn_finalizer=turn_finalizer,
             )
         except Exception as exc:
             from .errors import UnknownModelCall
@@ -254,13 +317,14 @@ class KiraRuntime:
                 "pulse_rendered": pulse.render(),
             },
         )
-        self._save_core(
-            session,
-            provider,
-            model_id,
-            "waiting",
-            pulse=pulse,
-        )
+        if self.persistence_backend is None:
+            self._save_core(
+                session,
+                provider,
+                model_id,
+                "waiting",
+                pulse=pulse,
+            )
         return response
 
     def list_sessions(self) -> list[ConversationManifest]:
@@ -372,7 +436,7 @@ class KiraRuntime:
             )
         )
 
-    def _save_core(
+    def _build_core_state(
         self,
         session: Any,
         provider: str,
@@ -380,13 +444,13 @@ class KiraRuntime:
         status: str,
         pulse: Any = _KEEP_PULSE,
         error: str | None = None,
-    ) -> None:
+    ) -> dict[str, Any]:
         pulse_payload = (
             self.core_state.get("pulse")
             if pulse is _KEEP_PULSE
             else asdict(pulse) if pulse is not None else None
         )
-        self.core_state = {
+        return {
             **self.core_state,
             "schema_version": 1,
             "genome_revision": self.genome.revision,
@@ -403,4 +467,22 @@ class KiraRuntime:
             "updated_at": session.updated_at,
             "last_error": error,
         }
+
+    def _save_core(
+        self,
+        session: Any,
+        provider: str,
+        model: str,
+        status: str,
+        pulse: Any = _KEEP_PULSE,
+        error: str | None = None,
+    ) -> None:
+        self.core_state = self._build_core_state(
+            session,
+            provider,
+            model,
+            status,
+            pulse=pulse,
+            error=error,
+        )
         self.core_persistence.save(self.core_state)
