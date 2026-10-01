@@ -1,46 +1,53 @@
-name: Проверка KiraCoreAI — Core
+name: Проверка KiraCoreAI — Windows 11
+
+on:
+  push:
+    branches: ["platform/windows-11"]
+  pull_request:
+    branches: ["main"]
 
 env:
   PYTHONUTF8: "1"
   PYTHONIOENCODING: "utf-8"
 
-on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-
 concurrency:
-  group: core-ci-${{ github.ref }}
+  group: windows-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  core:
-    name: Общий Core
-    runs-on: ubuntu-latest
+  windows:
+    name: Core + Windows Host
+    runs-on: windows-latest
     steps:
       - name: Получить репозиторий
         uses: actions/checkout@v7
 
-      - name: Подготовить Python 3.13
+      - name: Подготовить Python
         uses: actions/setup-python@v7
         with:
-          python-version: "3.13"
+          python-version: "3.12"
 
-      - name: Проверить UTF-8
-        shell: bash
-        run: python tests/utf8_smoke.py
-
-      - name: Установить Core
-        shell: bash
+      - name: Установить проект
+        shell: pwsh
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e .
 
-      - name: Запустить Core tests
-        shell: bash
+      - name: Core + host tests
+        shell: pwsh
         run: python -m unittest discover -s tests -v
 
+      - name: UTF-8
+        shell: pwsh
+        run: python tests/utf8_smoke.py
+
       - name: Security smoke
-        shell: bash
+        shell: pwsh
         run: python tests/security_smoke.py
+
+      - name: Entrypoint
+        shell: pwsh
+        run: |
+          $output = python START.py --version
+          Write-Output $output
+          if ($output -ne "Кира:Ядро | версия 0.1.0-alpha.1") { exit 1 }
