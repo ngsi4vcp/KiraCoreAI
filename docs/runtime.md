@@ -93,3 +93,13 @@ Model output не может самостоятельно активироват
 A2.1 подключает Room/SQLite как физический canonical backend через `PersistenceBackend`. Core остаётся доменным authority, Kotlin не дублирует domain semantics.
 
 Device run `20261001-114931` подтвердил process-death recovery, но остановился на diagnostics backend identity. Исправление bridge внесено в `d79ab7d418d0ba41286d69ebd3ec903982affe42`; повторная физическая acceptance обязательна.
+
+## A2.2 Atomic Turn — фактическая граница
+
+A2.1 подтвердил единый Room backend. На A2.2 runtime использует следующую причинную последовательность:
+
+`user message → durable checkpoint → MODEL_CALL_STARTED → model result → validation → PULSE → atomic final commit → COMPLETED`.
+
+Длительный внешний model-call не включается в SQL-транзакцию. Room transaction применяется только к согласованной финализации результата. В atomic commit должны одновременно попасть assistant message, conversation manifest, history, session state, core state и operation `COMPLETED`.
+
+Если model-call даёт `UNKNOWN`, final commit не выполняется и runtime не делает молчаливый retry.
