@@ -9,7 +9,7 @@
 - [x] README.md
 - [x] main/DOCUMENTATION.md используется как глобальная карта
 
-## Branch integrity
+## Целостность ветки
 
 - [x] platform/android создана от актуального Core-среза;
 - [x] старые Android ветки проинвентаризированы и архивированы;
@@ -17,15 +17,15 @@
 - [x] контрольная точка Android A2.1/A2.2 зафиксирована в `main/MILESTONES.md`;
 - [x] финальное удаление старых refs.
 
-## A2.2
+## A2.2 — атомарный ход
 
-- [x] durable checkpoint;
-- [x] atomic finalization implementation;
-- [x] contract success/failure coverage;
-- [x] UNKNOWN non-COMPLETED;
-- [ ] physical Room/SQLite rollback proof;
-- [ ] A2.2 device acceptance;
-- [ ] A2.2 formal acceptance.
+- [x] устойчивый checkpoint;
+- [x] реализация атомарной финализации;
+- [x] контрактное покрытие успешного и ошибочного хода;
+- [x] UNKNOWN не становится COMPLETED;
+- [ ] физическое доказательство отката Room/SQLite;
+- [ ] отдельная приёмка A2.2 на устройстве;
+- [ ] формальная приёмка A2.2.
 
 ## Каждый значимый Android change
 
