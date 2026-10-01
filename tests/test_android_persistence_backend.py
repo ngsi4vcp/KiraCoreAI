@@ -31,6 +31,8 @@ class DurableRoomGateway:
     def __init__(self, path: Path) -> None:
         self.path = path
         self.state = self._load()
+        self.atomic_commits = 0
+        self.fail_atomic_commit = False
 
     def _load(self) -> dict:
         if not self.path.exists():
@@ -135,6 +137,26 @@ class DurableRoomGateway:
     def saveOperation(self, payload):
         value = json.loads(payload)
         self.state["operations"][value["operation_id"]] = value
+        self._flush()
+
+    def commitAtomicTurn(self, payload):
+        if self.fail_atomic_commit:
+            raise RuntimeError("deterministic atomic commit failure")
+        value = json.loads(payload)
+        staged = json.loads(json.dumps(self.state, ensure_ascii=False))
+        staged["core_state"] = value["core_state"]
+        staged["sessions"][value["session"]["session_id"]] = value["session"]
+        staged["manifests"][value["conversation_manifest"]["session_id"]] = value["conversation_manifest"]
+        staged["messages"] = [
+            item
+            for item in staged["messages"]
+            if item["id"] != value["assistant_message"]["id"]
+        ]
+        staged["messages"].append(value["assistant_message"])
+        staged["history"].append(value["history"])
+        staged["operations"][value["operation"]["operation_id"]] = value["operation"]
+        self.state = staged
+        self.atomic_commits += 1
         self._flush()
 
     def loadOperation(self, operation_id):
@@ -253,6 +275,56 @@ class AndroidPersistenceBackendTests(unittest.TestCase):
         self.assertEqual(
             len(restarted.memory_store.approved()),
             1,
+        )
+
+    def test_a2_atomic_turn_finalization_is_single_commit(self) -> None:
+        runtime = KiraRuntime.start(self.root, backend=self.backend)
+        manifest = runtime.create_session("a2-test", "embedded/a2-test")
+
+        response = runtime.run(
+            manifest.session_id,
+            "~1 atomic turn",
+            FakeModel(),
+            "a2-test",
+            "embedded/a2-test",
+        )
+        self.assertEqual(response.text, "Ответ A2.1")
+        self.assertEqual(self.gateway.atomic_commits, 1)
+        self.assertEqual(
+            [item["role"] for item in self.backend.recent_conversation(
+                manifest.session_id,
+                10,
+            )],
+            ["user", "assistant"],
+        )
+        self.assertEqual(self.backend.list_operations()[0]["phase"], "COMPLETED")
+        self.assertEqual(runtime.core_state["operation"]["phase"], "COMPLETED")
+        self.assertEqual(
+            runtime.state_store.get(manifest.session_id).runtime_status,
+            "waiting",
+        )
+
+    def test_a2_atomic_turn_failure_does_not_write_final_records(self) -> None:
+        runtime = KiraRuntime.start(self.root, backend=self.backend)
+        manifest = runtime.create_session("a2-test", "embedded/a2-test")
+        self.gateway.fail_atomic_commit = True
+
+        with self.assertRaises(RuntimeError):
+            runtime.run(
+                manifest.session_id,
+                "~1 atomic failure",
+                FakeModel(),
+                "a2-test",
+                "embedded/a2-test",
+            )
+
+        conversation = self.backend.recent_conversation(manifest.session_id, 10)
+        self.assertEqual([item["role"] for item in conversation], ["user"])
+        self.assertEqual(self.backend.list_history(), [])
+        self.assertNotEqual(self.backend.list_operations()[0]["phase"], "COMPLETED")
+        self.assertEqual(
+            runtime.state_store.get(manifest.session_id).runtime_status,
+            "running",
         )
 
     def test_store_rejects_two_canonical_backends(self) -> None:
