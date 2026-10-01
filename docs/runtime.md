@@ -88,7 +88,7 @@ UI не может напрямую изменять GENOME или выполн�
 Model output не может самостоятельно активировать privileged операции.
 
 
-### Актуальная точка персистентности — 01.10.2026
+### Предыдущая точка персистентности — 01.10.2026
 
 A2.1 подключает Room/SQLite как физический canonical backend через `PersistenceBackend`. Core остаётся доменным authority, Kotlin не дублирует domain semantics.
 
