@@ -507,8 +507,8 @@ class DeviceEvidenceRunner(
                     JSONObject().put("run_id", pending.runId),
                 )
                 checkpoint.delete()
-                writeManifest(runDir, "RECOVERY_OK")
-                setOverall("A0.D1 recovery после process death подтверждён")
+                completeRecoveryEvidence(runDir)
+                setOverall(recoveryOverall(runDir))
             } catch (error: CancellationException) {
                 throw error
             } catch (error: Throwable) {
@@ -798,6 +798,57 @@ class DeviceEvidenceRunner(
             phase = "Готово",
             recoveryPending = checkpoint.isFile,
         )
+    }
+
+    private fun completeRecoveryEvidence(runDir: File) {
+        val manifestFile = File(runDir, "manifest.json")
+        if (!manifestFile.isFile) {
+            writeManifest(runDir, "RECOVERY_OK")
+            return
+        }
+
+        runCatching {
+            val manifest = JSONObject(
+                manifestFile.readText(Charsets.UTF_8),
+            )
+            val evidenceType = manifest.optString("evidence_type")
+            val status = manifest.optString("status")
+            if (evidenceType == "android-a2.1-device" &&
+                status == "A2_1_PERSISTENCE_OK"
+            ) {
+                manifest
+                    .put("recovery_status", "RECOVERY_OK")
+                    .put("recovery_checked_at", isoNow())
+                manifestFile.writeText(
+                    manifest.toString(2),
+                    Charsets.UTF_8,
+                )
+                File(runDir, "README.txt").writeText(
+                    "Диагностический evidence A2.1. Bundle не содержит секретов.\n",
+                    Charsets.UTF_8,
+                )
+            } else {
+                writeManifest(runDir, "RECOVERY_OK")
+            }
+        }.getOrElse {
+            writeManifest(runDir, "RECOVERY_OK")
+        }
+    }
+
+    private fun recoveryOverall(runDir: File): String {
+        val manifestFile = File(runDir, "manifest.json")
+        val manifest = runCatching {
+            JSONObject(manifestFile.readText(Charsets.UTF_8))
+        }.getOrNull()
+
+        return if (
+            manifest?.optString("evidence_type") == "android-a2.1-device" &&
+            manifest.optString("status") == "A2_1_PERSISTENCE_OK"
+        ) {
+            "A2.1: физическая персистентность и восстановление подтверждены"
+        } else {
+            "A0.D1 recovery после process death подтверждён"
+        }
     }
 
     private fun writeManifest(
