@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="app_name">Кира:Ядро</string>
-    <string name="a0_title">Кира:Ядро — A0</string>
-    <string name="a0_starting">Запуск Кира:Ядра…</string>
-    <string name="a0_ready">Кира:Ядро готово</string>
-    <string name="a0_error">Ошибка запуска Кира:Ядра</string>
-</resources>

@@ -1,4 +1,4 @@
-name: Проверка KiraCoreAI
+name: Проверка KiraCoreAI — Core
 
 env:
   PYTHONUTF8: "1"
@@ -6,82 +6,41 @@ env:
 
 on:
   push:
-    branches: ["main", "android/alpha-parity", "android/a2.1-hardening-wip", "android/a2.2-atomic-turn-wip"]
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: core-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  android-a2:
-    name: Android A2.1 CI
+  core:
+    name: Общий Core
     runs-on: ubuntu-latest
     steps:
       - name: Получить репозиторий
         uses: actions/checkout@v7
-
-      - name: Подготовить Java
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: "17"
 
       - name: Подготовить Python 3.13
         uses: actions/setup-python@v7
         with:
           python-version: "3.13"
 
-      - name: Подготовить Android SDK
-        uses: android-actions/setup-android@v4
-
-      - name: Установить Android SDK 37
-        shell: bash
-        run: |
-          sdkmanager --channel=3 "platforms;android-37.0" "build-tools;36.0.0" "platform-tools"
-
-      - name: Подготовить Gradle
-        uses: gradle/actions/setup-gradle@v5
-        with:
-          gradle-version: "9.4.1"
-
       - name: Проверить UTF-8
         shell: bash
-        run: |
-          python tests/utf8_smoke.py
+        run: python tests/utf8_smoke.py
 
-      - name: Проверить общий Core-контракт, используемый Android
+      - name: Установить Core
         shell: bash
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e .
-          python -m unittest discover -s tests -v
 
-      - name: Запустить Android unit tests и собрать debug APK
+      - name: Запустить Core tests
         shell: bash
-        run: |
-          gradle --no-daemon :android:app:testDebugUnitTest :android:app:assembleDebug
+        run: python -m unittest discover -s tests -v
 
-      - name: Проверить APK
+      - name: Security smoke
         shell: bash
-        run: |
-          test -f android/app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Проверить содержимое Chaquopy APK
-        shell: bash
-        run: |
-          python tests/android_apk_packaging_smoke.py android/app/build/outputs/apk/debug/app-debug.apk
-
-      - name: Повторить security smoke по исходникам и build output
-        shell: bash
-        run: |
-          python tests/security_smoke.py
-
-      - name: Публиковать диагностический APK A2.1
-        uses: actions/upload-artifact@v4
-        with:
-          name: kira-android-a2.1-debug-${{ github.sha }}
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 14
+        run: python tests/security_smoke.py
