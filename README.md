@@ -11,17 +11,17 @@
 
 [Скачать KiraCoreAI-0.1.0-alpha.1-linux-x64.tar.gz](https://github.com/ngsi4vcp/KiraCoreAI/releases/download/v0.1.0-alpha.1/KiraCoreAI-0.1.0-alpha.1-linux-x64.tar.gz)
 
-Текущий development HEAD новее этого pre-release и не является новым публичным релизом.
+Текущий рабочий HEAD новее этого pre-release и не является новым публичным релизом.
 
 ## Архитектура
 
 `main` → общий Core  
-`platform/linux` → TerminalHost / packaging / Linux CI
+`platform/linux` → TerminalHost / пакетирование / Linux CI
 
-## Текущий development status
+## Текущий рабочий статус
 
 - Core-срез синхронизирован с актуальной Core-линией на контрольной точке;
-- sync CI #548 — SUCCESS;
+- CI #566 — SUCCESS на миграционном срезе;
 - внешний Linux smoke ещё не закрыт.
 
 ## Документы
