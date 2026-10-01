@@ -1043,3 +1043,17 @@ A2.1 Store Integration реализован и имеет зелёный CI chec
 Физический device run `20261001-114931` на vivo V2366HA / API 36 подтвердил recovery после process death, но остановился на первой проверке A2.1: Kotlin diagnostics не возвращал `persistence_backend`.
 
 Исправление: `d79ab7d418d0ba41286d69ebd3ec903982affe42`. После green CI нового head требуется новый APK и повторная физическая A2.1 acceptance. A2.2 до этого не открывается.
+
+## Актуальная контрольная точка — 01.10.2026
+
+A2.1 Store Integration закрыт после независимого code/device acceptance.
+
+- Android-only CI #501: SUCCESS на `21fe369ba2281fb56b88fde7996c5801eb5af2f9`;
+- device evidence: run `20261001-125458`, vivo V2366HA / API 36;
+- evidence manifest: `android-a2.1-device / A2_1_PERSISTENCE_OK`;
+- acceptance commit: `a03bc0e95a0e95bddce0506f991cbe08740ba889`;
+- G22/GENOME immutable.
+
+A2.2 Atomic Turn открыт на ветке `android/a2.2-atomic-turn-wip` от A2.1 code head.
+
+Нормативная цель A2.2: раздельный durable checkpoint перед внешним model-call и единый физический commit финального результата хода, включающий assistant message, history, session/core state и завершённую operation. Неопределённый внешний вызов не должен превращаться в `COMPLETED` и не должен автоматически повторяться.
