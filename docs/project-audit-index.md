@@ -1,4 +1,4 @@
-# Project Audit Index — platform/android
+# Навигация по аудиту — platform/android
 
 Общая нормативная карта проекта находится в ветке `main`.
 
