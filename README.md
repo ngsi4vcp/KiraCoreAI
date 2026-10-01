@@ -1,6 +1,6 @@
 # KiraCoreAI — Android
 
-Основная последовательная ветка Android: `platform/android`.
+Основная последовательная Android-ветка: `platform/android`.
 
 ## Текущий срез
 
@@ -15,7 +15,7 @@
 
 ## Текущий test-release / сборка
 
-Публичного Android Release пока нет. Текущий тестовый APK публикуется как CI artifact ветки `platform/android`.
+Публичного Android Release пока нет. После успешного CI текущий debug APK публикуется как artifact ветки `platform/android`.
 
 [Открыть последние CI-сборки Android](https://github.com/ngsi4vcp/KiraCoreAI/actions/workflows/ci.yml?query=branch%3Aplatform%2Fandroid)
 
@@ -26,7 +26,9 @@
 `main` → общий Core  
 `platform/android` → Android host/UI/storage/security/tests
 
-Android не дублирует Core и не переносит domain semantics в Kotlin.
+Core-срез этой ветки синхронизирован с `main` на контрольной точке `20372923bb06a3a0f7e6e31419f81233ebd3dde1`.
+
+Android не дублирует Core как независимый проект и не переносит domain semantics в Kotlin.
 
 ## Технологический стек
 
@@ -43,4 +45,4 @@ Kotlin, Jetpack Compose, Python 3.13, Chaquopy 17.0, Room/SQLite, Android Keysto
 - `docs/kira-sync-contract.md`
 - `docs/identity-and-user-memory-contract.md`
 
-Подробная карта документации наследуется из `main/DOCUMENTATION.md`.
+Глобальная карта документации — `main/DOCUMENTATION.md`.
