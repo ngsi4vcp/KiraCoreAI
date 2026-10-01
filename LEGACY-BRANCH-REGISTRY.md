@@ -33,7 +33,7 @@
 ## Аудит переноса
 
 Проверено:
-- G22/G​​ENOME SHA совпадают между рабочими ветками;
+- G22/GENOME SHA совпадают между рабочими ветками;
 - Android branch больше не содержит desktop host/release tooling;
 - Windows/Linux содержат desktop host/release tooling;
 - main не содержит Android или desktop host;
