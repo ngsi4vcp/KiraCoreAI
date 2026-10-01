@@ -196,17 +196,26 @@ class AndroidPersistenceBackendTests(unittest.TestCase):
         )
         self.assertEqual(approved.status, "approved")
 
+        persisted_conversation = self.backend.recent_conversation(
+            manifest.session_id,
+            10,
+        )
         self.assertEqual(
-            [item["role"] for item in self.gateway.messages],
+            [item["role"] for item in persisted_conversation],
             ["user", "assistant"],
         )
+        persisted_operations = self.backend.list_operations()
+        self.assertEqual(len(persisted_operations), 1)
         self.assertEqual(
-            self.gateway.operations[next(iter(self.gateway.operations))]["phase"],
+            persisted_operations[0]["phase"],
             "COMPLETED",
         )
-        self.assertTrue(self.gateway.history)
+        self.assertTrue(self.backend.list_history())
+        persisted_memory = {
+            item["id"]: item for item in self.backend.list_memory()
+        }
         self.assertEqual(
-            self.gateway.memory["memory-a2"]["status"],
+            persisted_memory["memory-a2"]["status"],
             "approved",
         )
 

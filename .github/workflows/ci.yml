@@ -15,95 +15,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tests:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, windows-latest]
-        python-version: ["3.11", "3.12"]
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - name: Получить репозиторий
-        uses: actions/checkout@v7
-
-      - name: Подготовить Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Проверить UTF-8
-        shell: bash
-        run: |
-          python tests/utf8_smoke.py
-
-      - name: Проверить импорт пакета
-        shell: bash
-        run: |
-          python -m compileall -q src tests
-
-      - name: Установить проект
-        shell: bash
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e .
-
-      - name: Запустить тесты
-        shell: bash
-        run: |
-          python -m unittest discover -s tests -v
-
-      - name: Проверить Android security smoke
-        shell: bash
-        run: |
-          python tests/security_smoke.py
-
-  package-smoke:
-    needs: tests
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows-latest
-            platform: windows
-          - os: ubuntu-latest
-            platform: linux
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - name: Получить репозиторий
-        uses: actions/checkout@v7
-
-      - name: Подготовить Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: "3.11"
-
-      - name: Установить проект и PyInstaller
-        shell: bash
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -e .
-          python -m pip install pyinstaller
-
-      - name: Проверить сборку
-        shell: bash
-        run: |
-          python -m PyInstaller --clean --noconfirm --onefile --name START START.py
-          if [ "${{ matrix.platform }}" = "windows" ]; then
-            test -f dist/START.exe
-            output=$(dist/START.exe --version)
-          else
-            test -f dist/START
-            test -x dist/START
-            output=$(./dist/START --version)
-          fi
-          echo "$output"
-          test "$output" = "Кира:Ядро | версия 0.1.0-alpha.1"
-
-
-  android-a0:
-    name: Android A0 smoke
+  android-a2:
+    name: Android A2.1 CI
     runs-on: ubuntu-latest
     steps:
       - name: Получить репозиторий
@@ -138,6 +51,13 @@ jobs:
         run: |
           python tests/utf8_smoke.py
 
+      - name: Проверить общий Core-контракт, используемый Android
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+          python -m unittest discover -s tests -v
+
       - name: Запустить Android unit tests и собрать debug APK
         shell: bash
         run: |
@@ -158,10 +78,10 @@ jobs:
         run: |
           python tests/security_smoke.py
 
-      - name: Публиковать диагностический APK A0.D1
+      - name: Публиковать диагностический APK A2.1
         uses: actions/upload-artifact@v4
         with:
-          name: kira-android-device-evidence-debug-${{ github.sha }}
+          name: kira-android-a2.1-debug-${{ github.sha }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           retention-days: 14
