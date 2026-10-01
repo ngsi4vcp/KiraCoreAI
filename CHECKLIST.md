@@ -6,7 +6,7 @@
 - [x] desktop host присутствует;
 - [x] release tooling присутствует;
 - [x] документационный каркас создан;
-- [ ] Linux CI на новом HEAD;
+- [x] Linux CI на новом HEAD;
 - [ ] Linux external smoke;
 - [ ] следующий release artifact.
 
