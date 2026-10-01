@@ -98,13 +98,14 @@ A2.1 закрыт. Актуальный gate заменён на acceptance clos
 - [x] G22 и активный GENOME не изменены.
 - [x] A2.1 acceptance закрыта.
 
-## A2.2 — входной self-check
+## A2.2 — входной self-check и текущая реализация
 
 - [x] A2.2 ветка создана от принятого A2.1 code head.
 - [x] Проверен текущий operation state machine.
-- [x] Установлено, что финальная последовательность ещё не атомарна физически.
-- [x] Определена граница: checkpoint до model-call + atomic finalization после validation/Pulse.
-- [ ] Atomic backend commit реализован.
-- [ ] Failure injection/atomicity tests реализованы.
-- [ ] Android/Kotlin transaction boundary проверен.
-- [ ] Документация и architecture snapshot синхронизированы с фактическим контрактом.
+- [x] Зафиксирована граница: checkpoint до model-call + atomic finalization после validation/Pulse.
+- [x] `PersistenceBackend.commit_atomic_turn` реализован.
+- [x] Contract/failure-injection tests реализованы.
+- [x] Android/Kotlin transaction boundary проверен по исходному коду: один `RoomDatabase.runInTransaction` на финальный набор записей.
+- [x] Документация и architecture snapshot синхронизированы.
+- [ ] Физический rollback именно Room/SQLite доказан тестом.
+- [ ] A2.2 device acceptance проведён.
