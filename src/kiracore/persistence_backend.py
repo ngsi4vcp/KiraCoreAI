@@ -5,7 +5,7 @@ from typing import Any, Protocol
 
 
 class PersistenceBackend(Protocol):
-    """Единый физический backend для доменных persistence-store."""
+    """Единый физический backend для доменных хранилищ персистентности."""
 
     def save_core_state(self, payload: dict[str, Any]) -> None: ...
     def load_core_state(self) -> dict[str, Any] | None: ...
@@ -39,7 +39,7 @@ class RoomPersistenceBackend:
 
     def __init__(self, gateway: Any) -> None:
         if gateway is None:
-            raise ValueError("Room gateway не может быть пустым.")
+            raise ValueError("Шлюз Room не может быть пустым.")
         self.gateway = gateway
 
     @staticmethod
@@ -50,7 +50,7 @@ class RoomPersistenceBackend:
     def _decode_array(value: Any) -> list[dict[str, Any]]:
         decoded = json.loads(str(value))
         if not isinstance(decoded, list):
-            raise ValueError("Persistence backend вернул не массив.")
+            raise ValueError("Физический backend вернул не массив.")
         return decoded
 
     @staticmethod

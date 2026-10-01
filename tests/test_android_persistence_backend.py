@@ -26,7 +26,7 @@ class FakeModel:
 
 
 class DurableRoomGateway:
-    """Тестовый stand-in для Room gateway с повторным открытием."""
+    """Тестовая заглушка Room gateway с повторным открытием."""
 
     def __init__(self, path: Path) -> None:
         self.path = path

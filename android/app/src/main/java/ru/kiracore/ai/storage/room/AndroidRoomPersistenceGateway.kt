@@ -5,7 +5,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import ru.kiracore.ai.security.AndroidSecureStore
 
-/** Physical Room gateway for the A2 persistence foundation. */
+/** Физический Room gateway для основы персистентности A2. */
 class AndroidRoomPersistenceGateway(
     context: Context,
 ) : AutoCloseable {

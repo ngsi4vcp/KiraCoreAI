@@ -269,7 +269,7 @@ class HistoryStore:
 
 
 class OperationStore:
-    """Постоянный журнал runtime-операций для Android persistence backend."""
+    """Постоянный журнал runtime-операций для физического backend Android."""
 
     def __init__(self, backend: PersistenceBackend | None = None) -> None:
         self.backend = backend
