@@ -28,7 +28,7 @@
 | `ANDROID-A2.1-ACCEPTED` | `platform/android` | `21fe369ba2281fb56b88fde7996c5801eb5af2f9` | ПРИНЯТО | A2.1 device evidence и persistence acceptance |
 | `ANDROID-A2.2-IMPLEMENTED` | `platform/android` | `0bdb8f1cd0b1af415d1e07cfd2bb1acb04ff376b` | РЕАЛИЗОВАНО | implementation slice; физический rollback proof и device-приёмку ещё открыты |
 | `DESKTOP-ALPHA-0.1.0-ALPHA.1` | Windows/Linux release line | `4ef43ca493eca564e648420d37d65a57f2e48994` | ВЫПУЩЕНО | публичный pre-release `v0.1.0-alpha.1` от 2026-09-30 |
-| `REORG-2026-10-01` | `main` | `87161ad9d38703aa943d831e7bb8628abaf18a78` | ПРОВЕРЕНО | архитектурная реорганизация и документационная evidence-запись; старые branch refs уже удалены вручную |
+| `REORG-2026-10-01` | `main` | `05c07c7f1014f1f31fdbd6c17e034fc16e1faa5b` | ПРОВЕРЕНО | архитектурная реорганизация завершена; паспорт передан в архив, старые branch refs удалены |
 
 ## Что этот механизм не делает
 
