@@ -11,6 +11,11 @@
 - общие CI/tests могут проверяться как доказательство отсутствия регрессий, но наличие desktop CI job не делает desktop разработкой текущего этапа;
 - G22.txt и GENOME/genome.txt не изменять в Android quality/audit cycles.
 
+## Текущий режим разработки с 01.10.2026
+
+До прямого явного указания Алека активный контур проекта — только Android.
+Windows/Linux desktop development и их обычные matrix/package-smoke CI-прогоны не запускаются автоматически. Общий Python Core изменяется только при необходимости для Android-паритета или проверки Android-контракта. Ubuntu в Android CI является средой сборки Android, а не отдельным Linux desktop quality-контуром.
+
 
 ## Общий старт проекта
 

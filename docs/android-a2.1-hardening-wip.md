@@ -94,3 +94,23 @@ Room backend → write → shutdown → новый gateway/runtime → read-back
 - lifecycle fixes: реализованы, новый CI ещё не прошёл;
 - physical device persistence acceptance: не выполнена;
 - A2.2: не открыт.
+
+
+## A2.1 CI — 01.10.2026
+
+После исправления integration test и перевода обязательного CI в Android-only контур актуальный WIP head получил полностью зелёный run **#484**:
+
+- commit: `a97a6c38d2944b1891d357859f7221127f618b40`;
+- общий Core-контракт на Python 3.13: PASS;
+- Android unit tests + debug APK: PASS;
+- APK existence check: PASS;
+- Chaquopy packaging smoke: PASS;
+- security smoke: PASS;
+- диагностический APK опубликован;
+- desktop Windows/Linux matrix и package-smoke в этом run не запускались.
+
+Artifact: `kira-android-a2.1-debug-a97a6c38d2944b1891d357859f7221127f618b40`, SHA-256 `9d1541fd0d9ee57693c28487f958798d5c016f8dc1f06fb6154d1a8609487167`.
+
+Исправление теста намеренно использует только публичный `PersistenceBackend`/adapter-контракт и не расширяет production semantics ради тестовой фикстуры.
+
+Следующая обязательная граница A2.1 — физическая device acceptance на актуальном APK: Room backend identity, write → shutdown/restart → read-back, разделение Conversation/Memory и отсутствие canonical JSON/JSONL/plaintext persistence. A2.2 до этой проверки не открывается.

@@ -601,3 +601,22 @@ CI run `#480` на commit `38ce9e3174865d3ade1d404f0d932952c82c6425` созда�
 1. green CI на актуальном code head;
 2. device read/write → process restart → read-back;
 3. проверки conversation/memory separation и отсутствия plaintext JSON/JSONL canonical storage.
+
+
+## A2.1 hardening update — 01.10.2026
+
+Актуальный WIP head `a97a6c38d2944b1891d357859f7221127f618b40` получил полностью зелёный Android-only CI run `#484`.
+
+PASS:
+- общий Python Core tests на Python 3.13;
+- Android unit tests;
+- debug APK build и existence check;
+- Chaquopy APK packaging smoke;
+- security smoke;
+- artifact publication.
+
+CI больше не запускает Windows/Linux desktop matrix и package-smoke до прямого указания Алека. Ubuntu используется только как хост сборки Android и проверки общего Core-контракта.
+
+Исправление A2.1 integration test переведено на публичный `PersistenceBackend`/adapter-контракт; production semantics не расширялись ради тестовой фикстуры.
+
+Физическая A2.1 device acceptance ещё не выполнена. До неё A2.2 остаётся закрытым.
