@@ -320,6 +320,10 @@ object KiraRuntimeBridge {
             )
             result.put("core_version", pythonDiagnostics.optString("core_version"))
             result.put("python_version", pythonDiagnostics.optString("python_version"))
+            result.put(
+                "persistence_backend",
+                pythonDiagnostics.optString("persistence_backend"),
+            )
         } else {
             result.put("core_version", JSONObject.NULL)
             result.put("python_version", JSONObject.NULL)
