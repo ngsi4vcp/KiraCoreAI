@@ -1034,3 +1034,12 @@ UI/host не являются источником privileged authority.
 ## Текущий Android status
 
 A1 device acceptance закрыт. A2.0 foundation реализован и проверен. A2.1 Store Integration реализован на ветке `android/alpha-parity`; CI `#450` green. Физическая device-проверка нового persistence runtime остаётся частью A2.5. Следующий подпредел — A2.2 Atomic Turn.
+
+
+## Актуальная контрольная точка — 01.10.2026
+
+A2.1 Store Integration реализован и имеет зелёный CI checkpoint на run `#485`, попытка 2, commit `582a7d286bd83b0ac2895d1c50c0cf23b13a2167`.
+
+Физический device run `20261001-114931` на vivo V2366HA / API 36 подтвердил recovery после process death, но остановился на первой проверке A2.1: Kotlin diagnostics не возвращал `persistence_backend`.
+
+Исправление: `d79ab7d418d0ba41286d69ebd3ec903982affe42`. После green CI нового head требуется новый APK и повторная физическая A2.1 acceptance. A2.2 до этого не открывается.

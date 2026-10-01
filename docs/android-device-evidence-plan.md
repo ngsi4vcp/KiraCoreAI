@@ -293,3 +293,12 @@ A1 не начинается, если:
 - https://developer.android.com/develop/background-work/services/fgs/service-types
 - https://developer.android.com/develop/background-work/services/fgs/timeout
 - https://developer.android.com/develop/background-work/services/fgs/changes
+
+
+## Актуальное evidence — 01.10.2026
+
+Run `20261001-114931`, vivo V2366HA / Android API 36: process-death recovery подтверждён как `RECOVERY_OK`, но A2.1 persistence smoke завершился на `backend identity`.
+
+Причина: Kotlin bridge не передавал наружу уже сформированное Python-поле `persistence_backend`.
+Исправление: `d79ab7d418d0ba41286d69ebd3ec903982affe42`.
+Следующий обязательный шаг — green CI нового head и повторный физический A2.1 прогон.

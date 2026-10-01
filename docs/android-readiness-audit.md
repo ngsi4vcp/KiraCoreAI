@@ -273,3 +273,10 @@ A2 начинается с Persistence Foundation:
 ## A2.0 / A2.1 актуальная контрольная точка
 
 Room/SQLite schema v1, защищённый gateway через Android Keystore/AES-GCM и Kotlin persistence foundation реализованы. A2.1 Store Integration подключил единый Room backend к State/Memory/History/Conversation/Core State и runtime operation persistence через Python/Chaquopy bridge. CI run `#450` полностью green. Physical device acceptance нового persistence runtime ещё не выполнялась и остаётся частью A2.5.
+
+
+## Актуальная контрольная точка — 01.10.2026
+
+Физический A2.1 прогон `20261001-114931` на vivo V2366HA / API 36 дал `RECOVERY_OK` для process-death recovery, но не прошёл A2.1 persistence acceptance: поле `persistence_backend` потерялось на границе Kotlin bridge.
+
+Исправление внесено в `d79ab7d418d0ba41286d69ebd3ec903982affe42`. Новый APK ещё не принят на устройстве. A2.1 device acceptance остаётся открытой, A2.2 — закрытой.

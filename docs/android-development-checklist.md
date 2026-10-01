@@ -79,3 +79,15 @@
 - [ ] quality pass PASS.
 - [ ] docs sync PASS.
 - [ ] explicit limitations recorded.
+
+
+## A2.1 — текущий gate 01.10.2026
+
+- [x] Core integration test с reopen нового persistence backend.
+- [x] Android Room backend подключён как canonical physical backend.
+- [x] Payload encryption через Android Keystore/AES-GCM.
+- [x] Debug probe проверяет write → shutdown/restart → read-back.
+- [x] Device recovery после process death подтверждён.
+- [ ] Physical A2.1 persistence acceptance на актуальном APK.
+- [ ] A2.1 подтверждён на устройстве целиком.
+- [ ] A2.2 Atomic Turn.
