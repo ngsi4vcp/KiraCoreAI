@@ -12,6 +12,8 @@
 - G22.txt и GENOME/genome.txt не изменять в Android quality/audit cycles.
 
 ## Текущий режим разработки с 01.10.2026
+Общий архитектурный ledger: docs/core-architecture-snapshots.md. Добавлять запись только при изменении общей Core architecture/logic; Git остаётся источником полного кода.
+
 
 До прямого явного указания Алека активный контур проекта — только Android.
 Windows/Linux desktop development и их обычные matrix/package-smoke CI-прогоны не запускаются автоматически. Общий Python Core изменяется только при необходимости для Android-паритета или проверки Android-контракта. Ubuntu в Android CI является средой сборки Android, а не отдельным Linux desktop quality-контуром.
