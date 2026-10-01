@@ -226,7 +226,7 @@ A1 Core Parity принят на устройстве `20260930-144146` со с�
 ### A2.2 Atomic Turn
 - [x] durable pre-call checkpoint
 - [x] atomic final commit assistant/history/session/core-state/operation — реализация
-- [x] failure injection и отсутствие частичного final state — контрактный backend test
+- [x] failure injection и отсутствие частичного final state — контрактный тест адаптера
 - [x] UNKNOWN не получает статус COMPLETED
 - [x] self-audit и документация — выполнено для текущего A2.2 code slice
 - [ ] физическая rollback-проверка именно Android Room/SQLite
