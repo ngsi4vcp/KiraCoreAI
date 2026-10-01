@@ -8,7 +8,7 @@
 - база A2.2: принятый A2.1 code head `21fe369ba2281fb56b88fde7996c5801eb5af2f9`
 - A1 Core Parity: **ACCEPTED**
 - A2.1 Store Integration: **ACCEPTED**, device run `20261001-125458`, vivo V2366HA / Android API 36
-- A2.2 Atomic Turn: **IN PROGRESS**
+- A2.2 Atomic Turn: **IMPLEMENTATION SLICE COMPLETE / ACCEPTANCE OPEN**
 - активный GENOME: revision 22
 - GENOME SHA-256: `dde7ce4b640f9dbcbeed6201559fb118849058e25ceccb9befa663e8ce6b726e`
 
@@ -57,10 +57,12 @@ Android продолжает реализовываться как host над �
 
 ### A2.2 Atomic Turn
 
-Зафиксировать транзакционный boundary:
+**Текущий срез реализован.** Транзакционный boundary:
 `user message → checkpoint → model result → validation → Pulse → assistant message → state update → operation COMPLETED`
 
-Ошибочный/неопределённый ход не должен оставлять несовместимый набор записей.
+Уже реализовано: `PersistenceBackend.commit_atomic_turn`, единый `RoomDatabase.runInTransaction`, контрактные success/failure tests и сохранённая семантика `UNKNOWN`.
+
+Открытый quality gate: физическая rollback-проверка именно Room/SQLite и отдельный A2.2 device acceptance. A2.1 `test-exchange` run `20261001-133419` подтверждает физическую persistence/restart линию, но не является A2.2 atomicity acceptance.
 
 ### A2.3 Migration / Compatibility
 
