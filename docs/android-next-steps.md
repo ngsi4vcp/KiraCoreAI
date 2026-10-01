@@ -105,3 +105,16 @@ A3 Идентичность/полномочия → A4 Кира:Сбор → A5
 - device evidence, когда подпредел меняет physical Android behavior.
 
 Нельзя закрывать подпредел только потому, что APK собирается.
+
+## Актуальная контрольная точка — 01.10.2026
+
+A2.1 Store Integration **ACCEPTED**.
+
+- code head: `21fe369ba2281fb56b88fde7996c5801eb5af2f9`;
+- CI #501: SUCCESS;
+- device evidence: `20261001-125458`, vivo V2366HA / API 36;
+- manifest: `android-a2.1-device / A2_1_PERSISTENCE_OK`;
+- evidence commit: `a03bc0e95a0e95bddce0506f991cbe08740ba889`;
+- следующая ветка разработки: `android/a2.2-atomic-turn-wip`.
+
+A2.2 открыт. Первая задача — ввести реальный atomic finalization boundary в едином canonical persistence backend, не перенося domain semantics в Kotlin.
