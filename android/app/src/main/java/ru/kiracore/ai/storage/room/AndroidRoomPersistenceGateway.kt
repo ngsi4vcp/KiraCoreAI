@@ -15,32 +15,77 @@ class AndroidRoomPersistenceGateway(
 
     fun schemaVersion(): Int = KiraRoomDatabase.SCHEMA_VERSION
 
-    fun saveCoreState(payloadJson: String) {
-        val json = JSONObject(payloadJson)
-        dao.upsertCoreState(
-            CoreStateEntity(
-                singletonId = 1,
-                schemaVersion = json.optInt("schema_version", 1),
-                encryptedPayload = seal("core-state", payloadJson),
-                updatedAt = json.optString("updated_at", now()),
-            ),
+    private fun coreStateEntity(json: JSONObject): CoreStateEntity =
+        CoreStateEntity(
+            singletonId = 1,
+            schemaVersion = json.optInt("schema_version", 1),
+            encryptedPayload = seal("core-state", json.toString()),
+            updatedAt = json.optString("updated_at", now()),
         )
+
+    private fun sessionEntity(json: JSONObject): SessionEntity {
+        val sessionId = required(json, "session_id")
+        return SessionEntity(
+            sessionId = sessionId,
+            createdAt = json.optString("created_at", now()),
+            updatedAt = json.optString("updated_at", now()),
+            encryptedPayload = seal("session:$sessionId", json.toString()),
+        )
+    }
+
+    private fun conversationManifestEntity(json: JSONObject): ConversationManifestEntity {
+        val sessionId = required(json, "session_id")
+        return ConversationManifestEntity(
+            sessionId = sessionId,
+            createdAt = json.optString("created_at", now()),
+            updatedAt = json.optString("updated_at", now()),
+            encryptedPayload = seal("conversation-manifest:$sessionId", json.toString()),
+        )
+    }
+
+    private fun conversationMessageEntity(json: JSONObject): ConversationMessageEntity {
+        val messageId = required(json, "id")
+        val sessionId = required(json, "session_id")
+        return ConversationMessageEntity(
+            messageId = messageId,
+            sessionId = sessionId,
+            turn = json.optInt("turn", 0),
+            role = required(json, "role"),
+            timestamp = json.optString("timestamp", now()),
+            encryptedPayload = seal("conversation-message:$messageId", json.toString()),
+        )
+    }
+
+    private fun historyEntryEntity(json: JSONObject): HistoryEntryEntity {
+        val historyId = required(json, "id")
+        return HistoryEntryEntity(
+            historyId = historyId,
+            date = json.optString("date", now()),
+            encryptedPayload = seal("history:$historyId", json.toString()),
+        )
+    }
+
+    private fun operationEntity(json: JSONObject): RuntimeOperationEntity {
+        val operationId = required(json, "operation_id")
+        return RuntimeOperationEntity(
+            operationId = operationId,
+            sessionId = required(json, "session_id"),
+            phase = required(json, "phase"),
+            recoveryState = required(json, "recovery_state"),
+            updatedAt = json.optString("updated_at", now()),
+            encryptedPayload = seal("operation:$operationId", json.toString()),
+        )
+    }
+
+    fun saveCoreState(payloadJson: String) {
+        dao.upsertCoreState(coreStateEntity(JSONObject(payloadJson)))
     }
 
     fun loadCoreState(): String? =
         dao.getCoreState()?.let { open("core-state", it.encryptedPayload) }
 
     fun saveSession(payloadJson: String) {
-        val json = JSONObject(payloadJson)
-        val sessionId = required(json, "session_id")
-        dao.upsertSession(
-            SessionEntity(
-                sessionId = sessionId,
-                createdAt = json.optString("created_at", now()),
-                updatedAt = json.optString("updated_at", now()),
-                encryptedPayload = seal("session:$sessionId", payloadJson),
-            ),
-        )
+        dao.upsertSession(sessionEntity(JSONObject(payloadJson)))
     }
 
     fun loadSession(sessionId: String): String? =
@@ -54,15 +99,8 @@ class AndroidRoomPersistenceGateway(
         }.toString()
 
     fun saveConversationManifest(payloadJson: String) {
-        val json = JSONObject(payloadJson)
-        val sessionId = required(json, "session_id")
         dao.upsertConversationManifest(
-            ConversationManifestEntity(
-                sessionId = sessionId,
-                createdAt = json.optString("created_at", now()),
-                updatedAt = json.optString("updated_at", now()),
-                encryptedPayload = seal("conversation-manifest:$sessionId", payloadJson),
-            ),
+            conversationManifestEntity(JSONObject(payloadJson)),
         )
     }
 
@@ -79,18 +117,8 @@ class AndroidRoomPersistenceGateway(
         }.toString()
 
     fun appendConversationMessage(payloadJson: String) {
-        val json = JSONObject(payloadJson)
-        val messageId = required(json, "id")
-        val sessionId = required(json, "session_id")
         dao.upsertConversationMessage(
-            ConversationMessageEntity(
-                messageId = messageId,
-                sessionId = sessionId,
-                turn = json.optInt("turn", 0),
-                role = required(json, "role"),
-                timestamp = json.optString("timestamp", now()),
-                encryptedPayload = seal("conversation-message:$messageId", payloadJson),
-            ),
+            conversationMessageEntity(JSONObject(payloadJson)),
         )
     }
 
@@ -135,15 +163,7 @@ class AndroidRoomPersistenceGateway(
         }.toString()
 
     fun appendHistory(payloadJson: String) {
-        val json = JSONObject(payloadJson)
-        val historyId = required(json, "id")
-        dao.upsertHistory(
-            HistoryEntryEntity(
-                historyId = historyId,
-                date = json.optString("date", now()),
-                encryptedPayload = seal("history:$historyId", payloadJson),
-            ),
-        )
+        dao.upsertHistory(historyEntryEntity(JSONObject(payloadJson)))
     }
 
     fun recentHistory(limit: Int): String {
@@ -165,18 +185,7 @@ class AndroidRoomPersistenceGateway(
         }.toString()
 
     fun saveOperation(payloadJson: String) {
-        val json = JSONObject(payloadJson)
-        val operationId = required(json, "operation_id")
-        dao.upsertOperation(
-            RuntimeOperationEntity(
-                operationId = operationId,
-                sessionId = required(json, "session_id"),
-                phase = required(json, "phase"),
-                recoveryState = required(json, "recovery_state"),
-                updatedAt = json.optString("updated_at", now()),
-                encryptedPayload = seal("operation:$operationId", payloadJson),
-            ),
-        )
+        dao.upsertOperation(operationEntity(JSONObject(payloadJson)))
     }
 
     fun loadOperation(operationId: String): String? =
@@ -188,6 +197,25 @@ class AndroidRoomPersistenceGateway(
                 array.put(JSONObject(open("operation:${item.operationId}", item.encryptedPayload)))
             }
         }.toString()
+
+    fun commitAtomicTurn(payloadJson: String) {
+        val payload = JSONObject(payloadJson)
+        val coreState = coreStateEntity(payload.getJSONObject("core_state"))
+        val session = sessionEntity(payload.getJSONObject("session"))
+        val manifest = conversationManifestEntity(payload.getJSONObject("conversation_manifest"))
+        val assistantMessage = conversationMessageEntity(payload.getJSONObject("assistant_message"))
+        val history = historyEntryEntity(payload.getJSONObject("history"))
+        val operation = operationEntity(payload.getJSONObject("operation"))
+
+        database.runInTransaction {
+            dao.upsertCoreState(coreState)
+            dao.upsertSession(session)
+            dao.upsertConversationManifest(manifest)
+            dao.upsertConversationMessage(assistantMessage)
+            dao.upsertHistory(history)
+            dao.upsertOperation(operation)
+        }
+    }
 
     fun deleteConversation(sessionId: String) {
         dao.deleteConversation(sessionId)
