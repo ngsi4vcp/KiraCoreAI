@@ -622,7 +622,7 @@ CI больше не запускает Windows/Linux desktop matrix и package-
 Физическая A2.1 device acceptance ещё не выполнена. До неё A2.2 остаётся закрытым.
 
 
-## Актуальная точка — 01.10.2026
+## Предыдущая точка — 01.10.2026 (заменена)
 
 Свежий device evidence commit: `e5d173acf14b90632a23393075723ec06e656c72` в `android/alpha-parity`.
 
