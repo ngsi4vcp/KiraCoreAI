@@ -117,3 +117,18 @@ Authority material:
 - restart read-back, memory approval, operation state и разделение conversation/memory покрыты A2.1 integration tests.
 
 CI run `#450` полностью подтвердил кодовый срез A2.1 на commit `219c641a6b74526e0774346b35b3dbe912e96246`. После него менялась только документация; отдельного green run для docs-only HEAD не было. Atomic turn, migration/compatibility и recovery/duplicate prevention остаются A2.2–A2.4; физическая device-проверка нового persistence runtime остаётся незакрытой.
+
+## Android A2.1 — acceptance closure — 01.10.2026
+
+A2.1 физически принят: Room является единственным canonical backend, restart read-back подтверждён, canonical JSON/JSONL в Android Room mode отсутствует, payloads шифруются через Android Keystore/AES-GCM. Device evidence: run `20261001-125458`, vivo V2366HA / API 36. Manifest: `android-a2.1-device / A2_1_PERSISTENCE_OK`.
+
+## Android A2.2 — Atomic Turn
+
+Критический ход разделяется на две физические стадии.
+
+1. До внешнего model-call фиксируется durable checkpoint операции и пользовательского хода. Этот checkpoint намеренно переживает process death и позволяет отличить неопределённый внешний вызов от завершённого.
+2. После получения и успешной валидации ModelResponse runtime создаёт ПУЛЬС и выполняет один atomic commit на canonical backend. В него входят assistant message, обновлённый conversation manifest, history entry, финальное состояние session, final core state и operation `COMPLETED`.
+
+Внешний вызов модели не удерживается внутри SQL-транзакции. При ошибке/UNKNOWN финальный commit не выполняется; operation остаётся `FAILED`/нуждается в reconcile с соответствующим состоянием и без silent retry.
+
+Ключевой инвариант: невозможно получить физически зафиксированный assistant result при operation `UNKNOWN` или частично сохранённом final state.
