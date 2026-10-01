@@ -271,8 +271,8 @@ class DeviceEvidenceRunner(
                 val sessionId = runCheck(runDir, "A2.1: запись session/conversation") {
                     val session = KiraRuntimeBridge.createSession(
                         context = context,
-                        provider = "a2-test",
-                        model = "embedded/a2-test",
+                        provider = "a0-test",
+                        model = "embedded/a0-test",
                     )
                     val id = session.optString("session_id")
                     require(id.isNotBlank()) { "Session ID не получен." }
