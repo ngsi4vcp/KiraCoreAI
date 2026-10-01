@@ -118,16 +118,16 @@ Windows/Linux parity должна реализовать те же observable se
 
 ## Контрольный снимок S3 — атомарная финализация хода A2.2
 
-**Этап:** A2.2 Atomic Turn
+**Этап:** A2.2 — атомарная финализация хода
 
 Android A2.2 вводит общий логический контракт финализации хода: после durable checkpoint, внешнего model-call и успешной валидации/Pulse финальный набор результата фиксируется одним вызовом `PersistenceBackend.commit_atomic_turn` на canonical backend.
 
 ### Семантика
 
-- Внешний model-call остаётся вне длительной SQL-транзакции.
+- Внешний вызов модели остаётся вне длительной SQL-транзакции.
 - Финальный commit включает assistant message, conversation manifest, history entry, session state, final core state и operation `COMPLETED`.
 - `UNKNOWN` не получает `COMPLETED` и не вызывает silent retry.
-- Ошибка физического final commit не должна оставлять частично зафиксированный финальный набор записей.
+- Ошибка физической финализации не должна оставлять частично зафиксированный финальный набор записей.
 
 ### Android
 
@@ -137,7 +137,7 @@ Python Core остаётся доменным authority. Android Kotlin/Room р�
 
 ### Ограничение
 
-Этот snapshot фиксирует изменение общего логического контракта Core и не является заявлением о завершённой A2.2 acceptance. Windows/Linux должны при возвращении desktop-разработки реализовать эквивалентную семантику, не копируя Android Room implementation.
+Этот snapshot фиксирует изменение общего логического контракта Core и не является заявлением о завершённой A2.2 acceptance. Windows/Linux должны при возвращении разработки реализовать эквивалентную семантику, не копируя реализацию Android Room.
 
 ## Future snapshot rule
 
