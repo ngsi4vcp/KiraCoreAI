@@ -1,16 +1,19 @@
-# Project Audit Index
+# Project Audit Index — platform
 
-Канонический вход в аудит проекта находится в корне:
+Общая нормативная карта проекта находится в ветке `main`.
 
-1. `G22.txt`
-2. `AGENTS.md`
-3. `DOCUMENTATION.md`
-4. `PROJECT-RULES.md`
-5. `PROJECT-ARCHITECTURE.md`
-6. `PROJECT-PLAN.md`
-7. `PROJECT-BEHAVIOR.md`
-8. `PROJECT-CHECKLIST.md`
-9. `MAIN-STATUS.md`
-10. `REPOSITORY-STRUCTURE.md`
+Перед платформенной работой использовать:
+1. `main/G22.txt`;
+2. `main/AGENTS.md`;
+3. `main/DOCUMENTATION.md`;
+4. `main/PROJECT-RULES.md`;
+5. `main/PROJECT-ARCHITECTURE.md`;
+6. `main/PROJECT-PLAN.md`;
+7. `main/PROJECT-BEHAVIOR.md`;
+8. `main/PROJECT-CHECKLIST.md`;
+9. `main/MAIN-STATUS.md`;
+10. `main/REPOSITORY-STRUCTURE.md`.
 
-Этот документ сохраняется для обратной совместимости со старой системой навигации. Новые документы и изменения структуры должны проходить через `DOCUMENTATION.md`.
+Платформенные документы этой ветки добавляются после общей карты.
+
+Этот файл — навигационный указатель, а не второй источник глобальных правил.
