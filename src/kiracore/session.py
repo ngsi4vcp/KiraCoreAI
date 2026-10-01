@@ -5,11 +5,11 @@ from typing import Callable
 from uuid import uuid4
 
 from .context import ContextCompiler
-from .conversation import ConversationStore, utc_now
+from .conversation import ConversationManifest, ConversationStore, StoredMessage, utc_now
 from .errors import ProtocolViolation
 from .genome import GenomeArtifact
 from .model_contract import ModelAdapter, ModelResponse
-from .models import HistoryEntry
+from .models import HistoryEntry, SessionState
 from .operation import OperationPhase
 from .persistence import JsonPersistence
 from .pulse import pulse_stamp
@@ -64,6 +64,10 @@ class SessionManager:
         model_id: str,
         host_constraints: dict[str, object] | None = None,
         operation_update: Callable[[str, str], None] | None = None,
+        turn_finalizer: Callable[
+            [SessionState, StoredMessage, ConversationManifest, HistoryEntry, object],
+            None,
+        ] | None = None,
     ) -> tuple[ModelResponse, object]:
         session = self.state_store.get(session_id)
         first_turn = session.turn == 0
@@ -136,17 +140,36 @@ class SessionManager:
         )
         if operation_update:
             operation_update(OperationPhase.PERSISTING, "persistence_started")
-        self.conversation_store.append(
-            session_id,
-            session.turn,
-            "assistant",
-            response.text,
-            pulse=pulse,
+
+        final_session = replace(
+            session,
+            runtime_status="waiting",
+            updated_at=utc_now(),
         )
-        self.history_store.append(
-            HistoryEntry(
+
+        if turn_finalizer is not None:
+            assistant_timestamp = utc_now()
+            assistant_message = StoredMessage(
                 id=uuid4().hex,
-                date=utc_now(),
+                session_id=session_id,
+                turn=session.turn,
+                role="assistant",
+                content=response.text,
+                timestamp=assistant_timestamp,
+                pulse=pulse,
+            )
+            manifest = self.conversation_store.get_manifest(session_id)
+            updated_manifest = ConversationManifest(
+                session_id=manifest.session_id,
+                created_at=manifest.created_at,
+                updated_at=assistant_timestamp,
+                provider=manifest.provider,
+                model=manifest.model,
+                title=manifest.title,
+            )
+            history_entry = HistoryEntry(
+                id=uuid4().hex,
+                date=assistant_timestamp,
                 event="Завершение хода сессии",
                 change=f"Завершён ход {session.turn} через {provider}/{model_id}.",
                 cause=clean_task[:500] or "Пустая задача пользователя.",
@@ -154,18 +177,40 @@ class SessionManager:
                 consequence="Состояние сессии переведено в ожидание следующего хода.",
                 revision=f"G{self.genome.revision}",
             )
-        )
-
-        session = replace(
-            session,
-            runtime_status="waiting",
-            updated_at=utc_now(),
-        )
-        self.state_store.put(session)
-        if self.persistence:
-            self.persistence.save(session)
-
-        if operation_update:
-            operation_update(OperationPhase.COMPLETED, "completed")
+            turn_finalizer(
+                final_session,
+                assistant_message,
+                updated_manifest,
+                history_entry,
+                pulse,
+            )
+            self.conversation_store.record_persisted_manifest(updated_manifest)
+            self.history_store.record_persisted(history_entry)
+            self.state_store.record_persisted(final_session)
+        else:
+            self.conversation_store.append(
+                session_id,
+                session.turn,
+                "assistant",
+                response.text,
+                pulse=pulse,
+            )
+            self.history_store.append(
+                HistoryEntry(
+                    id=uuid4().hex,
+                    date=utc_now(),
+                    event="Завершение хода сессии",
+                    change=f"Завершён ход {session.turn} через {provider}/{model_id}.",
+                    cause=clean_task[:500] or "Пустая задача пользователя.",
+                    significance="Результат хода сохранён в разговоре и связан с ПУЛЬС.",
+                    consequence="Состояние сессии переведено в ожидание следующего хода.",
+                    revision=f"G{self.genome.revision}",
+                )
+            )
+            self.state_store.put(final_session)
+            if self.persistence:
+                self.persistence.save(final_session)
+            if operation_update:
+                operation_update(OperationPhase.COMPLETED, "completed")
 
         return response, pulse
