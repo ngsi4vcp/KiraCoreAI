@@ -6,7 +6,8 @@
 - [x] desktop host присутствует;
 - [x] release tooling присутствует;
 - [x] документационный каркас создан;
-- [ ] Windows CI на новом HEAD;
+- [x] Windows CI на новом HEAD;
+
 - [ ] Windows 11 external smoke;
 - [ ] следующий release artifact.
 
