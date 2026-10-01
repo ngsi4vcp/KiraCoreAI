@@ -137,9 +137,9 @@ A2.1 физически принят: Room является единственн
 На ветке `android/a2.2-atomic-turn-wip` реализована физическая граница A2.2:
 
 - `PersistenceBackend.commit_atomic_turn` добавлен в общий adapter contract;
-- `KiraRuntime` формирует единый final payload только после успешной валидации и создания ПУЛЬСА;
+- `KiraRuntime` формирует единый финальный набор данных только после успешной валидации и создания ПУЛЬСА;
 - `AndroidRoomPersistenceGateway.commitAtomicTurn()` преобразует payload в Room entities;
 - все шесть final-records записываются внутри одного `runInTransaction`.
 
-Контрактные failure-injection тесты подтверждают, что при отказе atomic commit тестовый backend не получает final assistant/history/COMPLETED records. Это пока не заменяет отдельную физическую проверку rollback именно Room/SQLite.
+Контрактные тесты отказа подтверждают, что при отказе атомарной фиксации тестовый backend не получает финальные записи assistant/history/COMPLETED. Это пока не заменяет отдельную физическую проверку отката именно Room/SQLite.
 
