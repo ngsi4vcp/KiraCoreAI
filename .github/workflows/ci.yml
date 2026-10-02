@@ -63,6 +63,14 @@ jobs:
       - name: Проверить APK
         run: test -f android/app/build/outputs/apk/debug/app-debug.apk
 
+      - name: Физические Android instrumentation tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 36
+          arch: x86_64
+          profile: pixel_2
+          script: gradle --no-daemon :android:app:connectedDebugAndroidTest
+
       - name: Chaquopy packaging smoke
         run: python tests/android_apk_packaging_smoke.py android/app/build/outputs/apk/debug/app-debug.apk
 
