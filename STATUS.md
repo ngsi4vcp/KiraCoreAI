@@ -10,6 +10,7 @@
 - Core-срез синхронизирован с `main` на merge-контрольной точке `20372923bb06a3a0f7e6e31419f81233ebd3dde1`;
 - принят A2.1;
 - A2.2 implementation slice реализован;
+- физический rollback instrumentation test добавлен и включён в Android CI;
 - A2.2 acceptance открыта.
 
 ## A2.1 — принято
@@ -39,8 +40,8 @@
 
 ## CI
 
-- sync CI #560 — SUCCESS на кодовом migration HEAD `879ca55b42e1972365731e5d5612770a63f8b61c`;
-- после него выполнен только документационный commit `39487c4a3ba38e827d3d596f06a056f6b1877af8`.
+- sync CI #560 — SUCCESS на исходном кодовом migration HEAD `879ca55b42e1972365731e5d5612770a63f8b61c`;
+- после него добавлен физический Room rollback instrumentation test и CI-шаг; результат нового CI ещё не подтверждён.
 
 ## Release
 
