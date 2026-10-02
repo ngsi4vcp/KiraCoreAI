@@ -7,6 +7,7 @@ env:
 on:
   push:
     branches: ["platform/android"]
+    paths-ignore: ["test-exchange/apk/**"]
   pull_request:
     branches: ["main"]
 
