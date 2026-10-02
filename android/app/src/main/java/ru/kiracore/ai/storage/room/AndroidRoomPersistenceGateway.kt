@@ -8,6 +8,7 @@ import ru.kiracore.ai.security.AndroidSecureStore
 /** Физический Room gateway для основы персистентности A2. */
 class AndroidRoomPersistenceGateway(
     context: Context,
+    private val atomicCommitFailureInjector: (() -> Unit)? = null,
 ) : AutoCloseable {
     private val database = KiraRoomDatabase.open(context)
     private val dao = database.dao()
@@ -214,6 +215,7 @@ class AndroidRoomPersistenceGateway(
             dao.upsertConversationMessage(assistantMessage)
             dao.upsertHistory(history)
             dao.upsertOperation(operation)
+            atomicCommitFailureInjector?.invoke()
         }
     }
 
