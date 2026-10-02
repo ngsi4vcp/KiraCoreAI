@@ -64,17 +64,6 @@ jobs:
       - name: Проверить APK
         run: test -f android/app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Сохранить тестовый APK в репозитории
-        shell: bash
-        run: |
-          mkdir -p test-exchange/apk
-          rm -f test-exchange/apk/*.apk
-          cp android/app/build/outputs/apk/debug/app-debug.apk "test-exchange/apk/kira-android-debug-ci-${GITHUB_RUN_NUMBER}.apk"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A test-exchange/apk
-          git commit -m "Test APK: CI #${GITHUB_RUN_NUMBER} [skip ci]"
-          git push origin HEAD:platform/android
 
       - name: Публиковать debug APK
         uses: actions/upload-artifact@v4
