@@ -23,7 +23,8 @@ A0 Skeleton → A0.D1 Device Acceptance → A1 Core Parity → A2 Persistence �
 - [x] atomic finalization implementation;
 - [x] failure injection/contract test;
 - [x] UNKNOWN boundary;
-- [ ] физический Room/SQLite rollback proof;
+- [x] instrumentation test физического Room/SQLite rollback proof реализован;
+- [ ] успешный device/emulator run физического rollback proof;
 - [ ] отдельная device acceptance;
 - [ ] formal acceptance.
 
