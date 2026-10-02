@@ -17,9 +17,11 @@
 
 Публичного Android Release пока нет.
 
-**Текущий тестовый выпуск:** debug APK из CI #560, HEAD `879ca55b42e1972365731e5d5612770a63f8b61c`.
+Актуальный тестовый APK хранится непосредственно в репозитории: `test-exchange/apk/`.
+Имя файла содержит номер CI-прогона: `kira-android-debug-ci-<CI>.apk`.
+В каталоге находится один актуальный APK; предыдущие версии сохраняются в истории Git.
 
-[Скачать текущий Android debug APK artifact](https://github.com/ngsi4vcp/KiraCoreAI/actions/artifacts/11163464055)
+[Открыть каталог актуального тестового APK](https://github.com/ngsi4vcp/KiraCoreAI/tree/platform/android/test-exchange/apk)
 
 [Открыть последние CI-сборки Android](https://github.com/ngsi4vcp/KiraCoreAI/actions/workflows/ci.yml?query=branch%3Aplatform%2Fandroid)
 
